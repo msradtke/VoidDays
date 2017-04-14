@@ -18,7 +18,7 @@
         <StackPanel Grid.Row="0" HorizontalAlignment="Right">
             <Button IsEnabled="{Binding IsToday}" Command="{Binding NewGoalCommand}">New Goal</Button>
         </StackPanel>
-        <ListBox Padding="0" HorizontalContentAlignment="Stretch" ItemsSource="{Binding GoalItemViewModelAggregates,UpdateSourceTrigger=PropertyChanged,Mode=OneWay}" SelectedItem="{Binding SelectedGoalItemViewModel,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"  Grid.Row="1">
+        <ListBox ItemContainerStyle="{DynamicResource RedGlowItemContainer}" Padding="0" HorizontalContentAlignment="Stretch" ItemsSource="{Binding GoalItemViewModelAggregates,UpdateSourceTrigger=PropertyChanged,Mode=OneWay}" SelectedItem="{Binding SelectedGoalItemViewModel,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"  Grid.Row="1">
             <ListBox.ItemTemplate>
                 <DataTemplate>
 
