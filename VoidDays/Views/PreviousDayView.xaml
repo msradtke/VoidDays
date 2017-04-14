@@ -6,7 +6,21 @@
              xmlns:local="clr-namespace:VoidDays.Views"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid Background="Green">
-            
+    <Grid>
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding PreviousDayIsComplete, UpdateSourceTrigger=PropertyChanged}" Value="{x:Null}">
+                        <Setter Property="Background" Value="Black"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding PreviousDayIsComplete, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                        <Setter Property="Background" Value="LightGreen"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding PreviousDayIsComplete, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                        <Setter Property="Background" Value="Red"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
     </Grid>
 </UserControl>

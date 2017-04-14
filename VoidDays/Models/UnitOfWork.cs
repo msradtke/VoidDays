@@ -14,6 +14,10 @@ namespace VoidDays.Models
         private IDbContext _context;
         private IRepositoryBaseFactory _repositoryBaseFactory;
         private IRepositoryBase<Goal> _goalRepository;
+        private IRepositoryBase<GoalItem> _goalItemRepository;
+        private IRepositoryBase<Day> _dayRepository;
+        private IRepositoryBase<GoalItemsCreated> _goalItemsCreatedRepository;
+        private IRepositoryBase<Settings> _settingsRepository;
         public UnitOfWork(IRepositoryBaseFactory repositoryBaseFactory, IDbContext context)
         {
             _repositoryBaseFactory = repositoryBaseFactory;
@@ -32,7 +36,54 @@ namespace VoidDays.Models
                 return _goalRepository;
             }
         }
+        public IRepositoryBase<GoalItem> GoalItemRepository
+        {
+            get
+            {
 
+                if (this._goalItemRepository == null)
+                {
+                    this._goalItemRepository = _repositoryBaseFactory.CreateGoalItemRepository(_context);
+                }
+                return _goalItemRepository;
+            }
+        }
+        public IRepositoryBase<Day> DayRepository
+        {
+            get
+            {
+
+                if (this._dayRepository == null)
+                {
+                    this._dayRepository = _repositoryBaseFactory.CreateDayRepository(_context);
+                }
+                return _dayRepository;
+            }
+        }
+        public IRepositoryBase<GoalItemsCreated> GoalItemsCreatedRepository
+        {
+            get
+            {
+
+                if (this._goalItemsCreatedRepository == null)
+                {
+                    this._goalItemsCreatedRepository = _repositoryBaseFactory.CreateGoalItemsCreatedRepository(_context);
+                }
+                return _goalItemsCreatedRepository;
+            }
+        }
+        public IRepositoryBase<Settings> SettingsRepository
+        {
+            get
+            {
+
+                if (this._settingsRepository == null)
+                {
+                    this._settingsRepository = _repositoryBaseFactory.CreateSettingsRepository(_context);
+                }
+                return _settingsRepository;
+            }
+        }
         public void Save()
         {
             _context.Save();
@@ -59,6 +110,9 @@ namespace VoidDays.Models
     public interface IRepositoryBaseFactory
     {
         RepositoryBase<Goal> CreateGoalRepository(IDbContext context);
-        RepositoryBase<GoalHistory> CreateGoalHistoryRepository(IDbContext context);
+        RepositoryBase<GoalItem> CreateGoalItemRepository(IDbContext context);
+        RepositoryBase<Day> CreateDayRepository(IDbContext context);
+        RepositoryBase<GoalItemsCreated> CreateGoalItemsCreatedRepository(IDbContext context);
+        RepositoryBase<Settings> CreateSettingsRepository(IDbContext context);
     }
 }

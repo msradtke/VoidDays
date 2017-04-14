@@ -13,5 +13,9 @@ namespace VoidDays.Models.Interfaces
         void Dispose();
 
         IRepositoryBase<Goal> GoalRepository { get;}
+        IRepositoryBase<GoalItem> GoalItemRepository { get; }
+        IRepositoryBase<Day> DayRepository { get; }
+        IRepositoryBase<GoalItemsCreated> GoalItemsCreatedRepository { get; }
+        IRepositoryBase<Settings> SettingsRepository { get; }
     }
 }

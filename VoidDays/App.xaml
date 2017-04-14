@@ -4,8 +4,42 @@
              xmlns:local="clr-namespace:VoidDays"
              xmlns:viewmodels="clr-namespace:VoidDays.ViewModels"
              xmlns:views="clr-namespace:VoidDays.Views"
-             StartupUri="Views/MainContainer.xaml">
+             >
+
     <Application.Resources>
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+
+        <DataTemplate DataType="{x:Type viewmodels:DayHistoryWeekViewModel}">
+            <views:DayHistoryWeekView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:DayHistoryViewModel}">
+            <views:DayHistoryView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:SmallHistoryDayViewModelContainer}">
+            <views:SmallHistoryDayViewContainer/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:SmallHistoryDayViewModel}">
+            <views:SmallHistoryDayView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodels:AddNewGoalViewModel}">
+            <views:AddNewGoal/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:CompleteGoalItemViewModel}">
+            <views:CompleteGoalItemView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:EditGoalItemViewModel}">
+            <views:EditGoalItemView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:GoalItemViewModel}">
+            <views:GoalItemView/>
+        </DataTemplate>
         <DataTemplate DataType="{x:Type viewmodels:CurrentDayViewModel}">
             <views:CurrentDayView/>
         </DataTemplate>
@@ -18,5 +52,7 @@
         <DataTemplate DataType="{x:Type viewmodels:MainViewContainerViewModel}">
             <views:MainViewContainer/>
         </DataTemplate>
+        
     </Application.Resources>
+
 </Application>

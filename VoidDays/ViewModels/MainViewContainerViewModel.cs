@@ -8,11 +8,13 @@ namespace VoidDays.ViewModels
 {
     public class MainViewContainerViewModel : IMainViewContainerViewModel
     {
-        public MainViewContainerViewModel(ICurrentListViewModel currentListViewModel)
+        public MainViewContainerViewModel(IPreviousDayViewModel previousDayViewModel,ICurrentDayViewModel currentDayViewModel, ICurrentListViewModel currentListViewModel)
         {
+            PreviousDayViewModel = previousDayViewModel;
             CurrentListViewModel = currentListViewModel;
-            CurrentDayViewModel = new CurrentDayViewModel();
-            PreviousDayViewModel = new PreviousDayViewModel();
+            CurrentDayViewModel = currentDayViewModel;
+
+
         }
         public object CurrentListViewModel { get; private set; }
         public object CurrentDayViewModel { get; private set; }

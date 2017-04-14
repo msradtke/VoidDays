@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="VoidDays.Views.SmallHistoryDayView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VoidDays.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" MinHeight="50" MinWidth="50">
+    <Grid>
+        <Grid Background="Black">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsDayNull}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsDayNull}" Value="False">
+                            <Setter Property="Visibility" Value="Hidden"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+        </Grid>
+        <Grid>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        
+                        <DataTrigger Binding="{Binding IsDayNull}" Value="True">
+                            <Setter Property="Visibility" Value="Hidden"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsDayNull}" Value="False">
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Day.IsVoid}" Value="True">
+                            <Setter Property="Background" Value="Red"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Day.IsVoid}" Value="False">
+                            <Setter Property="Background" Value="LightGreen"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Day.IsActive}" Value="True">
+                            <Setter Property="Background" Value="Yellow"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+        </Grid>
+    </Grid>
+</UserControl>

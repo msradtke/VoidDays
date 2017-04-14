@@ -13,6 +13,9 @@ using VoidDays.Models.Interfaces;
 using VoidDays.Models;
 using VoidDays.ViewModels;
 using VoidDays.ViewModels.Interfaces;
+using VoidDays.Services.Interfaces;
+using VoidDays.Services;
+using Prism.Events;
 namespace VoidDays
 {
     /// <summary>
@@ -20,33 +23,52 @@ namespace VoidDays
     /// </summary>
     public partial class App : Application
     {
-        private IKernel _container;
+        private IKernel container;
         protected override void OnStartup(StartupEventArgs e)
         {
-            
+
             Database.SetInitializer<DbContext>(null);
             base.OnStartup(e);
             ConfigureContainer();
+            
+
+            var _startupService = this.container.Get<IStartupService>();
+            _startupService.Initialize();
+
             ComposeObjects();
-            //Current.MainWindow.Show();            
+            Current.MainWindow.Show();
         }
 
         private void ConfigureContainer()
         {
-            this._container = new StandardKernel();
+            this.container = new StandardKernel();
 
-            _container.Bind<IRepositoryBaseFactory>().ToFactory();
-            _container.Bind<IDbContext>().To<EFDbContext>().InTransientScope();
-            _container.Bind<ICurrentListViewModel>().To<CurrentListViewModel>().InTransientScope();
-            _container.Bind<IMainViewContainerViewModel>().To<MainViewContainerViewModel>().InTransientScope();
-            _container.Bind<IMainContainerViewModel>().To<MainContainerViewModel>().InTransientScope();
-            _container.Bind(typeof(IRepositoryBase<>)).To(typeof(RepositoryBase<>)).InTransientScope();
+            container.Bind<IUnitOfWork>().To<UnitOfWork>().InTransientScope();
+            container.Bind<IRepositoryBaseFactory>().ToFactory();
+            container.Bind<IViewModelFactory>().ToFactory();
+
+            container.Bind<IDbContext>().To<EFDbContext>().InTransientScope();
+            container.Bind<ICurrentListViewModel>().To<CurrentListViewModel>().InTransientScope();
+            container.Bind<IMainViewContainerViewModel>().To<MainViewContainerViewModel>().InTransientScope();
+            container.Bind<IMainContainerViewModel>().To<MainContainerViewModel>().InTransientScope();
+            container.Bind<IGoalItemViewModel>().To<GoalItemViewModel>().InTransientScope();
+            container.Bind<IPreviousDayViewModel>().To<PreviousDayViewModel>().InTransientScope();
+            container.Bind<ICurrentDayViewModel>().To<CurrentDayViewModel>().InTransientScope();
+            container.Bind<ISmallHistoryDayViewModelContainer>().To<SmallHistoryDayViewModelContainer>().InTransientScope();
+            container.Bind<IDayHistoryViewModel>().To<DayHistoryViewModel>().InTransientScope();
+
+            container.Bind<IGoalService>().To<GoalService>().InSingletonScope();
+            container.Bind<IDialogService>().To<DialogService>().InSingletonScope();
+            container.Bind<IStartupService>().To<StartupService>().InSingletonScope();
+            container.Bind<IAdminService>().To<AdminService>().InSingletonScope();
+            container.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
+            container.Bind(typeof(IRepositoryBase<>)).To(typeof(RepositoryBase<>)).InTransientScope();
         }
 
         private void ComposeObjects()
         {
-            //Current.MainWindow = this._container.Get<MainContainer>();
-            //Current.MainWindow.Title = "VoidDays";
+            Current.MainWindow = this.container.Get<MainContainer>();
+            Current.MainWindow.Title = "VoidDays";
         }
     }
 }

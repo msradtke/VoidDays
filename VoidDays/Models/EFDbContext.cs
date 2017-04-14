@@ -10,6 +10,11 @@ namespace VoidDays.Models
 {
     public class EFDbContext : DbContext, IDbContext
     {
+        public DbSet<Goal> Goals { get; set; }
+        public DbSet<GoalItem> GoalItems { get; set; }
+        public DbSet<Day> Days { get; set; }
+        public DbSet<GoalItemsCreated> GoalItemsCreated { get; set; }
+        public DbSet<Settings> Settings { get; set; }
 
         public EFDbContext()
             :base ("VoidDaysContext")
@@ -20,9 +25,14 @@ namespace VoidDays.Models
         }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<GoalItem>().ToTable("goal_items");
             modelBuilder.Entity<Goal>().ToTable("goals");
+            modelBuilder.Entity<Day>().ToTable("days");
+            modelBuilder.Entity<GoalItemsCreated>().ToTable("goal_items_created");
+            modelBuilder.Entity<Settings>().ToTable("settings");
+            modelBuilder.Entity<GoalItem>().HasRequired(x => x.Goal);
 
-            modelBuilder.Entity<Goal>().HasRequired(x => x.Title);
+            
         }
         public DbSet<TEntity> GetDbSet<TEntity>() where TEntity : class
         {

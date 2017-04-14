@@ -7,6 +7,22 @@
         mc:Ignorable="d"
         Title="MainContainer" Height="300" Width="300">
     <Grid>
-        <ContentControl Content="{Binding MainViewContainerViewModel}"/>
+        <Grid.RowDefinitions>
+
+            <RowDefinition Height="Auto"/>
+
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Button HorizontalAlignment="Left" Command="{Binding HistoryCommand}">History</Button>
+            <Button HorizontalAlignment="Left" Command="{Binding CurrentDayCommand}">Current Day</Button>
+        </StackPanel>
+        <ContentControl Content="{Binding CurrentView}" Grid.Row="1"/>
+
+        <StackPanel Grid.Row="2">
+            <ContentControl Content="{Binding SmallHistoryDayViewModelContainer}"/>
+        </StackPanel>
+
     </Grid>
 </Window>

@@ -108,31 +108,82 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Day.cs" />
     <Compile Include="Models\EFDbContext.cs" />
     <Compile Include="Models\Goal.cs" />
     <Compile Include="Models\GoalHistory.cs" />
     <Compile Include="Models\GoalItem.cs" />
+    <Compile Include="Models\GoalItemsCreated.cs" />
     <Compile Include="Models\History.cs" />
     <Compile Include="Models\Interfaces\IDbContext.cs" />
     <Compile Include="Models\Interfaces\IRepositoryBase.cs" />
     <Compile Include="Models\Interfaces\IUnitOfWork.cs" />
     <Compile Include="Models\RepositoryBase.cs" />
+    <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\UnitOfWork.cs" />
+    <Compile Include="Services\AdminService.cs" />
+    <Compile Include="Services\Interfaces\DialogService.cs" />
+    <Compile Include="Services\GoalService.cs" />
+    <Compile Include="Services\Interfaces\IAdminService.cs" />
+    <Compile Include="Services\Interfaces\IDialogService.cs" />
+    <Compile Include="Services\Interfaces\IGoalService.cs" />
+    <Compile Include="Services\Interfaces\IStartupService.cs" />
+    <Compile Include="Services\StartupService.cs" />
     <Compile Include="ViewModels\ActionCommand.cs" />
+    <Compile Include="ViewModels\AddNewGoalViewModel.cs" />
+    <Compile Include="ViewModels\CompleteGoalItemViewModel.cs" />
     <Compile Include="ViewModels\CurrentDayViewModel.cs" />
     <Compile Include="ViewModels\CurrentListViewModel.cs" />
+    <Compile Include="ViewModels\DayHistoryViewModel.cs" />
+    <Compile Include="ViewModels\DayHistoryWeekViewModel.cs" />
+    <Compile Include="ViewModels\EditGoalItemViewModel.cs" />
+    <Compile Include="ViewModels\Events\ViewModelEvents.cs" />
+    <Compile Include="ViewModels\GoalItemViewModel.cs" />
+    <Compile Include="ViewModels\Helpers.cs" />
+    <Compile Include="ViewModels\Interfaces\ICurrentDayViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\ICurrentListViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\IDayHistoryViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\IGoalItemViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IMainContainerViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IMainViewContainerViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\IPreviousDayViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\ISmallHistoryDayViewModelContainer.cs" />
+    <Compile Include="ViewModels\Interfaces\IViewModelFactory.cs" />
     <Compile Include="ViewModels\MainContainerViewModel.cs" />
     <Compile Include="ViewModels\MainViewContainerViewModel.cs" />
     <Compile Include="ViewModels\PreviousDayViewModel.cs" />
+    <Compile Include="ViewModels\SmallHistoryDayViewModel.cs" />
+    <Compile Include="ViewModels\SmallHistoryDayViewModelContainer.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="ViewModels\ViewModelFactory.cs" />
+    <Compile Include="Views\AddNewGoal.xaml.cs">
+      <DependentUpon>AddNewGoal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CompleteGoalItemView.xaml.cs">
+      <DependentUpon>CompleteGoalItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Converters\BaseConverter.cs" />
+    <Compile Include="Views\Converters\GoalItemBackgroundConverter.cs" />
     <Compile Include="Views\CurrentDayView.xaml.cs">
       <DependentUpon>CurrentDayView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CurrentListView.xaml.cs">
       <DependentUpon>CurrentListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DayHistoryView.xaml.cs">
+      <DependentUpon>DayHistoryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DayHistoryWeekView.xaml.cs">
+      <DependentUpon>DayHistoryWeekView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DialogView.xaml.cs">
+      <DependentUpon>DialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditGoalItemView.xaml.cs">
+      <DependentUpon>EditGoalItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GoalItemView.xaml.cs">
+      <DependentUpon>GoalItemView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainContainer.xaml.cs">
       <DependentUpon>MainContainer.xaml</DependentUpon>
@@ -142,6 +193,12 @@
     </Compile>
     <Compile Include="Views\PreviousDayView.xaml.cs">
       <DependentUpon>PreviousDayView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SmallHistoryDayView.xaml.cs">
+      <DependentUpon>SmallHistoryDayView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SmallHistoryDayViewContainer.xaml.cs">
+      <DependentUpon>SmallHistoryDayViewContainer.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -155,11 +212,39 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\AddNewGoal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CompleteGoalItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CurrentDayView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\CurrentListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DayHistoryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DayHistoryWeekView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditGoalItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GoalItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -172,6 +257,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PreviousDayView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SmallHistoryDayView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SmallHistoryDayViewContainer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -202,7 +295,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
