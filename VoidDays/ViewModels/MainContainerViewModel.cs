@@ -31,8 +31,8 @@ namespace VoidDays.ViewModels
             HistoryCommand = new ActionCommand(ShowHistory);
             CurrentDayCommand = new ActionCommand(ShowCurrentDay);
         }
-        public ICommand HistoryCommand { get; }
-        public ICommand CurrentDayCommand { get; }
+        public ICommand HistoryCommand { get; set; }
+        public ICommand CurrentDayCommand { get; set; }
         private void SetupTimer()
         {
             _settings = _adminService.GetSettings();

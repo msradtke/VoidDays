@@ -8,6 +8,8 @@ using VoidDays.Models;
 using VoidDays.ViewModels.Interfaces;
 using System.Collections.ObjectModel;
 using PropertyChanged;
+using Prism.Events;
+using VoidDays.ViewModels.Events;
 namespace VoidDays.ViewModels
 {
     [ImplementPropertyChanged]
@@ -19,11 +21,16 @@ namespace VoidDays.ViewModels
         const int _previousDayCount = 7;
         int _firstDay;
         int _endDay;
-        public SmallHistoryDayViewModelContainer(IAdminService adminService, IViewModelFactory viewModelFactory)
+        IEventAggregator _eventAggregator;
+        public SmallHistoryDayViewModelContainer(IAdminService adminService, IViewModelFactory viewModelFactory, IEventAggregator eventAggregator)
         {
             _adminService = adminService;
             _viewModelFactory = viewModelFactory;
             _currentStoredDay = _adminService.GetCurrentStoredDay();
+
+            _eventAggregator = eventAggregator;
+            _eventAggregator.GetEvent<NextDayEvent>().Subscribe(NextDayEventHandler);
+
             SmallHistoryDayViewModels = new ObservableCollection<object>();
             Days = new List<Day>();
             GetPreviousDays();
@@ -38,7 +45,11 @@ namespace VoidDays.ViewModels
             _endDay = _currentStoredDay.DayNumber - 1;
             Days = _adminService.GetDaysByDayNumber(_firstDay, _endDay);
         }
-
+        private void NextDayEventHandler(Day NextDay)
+        {
+            GetPreviousDays();
+            SetSmallHistoryDayViewModels();
+        }
         private void SetSmallHistoryDayViewModels()
         {
             for(int i = _firstDay; i<= _endDay; ++i)

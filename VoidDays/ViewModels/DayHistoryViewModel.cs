@@ -8,6 +8,8 @@ using VoidDays.Services.Interfaces;
 using VoidDays.Models;
 using VoidDays.ViewModels.Interfaces;
 using System.Collections.ObjectModel;
+using Prism.Events;
+using VoidDays.ViewModels.Events;
 namespace VoidDays.ViewModels
 {
     [ImplementPropertyChanged]
@@ -15,11 +17,15 @@ namespace VoidDays.ViewModels
     {
         IAdminService _adminService;
         IViewModelFactory _viewModelFactory;
-        public DayHistoryViewModel(IAdminService adminService, IViewModelFactory viewModelFactory)
+        IEventAggregator _eventAggregator;
+        public DayHistoryViewModel(IEventAggregator eventAggregator, IAdminService adminService, IViewModelFactory viewModelFactory)
         {
             _adminService = adminService;
             _viewModelFactory = viewModelFactory;
             AllDays = _adminService.GetAllDays();
+            _eventAggregator = eventAggregator;
+
+            _eventAggregator.GetEvent<NextDayEvent>().Subscribe(NextDayEventHandler);
         }
         public List<Day> AllDays { get; set; }
         public List<List<Day>> Weeks { get; set; }
@@ -31,6 +37,10 @@ namespace VoidDays.ViewModels
             WeekViewModelAggregates = new ObservableCollection<WeekViewModelAggregate>();
             GetWeeks();
             CreateWeekViewModels();
+        }
+        private void NextDayEventHandler(Day nextDay)
+        {
+            Initialize();
         }
         private void GetWeeks()
         {
