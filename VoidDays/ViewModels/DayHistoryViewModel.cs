@@ -40,7 +40,11 @@ namespace VoidDays.ViewModels
         }
         private void NextDayEventHandler(Day nextDay)
         {
-            Initialize();
+            App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+            {
+                Initialize();
+            });
+            
         }
         private void GetWeeks()
         {

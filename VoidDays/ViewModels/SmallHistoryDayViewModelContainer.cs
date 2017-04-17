@@ -47,8 +47,12 @@ namespace VoidDays.ViewModels
         }
         private void NextDayEventHandler(Day NextDay)
         {
-            GetPreviousDays();
-            SetSmallHistoryDayViewModels();
+            App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+            {
+                GetPreviousDays();
+                SetSmallHistoryDayViewModels();
+            });
+
         }
         private void SetSmallHistoryDayViewModels()
         {
