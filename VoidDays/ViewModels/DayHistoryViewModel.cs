@@ -22,7 +22,7 @@ namespace VoidDays.ViewModels
         {
             _adminService = adminService;
             _viewModelFactory = viewModelFactory;
-            AllDays = _adminService.GetAllDays();
+            
             _eventAggregator = eventAggregator;
 
             _eventAggregator.GetEvent<NextDayEvent>().Subscribe(NextDayEventHandler);
@@ -33,6 +33,7 @@ namespace VoidDays.ViewModels
 
         public void Initialize()
         {
+            AllDays = _adminService.GetAllDays();
             Weeks = new List<List<Day>>();
             WeekViewModelAggregates = new ObservableCollection<WeekViewModelAggregate>();
             GetWeeks();
@@ -104,7 +105,7 @@ namespace VoidDays.ViewModels
             return dt.AddDays(-1 * diff).Date;
         }
     }
-
+    [ImplementPropertyChanged]
     public class WeekViewModelAggregate
     {
         public object WeekViewModel { get; set; }
