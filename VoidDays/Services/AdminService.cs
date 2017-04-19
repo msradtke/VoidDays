@@ -214,7 +214,7 @@ namespace VoidDays.Services
             Day currentStoredDay = GetCurrentStoredDay();
 
             
-            if (_currentDay.DayNumber < currentStoredDay.DayNumber)
+            if (_currentDay.DayNumber == currentStoredDay.DayNumber)
             {
                 var day = SyncToCurrentDay(currentStoredDay);
 
