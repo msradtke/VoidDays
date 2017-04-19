@@ -48,6 +48,7 @@ namespace VoidDays.ViewModels
         {
             App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
             {
+                _currentStoredDay = _adminService.GetCurrentStoredDay();
                 GetPreviousDays();
                 SetSmallHistoryDayViewModels();
             });
