@@ -16,6 +16,7 @@ namespace VoidDays.Services.Interfaces
         Day GetNextDay(Day day);
         List<Day> GetDaysByDayNumber(int start, int end);
         List<Day> GetAllDays();
+        Timer SetupTimer(Day currentDay, TimeSpan alertTime);
         Timer SetUpTimer(TimeSpan alertTime);
         Settings GetSettings();
         Day SyncToCurrentDay(Day currentStoredDay);

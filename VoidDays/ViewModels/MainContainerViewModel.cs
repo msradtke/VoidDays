@@ -17,7 +17,6 @@ namespace VoidDays.ViewModels
         IAdminService _adminService;
         Timer _timer;
         Settings _settings;
-        IEventAggregator _eventAggregator;
         public MainContainerViewModel(IEventAggregator eventAggregator,ISmallHistoryDayViewModelContainer smallHistoryDayViewModelContainer, IMainViewContainerViewModel mainViewContainerViewModel, IDayHistoryViewModel dayHistoryViewModel, IAdminService adminService)
         {
             _eventAggregator = eventAggregator;

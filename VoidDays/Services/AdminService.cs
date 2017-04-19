@@ -185,8 +185,10 @@ namespace VoidDays.Services
         }
 
         private Timer timer;
-        public Timer SetUpTimer(TimeSpan alertTime)
+        private Day _currentDay;
+        public Timer SetupTimer(Day currentDay, TimeSpan alertTime)
         {
+            _currentDay = currentDay;
             DateTime current = DateTime.UtcNow;
             TimeSpan timeToGo = alertTime - current.TimeOfDay;
             if (timeToGo < TimeSpan.Zero)
@@ -201,13 +203,26 @@ namespace VoidDays.Services
             return timer;
         }
 
+        public Timer SetUpTimer(TimeSpan alertTime)
+        {
+            return SetupTimer(GetCurrentStoredDay(), alertTime);
+        }
+
         private void NextDayHandler()
         {
-            timer = SetUpTimer(new TimeSpan(24, 0, 0));
-            var day = SyncToCurrentDay(GetCurrentStoredDay());
+            //check if other client already next dayed
+            Day currentStoredDay = GetCurrentStoredDay();
 
-            _eventAggregator.GetEvent<NextDayEvent>().Publish(day);
-            //need to set next day here
+            
+            if (_currentDay.DayNumber < currentStoredDay.DayNumber)
+            {
+                var day = SyncToCurrentDay(currentStoredDay);
+
+                _eventAggregator.GetEvent<NextDayEvent>().Publish(day);
+                //need to set next day here
+            }
+            _currentDay = currentStoredDay;
+            timer = SetupTimer(currentStoredDay, new TimeSpan(24, 0, 0));
         }
     }
 }
