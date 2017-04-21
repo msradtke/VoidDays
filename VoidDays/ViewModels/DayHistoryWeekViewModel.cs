@@ -34,8 +34,6 @@ namespace VoidDays.ViewModels
             {
                 var dayOfWeek = (DayOfWeek)i;
                 day = Days.FirstOrDefault(x => x.Start.DayOfWeek == dayOfWeek);
-                if (day == null)
-                    day = null;
 
                 var vm = _viewModelFactory.CreateSmallHistoryDayViewModel(day);
                 var dayvm = new DayViewModelAggregate { DayName = dayOfWeek.ToString(), DayViewModel = vm };

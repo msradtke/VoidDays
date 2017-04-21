@@ -20,6 +20,7 @@ namespace VoidDays.Services
         IRepositoryBase<Goal> _goalRepository;
         IUnitOfWork _unitOfWork;
         IEventAggregator _eventAggregator;
+        Settings _settings;
         public AdminService(IUnitOfWork unitOfWork, IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
@@ -29,6 +30,7 @@ namespace VoidDays.Services
             _goalItemRepository = _unitOfWork.GoalItemRepository;
             _settingsRepository = _unitOfWork.SettingsRepository;
             _goalRepository = _unitOfWork.GoalRepository;
+            _settings = GetSettings();
         }
 
         public bool CheckForCurrentDay(Day currentStoredDay, out Day day)
@@ -211,9 +213,7 @@ namespace VoidDays.Services
         private void NextDayHandler()
         {
             //check if other client already next dayed
-            Day currentStoredDay = GetCurrentStoredDay();
-
-            
+            Day currentStoredDay = GetCurrentStoredDay();            
             if (_currentDay.DayNumber == currentStoredDay.DayNumber)
             {
                 var day = SyncToCurrentDay(currentStoredDay);
@@ -222,7 +222,9 @@ namespace VoidDays.Services
                 //need to set next day here
             }
             _currentDay = currentStoredDay;
-            timer = SetupTimer(currentStoredDay, new TimeSpan(24, 0, 0));
+            timer = SetupTimer(currentStoredDay, _settings.EndTime);
+
+            //if asleep for multiple days?!!?
         }
     }
 }
