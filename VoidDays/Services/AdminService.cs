@@ -114,28 +114,33 @@ namespace VoidDays.Services
 
         public Day SyncToCurrentDay(Day currentStoredDay)
         {
-            //complete this day, foreach goalitem on this day not completed, void
-            var goalItems = GetGoalItemsByDayNumber(currentStoredDay.DayNumber).ToList();
-            foreach (var item in goalItems)
-            {
-                if (item.IsComplete == false)
-                {
-                    item.IsVoid = true;
-                    currentStoredDay.IsVoid = true;
-                }
-                SaveGoalItem(item);
-            }
-            currentStoredDay.IsActive = false;
-
-            var nextDay = CreateNextDay(currentStoredDay);
-
-            CreateAllGoalItems(nextDay.DayNumber);
             Day current;
-            if (!CheckForCurrentDay(nextDay, out current))
+            if (!CheckForCurrentDay(currentStoredDay, out current))
             {
-                SyncToCurrentDay(current);
+                //complete this day, foreach goalitem on this day not completed, void
+                var goalItems = GetGoalItemsByDayNumber(currentStoredDay.DayNumber).ToList();
+                foreach (var item in goalItems)
+                {
+                    if (item.IsComplete == false)
+                    {
+                        item.IsVoid = true;
+                        currentStoredDay.IsVoid = true;
+                    }
+                    SaveGoalItem(item);
+                }
+                currentStoredDay.IsActive = false;
+
+                var nextDay = CreateNextDay(currentStoredDay);
+
+                CreateAllGoalItems(nextDay.DayNumber);
+
+                if (!CheckForCurrentDay(nextDay, out current))
+                {
+                    SyncToCurrentDay(current);
+                }
+                return nextDay;
             }
-            return nextDay;
+            return null;
         }
         public void CreateAllGoalItems(int dayNumber)
         {
@@ -213,16 +218,16 @@ namespace VoidDays.Services
         private void NextDayHandler()
         {
             //check if other client already next dayed
-            Day currentStoredDay = GetCurrentStoredDay();            
-            if (_currentDay.DayNumber == currentStoredDay.DayNumber)
-            {
-                var day = SyncToCurrentDay(currentStoredDay);
+            Day currentStoredDay = GetCurrentStoredDay(); //day in db
+            Day updatedDay = SyncToCurrentDay(currentStoredDay); //day is the new updated day
 
-                _eventAggregator.GetEvent<NextDayEvent>().Publish(day);
-                //need to set next day here
+            if(updatedDay != null ) //actually updated the day, null if no update
+            {
+                _currentDay = updatedDay;
+                _eventAggregator.GetEvent<NextDayEvent>().Publish(updatedDay);
             }
-            _currentDay = currentStoredDay;
-            timer = SetupTimer(currentStoredDay, _settings.EndTime);
+
+            timer = SetupTimer(_currentDay, _settings.EndTime);
 
             //if asleep for multiple days?!!?
         }
