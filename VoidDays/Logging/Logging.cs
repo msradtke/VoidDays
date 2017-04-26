@@ -19,16 +19,18 @@ namespace VoidDays.Logging
             
             using (var sw = OpenCreateLogFile("DBLog.txt"))
             {
-                
-                sw.WriteLine(DateTime.Now.ToString() + message);
+                var msg = DateTime.Now.ToString()+ ": " + message;
+                sw.WriteLine(msg);
             }
         }
 
         public static void GeneralLog(string message)
         {
+            
             using (var sw = OpenCreateLogFile("GeneralLog.txt"))
             {
-                sw.WriteLine(message);
+                var msg = DateTime.Now.ToString() + ": " + message;
+                sw.WriteLine(msg);
             }
         }
         static StreamWriter OpenCreateLogFile(string name)
