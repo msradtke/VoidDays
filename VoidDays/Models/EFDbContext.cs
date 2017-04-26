@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using VoidDays.Models.Interfaces;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using VoidDays.Logging;
+
 namespace VoidDays.Models
 {
     public class EFDbContext : DbContext, IDbContext
@@ -19,7 +21,8 @@ namespace VoidDays.Models
         public EFDbContext()
             :base ("VoidDaysContext")
         {
-            this.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
+            
+            this.Database.Log = s => Log.DBLog(s);
             Database.SetInitializer<EFDbContext>(null);
             this.Configuration.LazyLoadingEnabled = true;
         }
@@ -30,9 +33,7 @@ namespace VoidDays.Models
             modelBuilder.Entity<Day>().ToTable("days");
             modelBuilder.Entity<GoalItemsCreated>().ToTable("goal_items_created");
             modelBuilder.Entity<Settings>().ToTable("settings");
-            modelBuilder.Entity<GoalItem>().HasRequired(x => x.Goal);
-
-            
+            modelBuilder.Entity<GoalItem>().HasRequired(x => x.Goal);            
         }
         public DbSet<TEntity> GetDbSet<TEntity>() where TEntity : class
         {

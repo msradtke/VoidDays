@@ -9,6 +9,8 @@ using VoidDays.Models;
 using System.Threading;
 using VoidDays.ViewModels.Events;
 using Prism.Events;
+using VoidDays.Logging;
+
 namespace VoidDays.Services
 {
     public class AdminService : IAdminService
@@ -195,6 +197,9 @@ namespace VoidDays.Services
         private Day _currentDay;
         public Timer SetupTimer(Day currentDay, TimeSpan alertTime)
         {
+            Log.GeneralLog(String.Format("SetupTimer, current day = {0}", currentDay.DayNumber));
+            Log.GeneralLog(String.Format("SetupTimer, alertTime = {0}", alertTime.ToString()));
+
             _currentDay = currentDay;
             DateTime current = DateTime.UtcNow;
             TimeSpan timeToGo = alertTime - current.TimeOfDay;
@@ -217,18 +222,22 @@ namespace VoidDays.Services
 
         private void NextDayHandler()
         {
+            Log.GeneralLog("NextDayHandler");
             //check if other client already next dayed
             Day currentStoredDay = GetCurrentStoredDay(); //day in db
             Day updatedDay = SyncToCurrentDay(currentStoredDay); //day is the new updated day
 
             if(updatedDay != null ) //actually updated the day, null if no update
             {
+
                 _currentDay = updatedDay;
                 _eventAggregator.GetEvent<NextDayEvent>().Publish(updatedDay);
+                Log.GeneralLog("Published next day event");
             }
 
             timer = SetupTimer(_currentDay, _settings.EndTime);
-
+            Log.GeneralLog(String.Format("setup timer, current day = {0}", _currentDay.DayNumber));
+            Log.GeneralLog(String.Format("setup timer, EndTime = {0}", _settings.EndTime.ToString()));
             //if asleep for multiple days?!!?
         }
     }

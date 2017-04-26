@@ -111,6 +111,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Logging\Logging.cs" />
     <Compile Include="Models\Day.cs" />
     <Compile Include="Models\EFDbContext.cs" />
     <Compile Include="Models\Goal.cs" />
