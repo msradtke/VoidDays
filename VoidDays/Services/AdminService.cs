@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using VoidDays.Services.Interfaces;
 using VoidDays.Models.Interfaces;
 using VoidDays.Models;
-using System.Threading;
+using System.Timers;
 using VoidDays.ViewModels.Events;
 using Prism.Events;
 using VoidDays.Logging;
@@ -187,12 +187,10 @@ namespace VoidDays.Services
             var settings = _settingsRepository.Get().FirstOrDefault();
             return settings;
         }
-
         public Day GetNextDay(Day day)
         {
             return _dayRepository.Get(x => x.DayNumber == day.DayNumber + 1).LastOrDefault();
         }
-
         private Timer timer;
         private Day _currentDay;
         public Timer SetupTimer(Day currentDay, TimeSpan alertTime)
@@ -208,20 +206,20 @@ namespace VoidDays.Services
                 SetUpTimer(alertTime.Add(new TimeSpan(24, 0, 0)));
                 return timer;//time already passed
             }
-            this.timer = new Timer(x =>
-            {
-                this.NextDayHandler();
-            }, null, timeToGo, Timeout.InfiniteTimeSpan);
+
+            var t = new System.Timers.Timer();
+            this.timer = new Timer(timeToGo.Milliseconds);
+            this.timer.AutoReset = true;
+            timer.Elapsed += NextDayHandler;
+            
             return timer;
         }
-
         public Timer SetUpTimer(TimeSpan alertTime)
         {
             return SetupTimer(GetCurrentStoredDay(), alertTime);
         }
-
-        private void NextDayHandler()
-        {
+        private void NextDayHandler(object o, ElapsedEventArgs e)
+        {            
             Log.GeneralLog("NextDayHandler");
             //check if other client already next dayed
             Day currentStoredDay = GetCurrentStoredDay(); //day in db

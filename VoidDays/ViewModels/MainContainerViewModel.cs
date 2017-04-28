@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using VoidDays.ViewModels.Interfaces;
 using VoidDays.Services.Interfaces;
 using System.Windows.Input;
-using System.Threading;
+using System.Timers;
 using VoidDays.Models;
 using Prism.Events;
 using VoidDays.ViewModels.Events;
