@@ -38,24 +38,26 @@ namespace VoidDays.ViewModels
         public LoadingViewModel LoadingViewModel { get; set; }
         public void Initialize()
         {
-            IsLoading = true;
-            //AllDays = _adminService.GetAllDays();
-            Weeks = new List<List<Day>>();
-            WeekViewModelAggregates = new ObservableCollection<WeekViewModelAggregate>();
-            Task.Factory.StartNew
-                (() =>
-                {
-                    AllDays = _adminService.GetAllDays();
-                    Weeks = new List<List<Day>>();
-                    Weeks = new List<List<Day>>();
-                    WeekViewModelAggregates = new ObservableCollection<WeekViewModelAggregate>();
-                    GetWeeks();
-                    CreateWeekViewModels();
+            if (IsLoading == false)
+            {
+                IsLoading = true;
+                //AllDays = _adminService.GetAllDays();
+                Weeks = new List<List<Day>>();
+                WeekViewModelAggregates = new ObservableCollection<WeekViewModelAggregate>();
+                Task.Factory.StartNew
+                    (() =>
+                    {
+                        AllDays = _adminService.GetAllDays();
+                        Weeks = new List<List<Day>>();
+                        Weeks = new List<List<Day>>();
+                        WeekViewModelAggregates = new ObservableCollection<WeekViewModelAggregate>();
+                        GetWeeks();
+                        CreateWeekViewModels();
                     //System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(5000));
                 }
-                )
-                .ContinueWith(x => IsLoading = false);
-                
+                    )
+                    .ContinueWith(x => IsLoading = false);
+            }
             //GetWeeks();
             //CreateWeekViewModels();
         }

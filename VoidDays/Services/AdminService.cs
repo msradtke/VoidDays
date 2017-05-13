@@ -28,13 +28,17 @@ namespace VoidDays.Services
             _eventAggregator = eventAggregator;
             _unitOfWork = unitOfWork;
             _dayRepository = _unitOfWork.DayRepository;
+            
+        }
+
+        public void Initialize()
+        {
             _goalItemsCreatedRepository = _unitOfWork.GoalItemsCreatedRepository;
             _goalItemRepository = _unitOfWork.GoalItemRepository;
             _settingsRepository = _unitOfWork.SettingsRepository;
             _goalRepository = _unitOfWork.GoalRepository;
             _settings = GetSettings();
         }
-
         public bool CheckForCurrentDay(Day currentStoredDay, out Day day)
         {
             day = currentStoredDay;

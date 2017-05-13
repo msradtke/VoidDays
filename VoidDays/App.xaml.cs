@@ -25,6 +25,7 @@ namespace VoidDays
     public partial class App : Application
     {
         private IKernel container;
+        private MainContainer MainContainer;
         protected override void OnStartup(StartupEventArgs e)
         {
 
@@ -35,15 +36,17 @@ namespace VoidDays
             //Current.MainWindow = this.container.Get<Splash>();
             //Current.MainWindow.Show();
 
-            Task.Factory.StartNew(() =>
-            {
-
-            });
 
             ComposeObjects();
             Current.MainWindow.Show();
-            var _startupService = this.container.Get<IStartupService>();
-            _startupService.Initialize();
+            
+            Task.Factory.StartNew(() =>
+           {
+               //MainContainer.MainContainerViewModel.Initialize();
+               var _startupService = this.container.Get<IStartupService>();
+               _startupService.Initialize();
+           }
+            );
             
            
 
@@ -68,17 +71,18 @@ namespace VoidDays
             container.Bind<ISmallHistoryDayViewModelContainer>().To<SmallHistoryDayViewModelContainer>().InTransientScope();
             container.Bind<IDayHistoryViewModel>().To<DayHistoryViewModel>().InTransientScope();
 
-            container.Bind<IGoalService>().To<GoalService>().InSingletonScope();
+            container.Bind<IGoalService>().To<GoalService>().InTransientScope();
             container.Bind<IDialogService>().To<DialogService>().InSingletonScope();
-            container.Bind<IStartupService>().To<StartupService>().InSingletonScope();
-            container.Bind<IAdminService>().To<AdminService>().InSingletonScope();
+            container.Bind<IStartupService>().To<StartupService>().InTransientScope();
+            container.Bind<IAdminService>().To<AdminService>().InTransientScope();
             container.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
             container.Bind(typeof(IRepositoryBase<>)).To(typeof(RepositoryBase<>)).InTransientScope();
         }
 
         private void ComposeObjects()
         {
-            Current.MainWindow = this.container.Get<MainContainer>();
+            MainContainer = this.container.Get<MainContainer>();
+            Current.MainWindow = MainContainer;
             Current.MainWindow.Title = "VoidDays";
         }
     }

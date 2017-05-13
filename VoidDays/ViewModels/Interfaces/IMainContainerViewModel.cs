@@ -8,5 +8,6 @@ namespace VoidDays.ViewModels.Interfaces
 {
     public interface IMainContainerViewModel
     {
+        void Initialize();
     }
 }

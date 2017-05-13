@@ -7,7 +7,35 @@
         mc:Ignorable="d"
         Title="MainContainer" Height="600" Width="700">
     <Grid>
-        <Grid.RowDefinitions>
+        <Grid>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsLoading}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <ContentControl  Content="{Binding LoadingViewModel}"/>
+        </Grid>
+        <Grid>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsLoading}" Value="False">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Grid.RowDefinitions>
 
             <RowDefinition Height="Auto"/>
 
@@ -23,6 +51,6 @@
         <StackPanel Grid.Row="2">
             <ContentControl Content="{Binding SmallHistoryDayViewModelContainer}"/>
         </StackPanel>
-
+</Grid>
     </Grid>
 </Window>

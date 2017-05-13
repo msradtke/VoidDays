@@ -20,5 +20,6 @@ namespace VoidDays.Services.Interfaces
         Timer SetUpTimer(TimeSpan alertTime);
         Settings GetSettings();
         Day SyncToCurrentDay(Day currentStoredDay);
+        void Initialize();
     }
 }

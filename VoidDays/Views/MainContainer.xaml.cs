@@ -22,9 +22,10 @@ namespace VoidDays.Views
     {
         public MainContainer(IMainContainerViewModel mainContainerViewModel)
         {
-            var vm = mainContainerViewModel;
-            this.DataContext = vm;
+            MainContainerViewModel = mainContainerViewModel;
+            this.DataContext = MainContainerViewModel;
             InitializeComponent();
         }
+        public IMainContainerViewModel MainContainerViewModel;
     }
 }

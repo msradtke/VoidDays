@@ -17,22 +17,51 @@ namespace VoidDays.ViewModels
         IAdminService _adminService;
         Timer _timer;
         Settings _settings;
-        public MainContainerViewModel(IEventAggregator eventAggregator,ISmallHistoryDayViewModelContainer smallHistoryDayViewModelContainer, IMainViewContainerViewModel mainViewContainerViewModel, IDayHistoryViewModel dayHistoryViewModel, IAdminService adminService)
+        Lazy<ISmallHistoryDayViewModelContainer> _lazySmallHistoryDayViewModelContainer;
+        Lazy<IMainViewContainerViewModel> _lazyMainViewContainerViewModel;
+        Lazy<IDayHistoryViewModel> _lazyDayHistoryViewModel;
+
+        public MainContainerViewModel(IEventAggregator eventAggregator, Lazy<ISmallHistoryDayViewModelContainer> smallHistoryDayViewModelContainer, Lazy<IMainViewContainerViewModel> mainViewContainerViewModel, Lazy<IDayHistoryViewModel> dayHistoryViewModel, IAdminService adminService)
         {
+            LoadingViewModel = new LoadingViewModel();
             _eventAggregator = eventAggregator;
             _adminService = adminService;
-            SmallHistoryDayViewModelContainer = smallHistoryDayViewModelContainer;
-            MainViewContainerViewModel = mainViewContainerViewModel;
-            DayHistoryViewModel = dayHistoryViewModel;
-            SetupTimer();
+            _lazySmallHistoryDayViewModelContainer = smallHistoryDayViewModelContainer;
+            _lazyMainViewContainerViewModel = mainViewContainerViewModel;
+            _lazyDayHistoryViewModel = dayHistoryViewModel;
 
 
-            CurrentView = MainViewContainerViewModel;
+
+
             HistoryCommand = new ActionCommand(ShowHistory);
             CurrentDayCommand = new ActionCommand(ShowCurrentDay);
+            IsLoading = false;
+            Initialize();
         }
         public ICommand HistoryCommand { get; set; }
         public ICommand CurrentDayCommand { get; set; }
+        public void Initialize()
+        {
+            if (!IsLoading)
+            {
+                IsLoading = true;
+                Task.Factory.StartNew(() =>
+                {
+                    MainViewContainerViewModel = _lazyMainViewContainerViewModel.Value;
+
+                    _adminService.Initialize();
+                    SmallHistoryDayViewModelContainer = _lazySmallHistoryDayViewModelContainer.Value;
+                    DayHistoryViewModel = _lazyDayHistoryViewModel.Value;
+                    SetupTimer();
+                    CurrentView = MainViewContainerViewModel;
+                    IsLoading = false;
+                });
+                
+                
+            }
+
+
+        }
         private void SetupTimer()
         {
             _settings = _adminService.GetSettings();
@@ -53,5 +82,7 @@ namespace VoidDays.ViewModels
         public IMainViewContainerViewModel MainViewContainerViewModel { get; private set; }
         public object SmallHistoryDayViewModelContainer { get; private set; }
         public IDayHistoryViewModel DayHistoryViewModel { get; set; }
+        public bool IsLoading { get; set; }
+        public LoadingViewModel LoadingViewModel {get;set;}
     }
 }

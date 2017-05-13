@@ -75,30 +75,33 @@ namespace VoidDays.ViewModels
         #endregion
         public void SetDay(Day day)
         {
-            IsLoading = true;
-            Task.Factory.StartNew(() =>
-                {
-
-                    CurrentDay = day;
-                    GetCurrentGoalItems();
-                    App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+            if (IsLoading == false)
+            {
+                IsLoading = true;
+                Task.Factory.StartNew(() =>
                     {
-                        SetCurrentGoalItemViewModels();
-                    });
 
-                    UpdateCurrentDayStatus();
-                    SetPreviousDayStatus();
+                        CurrentDay = day;
+                        GetCurrentGoalItems();
+                        App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                        {
+                            SetCurrentGoalItemViewModels();
+                        });
 
-                    NextDay = _adminService.GetNextDay(CurrentDay);
-                    IsForwardEnabled = NextDay == null ? false : true;
-                    PreviousDay = _adminService.GetPreviousDay(CurrentDay);
-                    IsBackEnabled = PreviousDay == null ? false : true;
+                        UpdateCurrentDayStatus();
+                        SetPreviousDayStatus();
 
-                    IsToday = CurrentDay == Today ? true : false;
-                }
-            )
-            .ContinueWith(x => IsLoading = false);
-            
+                        NextDay = _adminService.GetNextDay(CurrentDay);
+                        IsForwardEnabled = NextDay == null ? false : true;
+                        PreviousDay = _adminService.GetPreviousDay(CurrentDay);
+                        IsBackEnabled = PreviousDay == null ? false : true;
+
+                        IsToday = CurrentDay == Today ? true : false;
+                    }
+                )
+                .ContinueWith(x => IsLoading = false);
+            }
+
         }
         private void GoalItemDeletedHandler(GoalItem goalItem)
         {
@@ -106,11 +109,11 @@ namespace VoidDays.ViewModels
             CurrentGoalItems.Remove(goalItem);
             SetCurrentGoalItemViewModels();
         }
-        private void SetDayToTodayHandler()  
+        private void SetDayToTodayHandler()
         {
-            if(CurrentDay != Today)
+            if (CurrentDay != Today)
                 SetDay(Today);
-            
+
         }
         private void NextDayEventHandler(Day day)//from timer, means completely new day
         {
@@ -183,7 +186,7 @@ namespace VoidDays.ViewModels
             }
             else
                 _eventAggregator.GetEvent<PreviousDayStatusEvent>().Publish(null);
-            
+
         }
         private void HandleGoalStatusChange(GoalItem goalItem)
         {
