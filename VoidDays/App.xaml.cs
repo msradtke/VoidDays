@@ -16,6 +16,7 @@ using VoidDays.ViewModels.Interfaces;
 using VoidDays.Services.Interfaces;
 using VoidDays.Services;
 using Prism.Events;
+using VoidDays.Resources;
 namespace VoidDays
 {
     /// <summary>
@@ -30,13 +31,23 @@ namespace VoidDays
             Database.SetInitializer<DbContext>(null);
             base.OnStartup(e);
             ConfigureContainer();
-            
 
-            var _startupService = this.container.Get<IStartupService>();
-            _startupService.Initialize();
+            //Current.MainWindow = this.container.Get<Splash>();
+            //Current.MainWindow.Show();
+
+            Task.Factory.StartNew(() =>
+            {
+
+            });
 
             ComposeObjects();
             Current.MainWindow.Show();
+            var _startupService = this.container.Get<IStartupService>();
+            _startupService.Initialize();
+            
+           
+
+
         }
 
         private void ConfigureContainer()

@@ -27,6 +27,7 @@ namespace VoidDays.ViewModels
         IEventAggregator _eventAggregator;
         public CurrentListViewModel(IEventAggregator eventAggregator, IUnitOfWork unitOfWork, IGoalService goalService, IViewModelFactory viewModelFactory, IDialogService dialogService, IAdminService adminService)
         {
+            LoadingViewModel = new LoadingViewModel();
             _goalService = goalService;
             _unitOfWork = unitOfWork;
             _goalRepository = _unitOfWork.GoalRepository;
@@ -69,27 +70,35 @@ namespace VoidDays.ViewModels
         public bool IsBackEnabled { get; set; }
         public bool IsForwardEnabled { get; set; }
         public bool IsToday { get; set; }
+        public bool IsLoading { get; set; }
+        public LoadingViewModel LoadingViewModel { get; set; }
         #endregion
         public void SetDay(Day day)
         {
+            IsLoading = true;
+            Task.Factory.StartNew(() =>
+                {
+
+                    CurrentDay = day;
+                    GetCurrentGoalItems();
+                    App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                    {
+                        SetCurrentGoalItemViewModels();
+                    });
+
+                    UpdateCurrentDayStatus();
+                    SetPreviousDayStatus();
+
+                    NextDay = _adminService.GetNextDay(CurrentDay);
+                    IsForwardEnabled = NextDay == null ? false : true;
+                    PreviousDay = _adminService.GetPreviousDay(CurrentDay);
+                    IsBackEnabled = PreviousDay == null ? false : true;
+
+                    IsToday = CurrentDay == Today ? true : false;
+                }
+            )
+            .ContinueWith(x => IsLoading = false);
             
-            CurrentDay = day;
-            GetCurrentGoalItems();
-            App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
-            {
-                SetCurrentGoalItemViewModels();
-            });
-            
-            UpdateCurrentDayStatus();
-            SetPreviousDayStatus();
-
-            NextDay = _adminService.GetNextDay(CurrentDay);
-            IsForwardEnabled = NextDay == null ? false : true;
-            PreviousDay = _adminService.GetPreviousDay(CurrentDay);
-            IsBackEnabled = PreviousDay == null ? false : true;
-
-            IsToday = CurrentDay == Today ? true : false;
-
         }
         private void GoalItemDeletedHandler(GoalItem goalItem)
         {

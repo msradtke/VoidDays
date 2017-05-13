@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:VoidDays"
              xmlns:viewmodels="clr-namespace:VoidDays.ViewModels"
              xmlns:views="clr-namespace:VoidDays.Views"
+             xmlns:res="clr-namespace:VoidDays.Resources"
              >
 
     <Application.Resources>
@@ -14,7 +15,9 @@
         <Style TargetType="Button">
             <Setter Property="Margin" Value="2"/>
         </Style>
-
+        <DataTemplate DataType="{x:Type viewmodels:LoadingViewModel}">
+            <res:Loading/>
+        </DataTemplate>
         <DataTemplate DataType="{x:Type viewmodels:DayHistoryWeekViewModel}">
             <views:DayHistoryWeekView/>
         </DataTemplate>

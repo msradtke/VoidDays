@@ -21,11 +21,12 @@ namespace VoidDays.ViewModels
         {
             _eventAggregator = eventAggregator;
             _adminService = adminService;
-            SetupTimer();
-
             SmallHistoryDayViewModelContainer = smallHistoryDayViewModelContainer;
             MainViewContainerViewModel = mainViewContainerViewModel;
             DayHistoryViewModel = dayHistoryViewModel;
+            SetupTimer();
+
+
             CurrentView = MainViewContainerViewModel;
             HistoryCommand = new ActionCommand(ShowHistory);
             CurrentDayCommand = new ActionCommand(ShowCurrentDay);

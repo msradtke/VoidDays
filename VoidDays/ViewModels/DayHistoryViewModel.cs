@@ -20,24 +20,44 @@ namespace VoidDays.ViewModels
         IEventAggregator _eventAggregator;
         public DayHistoryViewModel(IEventAggregator eventAggregator, IAdminService adminService, IViewModelFactory viewModelFactory)
         {
+            LoadingViewModel = new LoadingViewModel();
+
             _adminService = adminService;
             _viewModelFactory = viewModelFactory;
             
             _eventAggregator = eventAggregator;
 
             _eventAggregator.GetEvent<NextDayEvent>().Subscribe(NextDayEventHandler);
+            
         }
         public List<Day> AllDays { get; set; }
-        public List<List<Day>> Weeks { get; set; }
+        
+            public List<List<Day>> Weeks { get; set; }
         public ObservableCollection<WeekViewModelAggregate> WeekViewModelAggregates { get; set; }
-
+        public bool IsLoading { get; set; }
+        public LoadingViewModel LoadingViewModel { get; set; }
         public void Initialize()
         {
-            AllDays = _adminService.GetAllDays();
+            IsLoading = true;
+            //AllDays = _adminService.GetAllDays();
             Weeks = new List<List<Day>>();
             WeekViewModelAggregates = new ObservableCollection<WeekViewModelAggregate>();
-            GetWeeks();
-            CreateWeekViewModels();
+            Task.Factory.StartNew
+                (() =>
+                {
+                    AllDays = _adminService.GetAllDays();
+                    Weeks = new List<List<Day>>();
+                    Weeks = new List<List<Day>>();
+                    WeekViewModelAggregates = new ObservableCollection<WeekViewModelAggregate>();
+                    GetWeeks();
+                    CreateWeekViewModels();
+                    //System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(5000));
+                }
+                )
+                .ContinueWith(x => IsLoading = false);
+                
+            //GetWeeks();
+            //CreateWeekViewModels();
         }
         private void NextDayEventHandler(Day nextDay)
         {
@@ -78,7 +98,11 @@ namespace VoidDays.ViewModels
                 var vmAggr = new WeekViewModelAggregate();
                 vmAggr.WeekViewModel = _viewModelFactory.CreateDayHistoryWeekViewModel(week);
                 vmAggr.WeekName = GetWeekName(week.OrderBy(x=>x.Start).FirstOrDefault());
-                WeekViewModelAggregates.Add(vmAggr);
+                App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                {
+                    WeekViewModelAggregates.Add(vmAggr);
+                });
+                
             }
         }
 
