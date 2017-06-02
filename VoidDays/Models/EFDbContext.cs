@@ -22,7 +22,7 @@ namespace VoidDays.Models
             :base ("VoidDaysContext")
         {
             
-            this.Database.Log = s => Log.DBLog(s);
+            //this.Database.Log = s => Log.DBLog(s);
             Database.SetInitializer<EFDbContext>(null);
             this.Configuration.LazyLoadingEnabled = true;
         }

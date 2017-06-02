@@ -8,6 +8,7 @@ using VoidDays.Services.Interfaces;
 using VoidDays.Models;
 using VoidDays.ViewModels.Interfaces;
 using System.Collections.ObjectModel;
+using System.Globalization;
 namespace VoidDays.ViewModels
 {
     [ImplementPropertyChanged]
@@ -36,8 +37,17 @@ namespace VoidDays.ViewModels
                 day = Days.FirstOrDefault(x => x.Start.DayOfWeek == dayOfWeek);
 
                 var vm = _viewModelFactory.CreateSmallHistoryDayViewModel(day);
-                var dayvm = new DayViewModelAggregate { DayName = dayOfWeek.ToString(), DayViewModel = vm };
-                DayViewModelAggregates.Add(dayvm);
+
+                if (day != null)
+                {
+                    var dayvm = new DayViewModelAggregate { DayName = day.Start.ToString("ddd"), DayViewModel = vm };
+                    DayViewModelAggregates.Add(dayvm);
+                }
+                else
+                {
+                    var dayvm = new DayViewModelAggregate { DayName = CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedDayNames[i], DayViewModel = vm };
+                    DayViewModelAggregates.Add(dayvm);
+                }
             }
         }
         public List<Day> Days { get; set; }

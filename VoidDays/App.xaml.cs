@@ -46,7 +46,7 @@ namespace VoidDays
                var _startupService = this.container.Get<IStartupService>();
                _startupService.Initialize();
            }
-            );
+           );
             
            
 
