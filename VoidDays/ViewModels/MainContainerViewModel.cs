@@ -20,7 +20,7 @@ namespace VoidDays.ViewModels
         Lazy<ISmallHistoryDayViewModelContainer> _lazySmallHistoryDayViewModelContainer;
         Lazy<IMainViewContainerViewModel> _lazyMainViewContainerViewModel;
         Lazy<IDayHistoryViewModel> _lazyDayHistoryViewModel;
-
+        List<LoadingLock> _loadingLocks;
         public MainContainerViewModel(IEventAggregator eventAggregator, Lazy<ISmallHistoryDayViewModelContainer> smallHistoryDayViewModelContainer, Lazy<IMainViewContainerViewModel> mainViewContainerViewModel, Lazy<IDayHistoryViewModel> dayHistoryViewModel, IAdminService adminService)
         {
             LoadingViewModel = new LoadingViewModel();
@@ -30,8 +30,10 @@ namespace VoidDays.ViewModels
             _lazyMainViewContainerViewModel = mainViewContainerViewModel;
             _lazyDayHistoryViewModel = dayHistoryViewModel;
 
+            _eventAggregator.GetEvent<LoadingEvent>().Subscribe(LoadingEventListener);
 
 
+            _loadingLocks = new List<LoadingLock>();
 
             HistoryCommand = new ActionCommand(ShowHistory);
             CurrentDayCommand = new ActionCommand(ShowCurrentDay);
@@ -44,6 +46,9 @@ namespace VoidDays.ViewModels
         {
             if (!IsLoading)
             {
+                var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
+                AddLoadLock(loadLock);
+                
                 IsLoading = true;
                 Task.Factory.StartNew(() =>
                 {
@@ -54,13 +59,45 @@ namespace VoidDays.ViewModels
                     DayHistoryViewModel = _lazyDayHistoryViewModel.Value;
                     SetupTimer();
                     CurrentView = MainViewContainerViewModel;
-                    IsLoading = false;
+                    RemoveLoadLock(loadLock);
+
                 });
                 
                 
             }
 
 
+        }
+
+        private void AddLoadLock(LoadingLock loadLock)
+        {
+            if (loadLock.IsLoading)
+            {
+                if (!_loadingLocks.Exists(x => x.Id == loadLock.Id))
+                {
+                    _loadingLocks.Add(loadLock);
+                    IsLoading = true;
+                }
+            }
+            else
+            {
+                if (!_loadingLocks.Exists(x => x.Id == loadLock.Id))
+                    RemoveLoadLock(loadLock);
+            }
+        }
+        private void LoadingEventListener(LoadingLock loadLock)
+        {
+            if (loadLock.IsLoading == true)
+                AddLoadLock(loadLock);
+            else
+                RemoveLoadLock(loadLock);
+        }
+        private void RemoveLoadLock(LoadingLock loadlLock)
+        {
+            
+            _loadingLocks.Remove(loadlLock);
+            if (_loadingLocks.Count == 0)
+                IsLoading = false;
         }
         private void SetupTimer()
         {

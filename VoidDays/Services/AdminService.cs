@@ -23,12 +23,12 @@ namespace VoidDays.Services
         IUnitOfWork _unitOfWork;
         IEventAggregator _eventAggregator;
         Settings _settings;
+
         public AdminService(IUnitOfWork unitOfWork, IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
             _unitOfWork = unitOfWork;
             _dayRepository = _unitOfWork.DayRepository;
-            
         }
 
         public void Initialize()
@@ -102,6 +102,13 @@ namespace VoidDays.Services
             //SyncToCurrentDay(currentDay);
             return firstDay;
         }
+
+        public void SetIsLoading(LoadingLock loadLock)
+        {
+            
+            _eventAggregator.GetEvent<LoadingEvent>().Publish(loadLock);
+        }
+
 
         public List<GoalItem> GetGoalItemsByDayNumber(int day)
         {

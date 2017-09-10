@@ -21,5 +21,6 @@ namespace VoidDays.Services.Interfaces
         Settings GetSettings();
         Day SyncToCurrentDay(Day currentStoredDay);
         void Initialize();
+        void SetIsLoading(LoadingLock loadLock);
     }
 }

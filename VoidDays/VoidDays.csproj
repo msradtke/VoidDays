@@ -142,6 +142,7 @@
     <Compile Include="Models\Interfaces\IDbContext.cs" />
     <Compile Include="Models\Interfaces\IRepositoryBase.cs" />
     <Compile Include="Models\Interfaces\IUnitOfWork.cs" />
+    <Compile Include="Models\LoadingLock.cs" />
     <Compile Include="Models\RepositoryBase.cs" />
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\UnitOfWork.cs" />

@@ -39,7 +39,7 @@ namespace VoidDays
 
             ComposeObjects();
             Current.MainWindow.Show();
-            
+
             Task.Factory.StartNew(() =>
            {
                //MainContainer.MainContainerViewModel.Initialize();
@@ -47,8 +47,8 @@ namespace VoidDays
                _startupService.Initialize();
            }
            );
-            
-           
+
+
 
 
         }
