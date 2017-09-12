@@ -49,8 +49,6 @@ namespace VoidDays.ViewModels
             IsPreviousDayComplete = false;
             Today = _adminService.GetCurrentStoredDay();
             SetDay(_adminService.GetCurrentStoredDay());
-
-
         }
         public ICommand NewGoalCommand { get; private set; }
         public ICommand EditGoalItemCommand { get; private set; }
@@ -124,7 +122,6 @@ namespace VoidDays.ViewModels
         private void GetCurrentGoalItems()
         {
             CurrentGoalItems = _goalService.GetGoalItemsByDayNumber(CurrentDay.DayNumber).ToObservableCollection();
-
         }
         private void SetCurrentGoalItemViewModels()
         {

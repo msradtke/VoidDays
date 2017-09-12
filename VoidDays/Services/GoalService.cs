@@ -37,11 +37,12 @@ namespace VoidDays.Services
         }
         public void SaveGoalItem(GoalItem goalItem)
         {
-            _goalItemRepository.Update(goalItem);
-            goalItem.Goal.Message = goalItem.Message;
-            goalItem.Goal.Title = goalItem.Title;
-            _goalRepository.Update(goalItem.Goal);
+            var gi = _goalItemRepository.GetByID(goalItem.GoalItemId);
 
+            _goalItemRepository.Update(gi);
+            gi.Goal.Message = gi.Message;
+            gi.Goal.Title = gi.Title;
+            _goalRepository.Update(gi.Goal);
             _unitOfWork.Save();
         }
         public void CreateAllGoalItems(int dayNumber)
