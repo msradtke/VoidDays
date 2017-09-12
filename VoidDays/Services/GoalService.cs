@@ -40,10 +40,10 @@ namespace VoidDays.Services
             var gi = _goalItemRepository.GetByID(goalItem.GoalItemId);
 
             _goalItemRepository.Update(gi);
-            gi.IsComplete = goalItem.IsComplete;
+            /*gi.IsComplete = goalItem.IsComplete;
             gi.Goal.Message = goalItem.Goal.Message;
             gi.Goal.Title = goalItem.Goal.Title;
-            gi.CompleteMessage = goalItem.CompleteMessage;
+            gi.CompleteMessage = goalItem.CompleteMessage;*/
             _goalRepository.Update(gi.Goal);
             _unitOfWork.Save();
         }

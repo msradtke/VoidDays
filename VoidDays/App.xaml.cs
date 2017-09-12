@@ -26,6 +26,7 @@ namespace VoidDays
     {
         private IKernel container;
         private MainContainer MainContainer;
+        private MainContainerViewModel MainContainerViewModel;
         protected override void OnStartup(StartupEventArgs e)
         {
 
@@ -35,21 +36,22 @@ namespace VoidDays
 
             //Current.MainWindow = this.container.Get<Splash>();
             //Current.MainWindow.Show();
-
-
-            
-
-          //  Task.Factory.StartNew(() =>
-           //{
-               //MainContainer.MainContainerViewModel.Initialize();
-               var _startupService = this.container.Get<IStartupService>();
-               _startupService.Initialize();
-            // }
-            //);
             ComposeObjects();
 
             Current.MainWindow.Show();
 
+
+
+            Task.Factory.StartNew(() =>
+          {
+              //MainContainer.MainContainerViewModel.Initialize();
+              var _startupService = this.container.Get<IStartupService>();
+              _startupService.Initialize();
+              MainContainerViewModel.Initialize();
+          }
+          );
+
+            
 
         }
 
@@ -71,7 +73,7 @@ namespace VoidDays
             container.Bind<ISmallHistoryDayViewModelContainer>().To<SmallHistoryDayViewModelContainer>().InTransientScope();
             container.Bind<IDayHistoryViewModel>().To<DayHistoryViewModel>().InTransientScope();
 
-            container.Bind<IGoalService>().To<GoalService>().InTransientScope();
+            container.Bind<IGoalService>().To<GoalService>().InSingletonScope();
             container.Bind<IDialogService>().To<DialogService>().InSingletonScope();
             container.Bind<IStartupService>().To<StartupService>().InTransientScope();
             container.Bind<IAdminService>().To<AdminService>().InTransientScope();
@@ -82,8 +84,11 @@ namespace VoidDays
         private void ComposeObjects()
         {
             MainContainer = this.container.Get<MainContainer>();
+            MainContainerViewModel = (MainContainerViewModel)MainContainer.DataContext;
             Current.MainWindow = MainContainer;
             Current.MainWindow.Title = "VoidDays";
         }
+
+
     }
 }

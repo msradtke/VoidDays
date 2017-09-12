@@ -23,13 +23,19 @@ namespace VoidDays.ViewModels
         List<LoadingLock> _loadingLocks;
         public MainContainerViewModel(IEventAggregator eventAggregator, Lazy<ISmallHistoryDayViewModelContainer> smallHistoryDayViewModelContainer, Lazy<IMainViewContainerViewModel> mainViewContainerViewModel, Lazy<IDayHistoryViewModel> dayHistoryViewModel, IAdminService adminService)
         {
+            IsLoading = true;
+
             LoadingViewModel = new LoadingViewModel();
             _eventAggregator = eventAggregator;
             _adminService = adminService;
             _lazySmallHistoryDayViewModelContainer = smallHistoryDayViewModelContainer;
             _lazyMainViewContainerViewModel = mainViewContainerViewModel;
-            _lazyDayHistoryViewModel = dayHistoryViewModel;
-
+            _lazyDayHistoryViewModel = dayHistoryViewModel;            
+        }
+        public ICommand HistoryCommand { get; set; }
+        public ICommand CurrentDayCommand { get; set; }
+        public void Initialize()
+        {
             _eventAggregator.GetEvent<LoadingEvent>().Subscribe(LoadingEventListener);
 
 
@@ -38,13 +44,8 @@ namespace VoidDays.ViewModels
             HistoryCommand = new ActionCommand(ShowHistory);
             CurrentDayCommand = new ActionCommand(ShowCurrentDay);
             IsLoading = false;
-            Initialize();
-        }
-        public ICommand HistoryCommand { get; set; }
-        public ICommand CurrentDayCommand { get; set; }
-        public void Initialize()
-        {
-            if (!IsLoading)
+
+            //if (!IsLoading)
             {
                 var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
                 AddLoadLock(loadLock);
