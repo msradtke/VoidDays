@@ -23,14 +23,12 @@ namespace VoidDays.Services
         IUnitOfWork _unitOfWork;
         IEventAggregator _eventAggregator;
         Settings _settings;
-
         public AdminService(IUnitOfWork unitOfWork, IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
             _unitOfWork = unitOfWork;
             _dayRepository = _unitOfWork.DayRepository;
         }
-
         public void Initialize()
         {
             _goalItemsCreatedRepository = _unitOfWork.GoalItemsCreatedRepository;
@@ -42,21 +40,17 @@ namespace VoidDays.Services
         public bool CheckForCurrentDay(Day currentStoredDay, out Day day)
         {
             day = currentStoredDay;
-
             if (currentStoredDay == null)
             {
                 day = CreateFirstDay();
                 return true;
             }
-
             if (DateTime.UtcNow < currentStoredDay.End) //if todays date is equal to current stored date
             {
-
                 return true;
             }
             // currently stored date is not in sync
             return false;
-
         }
         public bool CheckForCurrentDay(out Day day)
         {
@@ -68,7 +62,6 @@ namespace VoidDays.Services
         public Day CreateNextDay(Day currentDay)
         {
             currentDay.IsActive = false;
-
             var nextDay = new Day();
             var settings = GetSettings();
             nextDay.DayNumber = currentDay.DayNumber + 1;
@@ -81,11 +74,9 @@ namespace VoidDays.Services
             nextDay.IsActive = true;
             _dayRepository.Insert(nextDay);
             _unitOfWork.Save();
-
             //SyncToCurrentDay(currentDay);
             return nextDay;
         }
-
         public Day CreateFirstDay()
         {
             var firstDay = new Day();
@@ -153,7 +144,7 @@ namespace VoidDays.Services
                 }
                 return nextDay;
             }
-            return null;
+            return currentStoredDay;
         }
         public void CreateAllGoalItems(int dayNumber)
         {

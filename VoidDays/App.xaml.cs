@@ -37,18 +37,18 @@ namespace VoidDays
             //Current.MainWindow.Show();
 
 
-            ComposeObjects();
-            Current.MainWindow.Show();
+            
 
-            Task.Factory.StartNew(() =>
-           {
+          //  Task.Factory.StartNew(() =>
+           //{
                //MainContainer.MainContainerViewModel.Initialize();
                var _startupService = this.container.Get<IStartupService>();
                _startupService.Initialize();
-           }
-           );
+            // }
+            //);
+            ComposeObjects();
 
-
+            Current.MainWindow.Show();
 
 
         }

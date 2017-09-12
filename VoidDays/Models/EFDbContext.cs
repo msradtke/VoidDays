@@ -21,8 +21,9 @@ namespace VoidDays.Models
         public EFDbContext()
             :base ("VoidDaysContext")
         {
-            
+
             //this.Database.Log = s => Log.DBLog(s);
+            this.Database.Log = s => Console.WriteLine(s);
             Database.SetInitializer<EFDbContext>(null);
             this.Configuration.LazyLoadingEnabled = true;
         }

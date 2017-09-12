@@ -48,7 +48,8 @@ namespace VoidDays.ViewModels
             //_eventAggregator.GetEvent<GoalItemStatusChange>().Subscribe(HandleGoalStatusChange);
             IsPreviousDayComplete = false;
             Today = _adminService.GetCurrentStoredDay();
-            SetDay(_adminService.GetCurrentStoredDay());
+            var csd = _adminService.GetCurrentStoredDay();
+            SetDay(csd);
         }
         public ICommand NewGoalCommand { get; private set; }
         public ICommand EditGoalItemCommand { get; private set; }

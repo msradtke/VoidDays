@@ -29,7 +29,7 @@ namespace VoidDays.Services
 
             if (!_adminService.CheckForCurrentDay(out currentStoredDay))
             {
-                _adminService.SyncToCurrentDay(currentStoredDay);
+                currentStoredDay = _adminService.SyncToCurrentDay(currentStoredDay);
             }
 
             _goalService.SyncGoalItems(currentStoredDay.DayNumber);
