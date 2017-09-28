@@ -22,7 +22,7 @@ namespace VoidDays.Models
         {
             _repositoryBaseFactory = repositoryBaseFactory;
             _context = context;
-
+            
         }
         public IRepositoryBase<Goal> GoalRepository
         {

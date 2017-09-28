@@ -9,6 +9,7 @@ namespace VoidDays.Models.Interfaces
 {
     public interface IDbContext
     {
+        Database Database { get; }
         DbSet<TEntity> GetDbSet<TEntity>() where TEntity : class;
         DbEntityEntry Entry(object entity);
         void Save();

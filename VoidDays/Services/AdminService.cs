@@ -23,6 +23,7 @@ namespace VoidDays.Services
         IUnitOfWork _unitOfWork;
         IEventAggregator _eventAggregator;
         Settings _settings;
+        private Day _currentDay;
         public AdminService(IUnitOfWork unitOfWork, IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
@@ -73,6 +74,7 @@ namespace VoidDays.Services
             nextDay.End = subtractSecond;
             nextDay.IsActive = true;
             _dayRepository.Insert(nextDay);
+            _dayRepository.Update(currentDay);
             _unitOfWork.Save();
             //SyncToCurrentDay(currentDay);
             return nextDay;
@@ -158,8 +160,6 @@ namespace VoidDays.Services
                 goalitem.Title = goal.Title;
                 goalitem.DayNumber = dayNumber;
                 goalitem.DateTime = DateTime.UtcNow;
-
-
                 _goalItemRepository.Insert(goalitem);
             }
             _unitOfWork.Save();
@@ -194,7 +194,7 @@ namespace VoidDays.Services
             return _dayRepository.Get(x => x.DayNumber == day.DayNumber + 1).LastOrDefault();
         }
         private Timer timer;
-        private Day _currentDay;
+        
         public Timer SetupTimer(Day currentDay, TimeSpan alertTime)
         {
             Log.GeneralLog(String.Format("SetupTimer, current day = {0}", currentDay.DayNumber));
@@ -202,18 +202,22 @@ namespace VoidDays.Services
 
             _currentDay = currentDay;
             DateTime current = DateTime.UtcNow;
+
+
             TimeSpan timeToGo = alertTime - current.TimeOfDay;
-            if (timeToGo < TimeSpan.Zero)
-            {
-                SetUpTimer(alertTime.Add(new TimeSpan(24, 0, 0)));
-                return timer;//time already passed
-            }
+            //if (timeToGo < TimeSpan.Zero)
+            //{
+                //SetUpTimer(alertTime.Add(new TimeSpan(24, 0, 0)));
+                //return timer;//time already passed
+            //}
 
             var t = new System.Timers.Timer();
-            this.timer = new Timer(timeToGo.Milliseconds);
+            //this.timer = new Timer(timeToGo.Milliseconds);
+            this.timer = new Timer(5000);
             this.timer.AutoReset = true;
             timer.Elapsed += NextDayHandler;
-            
+            timer.Enabled = true;
+
             return timer;
         }
         public Timer SetUpTimer(TimeSpan alertTime)
@@ -221,24 +225,38 @@ namespace VoidDays.Services
             return SetupTimer(GetCurrentStoredDay(), alertTime);
         }
         private void NextDayHandler(object o, ElapsedEventArgs e)
-        {            
-            Log.GeneralLog("NextDayHandler");
-            //check if other client already next dayed
-            Day currentStoredDay = GetCurrentStoredDay(); //day in db
-            Day updatedDay = SyncToCurrentDay(currentStoredDay); //day is the new updated day
+        {
+            var timer = (Timer)o;
+            DateTime current = DateTime.UtcNow;
+            Day currentStoredDay = GetCurrentStoredDay();
 
-            if(updatedDay != null ) //actually updated the day, null if no update
+            //if (current.Date > _currentDay.Start.Date && current.TimeOfDay > _settings.EndTime)
+            if (current.Date > currentStoredDay.Start.Date && current.TimeOfDay > _settings.EndTime)
             {
+                var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
+                SetIsLoading(loadLock);
 
-                _currentDay = updatedDay;
-                _eventAggregator.GetEvent<NextDayEvent>().Publish(updatedDay);
-                Log.GeneralLog("Published next day event");
+                timer.Enabled = false;
+                Log.GeneralLog("NextDayHandler");
+                //check if other client already next dayed
+                 //day in db
+                Day updatedDay = SyncToCurrentDay(currentStoredDay); //day is the new updated day
+
+                if (updatedDay != null) //actually updated the day, null if no update
+                {
+                    _currentDay = updatedDay;
+                    _eventAggregator.GetEvent<NextDayEvent>().Publish(updatedDay);
+                    Log.GeneralLog("Published next day event");
+                }
+
+                //timer = SetupTimer(_currentDay, _settings.EndTime);
+                Log.GeneralLog(String.Format("setup timer, current day = {0}", _currentDay.DayNumber));
+                Log.GeneralLog(String.Format("setup timer, EndTime = {0}", _settings.EndTime.ToString()));
+                
+                timer.Enabled = true;
+                loadLock.IsLoading = false;
+                SetIsLoading(loadLock);
             }
-
-            timer = SetupTimer(_currentDay, _settings.EndTime);
-            Log.GeneralLog(String.Format("setup timer, current day = {0}", _currentDay.DayNumber));
-            Log.GeneralLog(String.Format("setup timer, EndTime = {0}", _settings.EndTime.ToString()));
-            //if asleep for multiple days?!!?
         }
     }
 }

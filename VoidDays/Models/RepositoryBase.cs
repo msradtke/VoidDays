@@ -16,6 +16,7 @@ namespace VoidDays.Models
         public RepositoryBase(IDbContext context)
         {
             this._context = context;
+            
             this._dbSet = context.GetDbSet<TEntity>();
         }
 
