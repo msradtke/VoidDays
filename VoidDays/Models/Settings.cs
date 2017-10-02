@@ -18,5 +18,7 @@ namespace VoidDays.Models
         public TimeSpan EndTime { get; set; }
         [Column("start_day")]
         public DateTime StartDay { get; set; }
+        [Column("is_updating")]
+        public bool IsUpdating { get; set; }
     }
 }

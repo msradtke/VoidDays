@@ -9,6 +9,7 @@ namespace VoidDays.Services.Interfaces
 {
     public interface IAdminService
     {
+        void SaveChanges();
         bool CheckForCurrentDay(out Day day);
         Day GetCurrentStoredDay();
         Day CreateNextDay(Day currentDay);

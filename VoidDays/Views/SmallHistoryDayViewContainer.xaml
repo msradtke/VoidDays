@@ -17,8 +17,8 @@
 
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <ContentControl Margin="2" Content="{Binding}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <ContentControl Margin="2" Content="{Binding}"/>
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

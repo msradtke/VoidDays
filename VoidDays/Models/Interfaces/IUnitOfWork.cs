@@ -11,6 +11,7 @@ namespace VoidDays.Models.Interfaces
 
         void Save();
         void Dispose();
+        void Reload(object entity);
 
         IRepositoryBase<Goal> GoalRepository { get;}
         IRepositoryBase<GoalItem> GoalItemRepository { get; }

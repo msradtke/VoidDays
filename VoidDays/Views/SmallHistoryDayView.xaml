@@ -24,8 +24,7 @@
         <Grid>
             <Grid.Style>
                 <Style TargetType="Grid">
-                    <Style.Triggers>
-                        
+                    <Style.Triggers>                        
                         <DataTrigger Binding="{Binding IsDayNull}" Value="True">
                             <Setter Property="Visibility" Value="Hidden"></Setter>
                         </DataTrigger>

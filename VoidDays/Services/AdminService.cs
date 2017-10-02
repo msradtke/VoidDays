@@ -24,8 +24,10 @@ namespace VoidDays.Services
         IEventAggregator _eventAggregator;
         Settings _settings;
         private Day _currentDay;
+        private bool _checkForDbUpdate; //for checking if other client updated db
         public AdminService(IUnitOfWork unitOfWork, IEventAggregator eventAggregator)
         {
+            _checkForDbUpdate = false;
             _eventAggregator = eventAggregator;
             _unitOfWork = unitOfWork;
             _dayRepository = _unitOfWork.DayRepository;
@@ -105,7 +107,7 @@ namespace VoidDays.Services
 
         public List<GoalItem> GetGoalItemsByDayNumber(int day)
         {
-            var goalItems = _goalItemRepository.Get(x => x.DayNumber == day);
+            var goalItems = _goalItemRepository.Get(x => x.DayNumber == day, null);
             return goalItems.ToList();
         }
         public void SaveGoalItem(GoalItem goalItem)
@@ -113,9 +115,7 @@ namespace VoidDays.Services
             _goalItemRepository.Update(goalItem);
             goalItem.Goal.Message = goalItem.Message;
             goalItem.Goal.Title = goalItem.Title;
-            _goalRepository.Update(goalItem.Goal);
-
-            _unitOfWork.Save();
+            _goalRepository.Update(goalItem.Goal);            
         }
 
         public Day SyncToCurrentDay(Day currentStoredDay)
@@ -148,6 +148,10 @@ namespace VoidDays.Services
             }
             return currentStoredDay;
         }
+        public void SaveChanges()
+        {
+            _unitOfWork.Save();
+        }
         public void CreateAllGoalItems(int dayNumber)
         {
             var goals = _goalRepository.Get(x => x.IsActive).ToList();
@@ -161,12 +165,14 @@ namespace VoidDays.Services
                 goalitem.DayNumber = dayNumber;
                 goalitem.DateTime = DateTime.UtcNow;
                 _goalItemRepository.Insert(goalitem);
-            }
-            _unitOfWork.Save();
+            }            
         }
         public List<Day> GetDaysByDayNumber(int start, int end)
         {
-            return _dayRepository.Get(x => x.DayNumber >= start && x.DayNumber <= end).ToList();
+            var days = _dayRepository.Get(x => x.DayNumber >= start && x.DayNumber <= end).ToList();
+            foreach (var day in days)
+                _unitOfWork.Reload(day);
+            return days;
         }
         public Day GetCurrentStoredDay()
         {
@@ -187,6 +193,7 @@ namespace VoidDays.Services
         public Settings GetSettings()
         {
             var settings = _settingsRepository.Get().FirstOrDefault();
+            _unitOfWork.Reload(settings);
             return settings;
         }
         public Day GetNextDay(Day day)
@@ -226,36 +233,58 @@ namespace VoidDays.Services
         }
         private void NextDayHandler(object o, ElapsedEventArgs e)
         {
+            if (_checkForDbUpdate)
+            {
+                timer.Enabled = false;
+                var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
+                SetIsLoading(loadLock);
+                _unitOfWork.Reload(_currentDay);
+                _eventAggregator.GetEvent<NextDayEvent>().Publish(_currentDay);
+                _checkForDbUpdate = false;
+                timer.Enabled = true;
+                loadLock.IsLoading = false;
+                SetIsLoading(loadLock);
+            }
+            else
+            { 
             var timer = (Timer)o;
             DateTime current = DateTime.UtcNow;
             Day currentStoredDay = GetCurrentStoredDay();
 
-            //if (current.Date > _currentDay.Start.Date && current.TimeOfDay > _settings.EndTime)
-            if (current.Date > currentStoredDay.Start.Date && current.TimeOfDay > _settings.EndTime)
-            {
-                var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
-                SetIsLoading(loadLock);
-
-                timer.Enabled = false;
-                Log.GeneralLog("NextDayHandler");
-                //check if other client already next dayed
-                 //day in db
-                Day updatedDay = SyncToCurrentDay(currentStoredDay); //day is the new updated day
-
-                if (updatedDay != null) //actually updated the day, null if no update
+                //if (current.Date > _currentDay.Start.Date && current.TimeOfDay > _settings.EndTime)
+                if (current.Date > currentStoredDay.Start.Date && current.TimeOfDay > _settings.EndTime)
                 {
-                    _currentDay = updatedDay;
-                    _eventAggregator.GetEvent<NextDayEvent>().Publish(updatedDay);
-                    Log.GeneralLog("Published next day event");
-                }
+                    if (!_settings.IsUpdating)
+                    {
+                        timer.Enabled = false;
+                        var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
+                        SetIsLoading(loadLock);
+                        Log.GeneralLog("NextDayHandler");
+                        //check if other client already next dayed
+                        //day in db
+                        Day updatedDay = SyncToCurrentDay(currentStoredDay); //day is the new updated day
+                        SaveChanges();
 
-                //timer = SetupTimer(_currentDay, _settings.EndTime);
-                Log.GeneralLog(String.Format("setup timer, current day = {0}", _currentDay.DayNumber));
-                Log.GeneralLog(String.Format("setup timer, EndTime = {0}", _settings.EndTime.ToString()));
-                
-                timer.Enabled = true;
-                loadLock.IsLoading = false;
-                SetIsLoading(loadLock);
+                        if (updatedDay != null) //actually updated the day, null if no update
+                        {
+                            _currentDay = updatedDay;
+                            _eventAggregator.GetEvent<NextDayEvent>().Publish(updatedDay);
+                            Log.GeneralLog("Published next day event");
+                        }
+
+                        //timer = SetupTimer(_currentDay, _settings.EndTime);
+                        Log.GeneralLog(String.Format("setup timer, current day = {0}", _currentDay.DayNumber));
+                        Log.GeneralLog(String.Format("setup timer, EndTime = {0}", _settings.EndTime.ToString()));
+
+                        timer.Enabled = true;
+                        loadLock.IsLoading = false;
+                        SetIsLoading(loadLock);
+                    }
+                    else
+                    {
+                        _checkForDbUpdate = true;
+                    }
+                }
             }
         }
     }

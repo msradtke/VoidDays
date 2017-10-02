@@ -20,7 +20,7 @@ namespace VoidDays.Models
         public DbSet<Settings> Settings { get; set; }
         public ConnectionState ConnectionState { get; private set; }
         public EFDbContext()
-            :base ("VoidDaysContext")
+            : base("VoidDaysContext")
         {
 
             //this.Database.Log = s => Log.DBLog(s);
@@ -28,7 +28,7 @@ namespace VoidDays.Models
             Database.SetInitializer<EFDbContext>(null);
             Database.Connection.StateChange += StateChangeHandler;
             this.Configuration.LazyLoadingEnabled = true;
-            
+
         }
 
         private void StateChangeHandler(object sender, System.Data.StateChangeEventArgs e)
@@ -44,7 +44,8 @@ namespace VoidDays.Models
             modelBuilder.Entity<Day>().ToTable("days");
             modelBuilder.Entity<GoalItemsCreated>().ToTable("goal_items_created");
             modelBuilder.Entity<Settings>().ToTable("settings");
-            modelBuilder.Entity<GoalItem>().HasRequired(x => x.Goal);            
+            modelBuilder.Entity<GoalItem>().HasRequired(x => x.Goal);
+            //modelBuilder.Entity<GoalItem>().HasOptional(x => x.Message);
         }
         public DbSet<TEntity> GetDbSet<TEntity>() where TEntity : class
         {
@@ -53,8 +54,18 @@ namespace VoidDays.Models
 
         public void Save()
         {
-            
+
             this.SaveChanges();
         }
+        public void Reload(object entity)
+        {
+            this.Entry(entity).Reload();
+        }
     }
+
+    public interface IDbContextFactory
+    {
+        IDbContext CreateDbContext();
+    }
+
 }

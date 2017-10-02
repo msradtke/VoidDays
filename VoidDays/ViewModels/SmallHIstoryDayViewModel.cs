@@ -16,7 +16,7 @@ namespace VoidDays.ViewModels
             Day = day;
             IsDayNull = true;
             if (Day != null)
-                IsDayNull = false;            
+                IsDayNull = false;
         }
 
         public Day Day { get; set; }

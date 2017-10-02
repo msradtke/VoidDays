@@ -84,6 +84,7 @@ namespace VoidDays.Models
         public virtual void SetContext(IDbContext context)
         {
             _context = context;
+            this._dbSet = context.GetDbSet<TEntity>();
         }
     }
 }

@@ -10,19 +10,22 @@ namespace VoidDays.Models
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-
+        IDbContextFactory _contextFactory;
         private IDbContext _context;
         private IRepositoryBaseFactory _repositoryBaseFactory;
+
         private IRepositoryBase<Goal> _goalRepository;
         private IRepositoryBase<GoalItem> _goalItemRepository;
         private IRepositoryBase<Day> _dayRepository;
         private IRepositoryBase<GoalItemsCreated> _goalItemsCreatedRepository;
         private IRepositoryBase<Settings> _settingsRepository;
-        public UnitOfWork(IRepositoryBaseFactory repositoryBaseFactory, IDbContext context)
+
+        public UnitOfWork(IRepositoryBaseFactory repositoryBaseFactory, IDbContextFactory contextFactory)
         {
             _repositoryBaseFactory = repositoryBaseFactory;
-            _context = context;
-            
+            _contextFactory = contextFactory;
+            _context = _contextFactory.CreateDbContext();
+
         }
         public IRepositoryBase<Goal> GoalRepository
         {
@@ -53,7 +56,7 @@ namespace VoidDays.Models
             get
             {
 
-                if (this._dayRepository == null)
+               if (this._dayRepository == null)
                 {
                     this._dayRepository = _repositoryBaseFactory.CreateDayRepository(_context);
                 }
@@ -87,7 +90,17 @@ namespace VoidDays.Models
         public void Save()
         {
             _context.Save();
+            
+            /*Dispose();
+            _context = _contextFactory.CreateDbContext();
+
+            _settingsRepository.SetContext(_context);
+            _goalItemsCreatedRepository.SetContext(_context);
+            _goalRepository.SetContext(_context);
+            _dayRepository.SetContext(_context);
+            _goalItemRepository.SetContext(_context);*/
         }
+
         private bool disposed = false;
         protected virtual void Dispose(bool disposing)
         {
@@ -104,6 +117,10 @@ namespace VoidDays.Models
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+        public void Reload(object entity)
+        {
+            _context.Reload(entity);
         }
 
     }

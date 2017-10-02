@@ -14,5 +14,6 @@ namespace VoidDays.Models.Interfaces
         DbEntityEntry Entry(object entity);
         void Save();
         void Dispose();
+        void Reload(object entity);
     }
 }

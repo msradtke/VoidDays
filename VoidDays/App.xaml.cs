@@ -62,6 +62,7 @@ namespace VoidDays
             container.Bind<IUnitOfWork>().To<UnitOfWork>().InTransientScope();
             container.Bind<IRepositoryBaseFactory>().ToFactory();
             container.Bind<IViewModelFactory>().ToFactory();
+            container.Bind<IDbContextFactory>().ToFactory();
 
             container.Bind<IDbContext>().To<EFDbContext>().InTransientScope();
             container.Bind<ICurrentListViewModel>().To<CurrentListViewModel>().InTransientScope();

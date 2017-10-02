@@ -38,6 +38,7 @@ namespace VoidDays.ViewModels
 
         public List<Day> Days { get; set; }
         public ObservableCollection<object> SmallHistoryDayViewModels { get; set; }
+
         private void GetPreviousDays()
         {
             _firstDay = _currentStoredDay.DayNumber - _previousDayCount;

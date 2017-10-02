@@ -12,10 +12,15 @@ namespace VoidDays.Models
     {
         [Column("goal_item_id")]
         public int GoalItemId { get; set; }
+
         public string Title { get; set; }
+
+        [Column("message")]
         public string Message { get; set; }
+
         [Column("created")]
         public DateTime DateTime { get; set; }
+
         [Column("is_complete")]
         public bool IsComplete { get; set; }
         [Column("is_void")]
@@ -26,6 +31,7 @@ namespace VoidDays.Models
         public int DayNumber { get; set; }
         [Column("complete_message")]
         public string CompleteMessage { get; set; }
+
         [Column("satisfy_scale")]
         public int SatisfyScale { get; set; }
 
