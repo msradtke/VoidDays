@@ -256,6 +256,9 @@ namespace VoidDays.Services
                 {
                     if (!_settings.IsUpdating)
                     {
+                        _settings.IsUpdating = true;
+                        _unitOfWork.Save();
+
                         timer.Enabled = false;
                         var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
                         SetIsLoading(loadLock);
