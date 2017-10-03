@@ -27,8 +27,7 @@ namespace VoidDays.Models
             this.Database.Log = s => Console.WriteLine(s);
             Database.SetInitializer<EFDbContext>(null);
             Database.Connection.StateChange += StateChangeHandler;
-            this.Configuration.LazyLoadingEnabled = true;
-
+            this.Configuration.LazyLoadingEnabled = true;            
         }
 
         private void StateChangeHandler(object sender, System.Data.StateChangeEventArgs e)
@@ -54,13 +53,23 @@ namespace VoidDays.Models
 
         public void Save()
         {
-
             this.SaveChanges();
         }
         public void Reload(object entity)
         {
             this.Entry(entity).Reload();
         }
+        public void Transaction(string tableName, Action work)
+        {
+            using (DbContextTransaction scope = this.Database.BeginTransaction())
+            {
+                this.Database.ExecuteSqlCommand(String.Format("LOCK TABLE {0} AS `Extent1` READ;", tableName));
+
+                work();
+                scope.Commit();
+            }            
+        }
+
     }
 
     public interface IDbContextFactory

@@ -58,7 +58,7 @@ namespace VoidDays.Services
         public bool CheckForCurrentDay(out Day day)
         {
             Day day2 = null;
-            var isCurrentDay  = CheckForCurrentDay(GetCurrentStoredDay(), out day2);
+            var isCurrentDay = CheckForCurrentDay(GetCurrentStoredDay(), out day2);
             day = day2;
             return isCurrentDay;
         }
@@ -100,7 +100,7 @@ namespace VoidDays.Services
 
         public void SetIsLoading(LoadingLock loadLock)
         {
-            
+
             _eventAggregator.GetEvent<LoadingEvent>().Publish(loadLock);
         }
 
@@ -115,7 +115,7 @@ namespace VoidDays.Services
             _goalItemRepository.Update(goalItem);
             goalItem.Goal.Message = goalItem.Message;
             goalItem.Goal.Title = goalItem.Title;
-            _goalRepository.Update(goalItem.Goal);            
+            _goalRepository.Update(goalItem.Goal);
         }
 
         public Day SyncToCurrentDay(Day currentStoredDay)
@@ -165,7 +165,7 @@ namespace VoidDays.Services
                 goalitem.DayNumber = dayNumber;
                 goalitem.DateTime = DateTime.UtcNow;
                 _goalItemRepository.Insert(goalitem);
-            }            
+            }
         }
         public List<Day> GetDaysByDayNumber(int start, int end)
         {
@@ -201,7 +201,7 @@ namespace VoidDays.Services
             return _dayRepository.Get(x => x.DayNumber == day.DayNumber + 1).LastOrDefault();
         }
         private Timer timer;
-        
+
         public Timer SetupTimer(Day currentDay, TimeSpan alertTime)
         {
             Log.GeneralLog(String.Format("SetupTimer, current day = {0}", currentDay.DayNumber));
@@ -214,8 +214,8 @@ namespace VoidDays.Services
             TimeSpan timeToGo = alertTime - current.TimeOfDay;
             //if (timeToGo < TimeSpan.Zero)
             //{
-                //SetUpTimer(alertTime.Add(new TimeSpan(24, 0, 0)));
-                //return timer;//time already passed
+            //SetUpTimer(alertTime.Add(new TimeSpan(24, 0, 0)));
+            //return timer;//time already passed
             //}
 
             var t = new System.Timers.Timer();
@@ -231,64 +231,50 @@ namespace VoidDays.Services
         {
             return SetupTimer(GetCurrentStoredDay(), alertTime);
         }
+        private void QueueCheckForUpdatedDay()
+        {
+            Day currentStoredDay = GetCurrentStoredDay();
+            Day updatedDay = SyncToCurrentDay(currentStoredDay); //day is the new updated day
+            SaveChanges();
+
+            if (updatedDay != null) //actually updated the day, null if no update
+            {
+                _currentDay = updatedDay;
+                _eventAggregator.GetEvent<NextDayEvent>().Publish(updatedDay);
+                Log.GeneralLog("Published next day event");
+            }
+        }
+
         private void NextDayHandler(object o, ElapsedEventArgs e)
         {
-            if (_checkForDbUpdate)
-            {
-                timer.Enabled = false;
-                var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
-                SetIsLoading(loadLock);
-                _unitOfWork.Reload(_currentDay);
-                _eventAggregator.GetEvent<NextDayEvent>().Publish(_currentDay);
-                _checkForDbUpdate = false;
-                timer.Enabled = true;
-                loadLock.IsLoading = false;
-                SetIsLoading(loadLock);
-            }
-            else
-            { 
             var timer = (Timer)o;
             DateTime current = DateTime.UtcNow;
             Day currentStoredDay = GetCurrentStoredDay();
 
-                //if (current.Date > _currentDay.Start.Date && current.TimeOfDay > _settings.EndTime)
-                if (current.Date > currentStoredDay.Start.Date && current.TimeOfDay > _settings.EndTime)
-                {
-                    if (!_settings.IsUpdating)
-                    {
-                        _settings.IsUpdating = true;
-                        _unitOfWork.Save();
+            //if (current.Date > _currentDay.Start.Date && current.TimeOfDay > _settings.EndTime)
+            if (current.Date > currentStoredDay.Start.Date && current.TimeOfDay > _settings.EndTime)
+            {
 
-                        timer.Enabled = false;
-                        var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
-                        SetIsLoading(loadLock);
-                        Log.GeneralLog("NextDayHandler");
-                        //check if other client already next dayed
-                        //day in db
-                        Day updatedDay = SyncToCurrentDay(currentStoredDay); //day is the new updated day
-                        SaveChanges();
 
-                        if (updatedDay != null) //actually updated the day, null if no update
-                        {
-                            _currentDay = updatedDay;
-                            _eventAggregator.GetEvent<NextDayEvent>().Publish(updatedDay);
-                            Log.GeneralLog("Published next day event");
-                        }
+                timer.Enabled = false;
+                var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
+                SetIsLoading(loadLock);
+                Log.GeneralLog("NextDayHandler");
+                //check if other client already next dayed
+                //day in db
 
-                        //timer = SetupTimer(_currentDay, _settings.EndTime);
-                        Log.GeneralLog(String.Format("setup timer, current day = {0}", _currentDay.DayNumber));
-                        Log.GeneralLog(String.Format("setup timer, EndTime = {0}", _settings.EndTime.ToString()));
+                QueueCheckForUpdatedDay();
 
-                        timer.Enabled = true;
-                        loadLock.IsLoading = false;
-                        SetIsLoading(loadLock);
-                    }
-                    else
-                    {
-                        _checkForDbUpdate = true;
-                    }
-                }
+
+                //timer = SetupTimer(_currentDay, _settings.EndTime);
+                Log.GeneralLog(String.Format("setup timer, current day = {0}", _currentDay.DayNumber));
+                Log.GeneralLog(String.Format("setup timer, EndTime = {0}", _settings.EndTime.ToString()));
+
+                timer.Enabled = true;
+                loadLock.IsLoading = false;
+                SetIsLoading(loadLock);
             }
         }
     }
 }
+

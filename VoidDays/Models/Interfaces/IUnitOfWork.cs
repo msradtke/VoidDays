@@ -12,7 +12,7 @@ namespace VoidDays.Models.Interfaces
         void Save();
         void Dispose();
         void Reload(object entity);
-
+        void Transaction(string tableName, Action work);
         IRepositoryBase<Goal> GoalRepository { get;}
         IRepositoryBase<GoalItem> GoalItemRepository { get; }
         IRepositoryBase<Day> DayRepository { get; }
