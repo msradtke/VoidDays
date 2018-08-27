@@ -62,6 +62,24 @@ namespace VoidDays.Services
             day = day2;
             return isCurrentDay;
         }
+        public Day CreateToday()
+        {
+            var day = new Day();
+            var settings = GetSettings();
+            var firstDay = _dayRepository.Get(x => x.DayNumber == 0).FirstOrDefault();
+            var daySpan = DateTime.Today - firstDay.Start;
+            var dayNum = daySpan.Days;
+            day.DayNumber = dayNum;
+            day.Start = DateTime.Today + settings.StartTime;
+            var addDay = day.Start.AddDays(1);
+            var subtractSecond = day.Start.AddSeconds(-1);
+            day.End = subtractSecond;
+            day.IsActive = true;
+            _dayRepository.Insert(day);
+            _unitOfWork.Save();
+            //SyncToCurrentDay(currentDay);
+            return day;
+        }
         public Day CreateNextDay(Day currentDay)
         {
             currentDay.IsActive = false;
@@ -121,7 +139,7 @@ namespace VoidDays.Services
         public Day SyncToCurrentDay(Day currentStoredDay)
         {
             Day current;
-            if (!CheckForCurrentDay(currentStoredDay, out current))
+            if (!CheckForCurrentDay(currentStoredDay, out current)) //if latest day in db is not today
             {
                 //complete this day, foreach goalitem on this day not completed, void
                 var goalItems = GetGoalItemsByDayNumber(currentStoredDay.DayNumber).ToList();
@@ -148,6 +166,7 @@ namespace VoidDays.Services
             }
             return currentStoredDay;
         }
+
         public void SaveChanges()
         {
             _unitOfWork.Save();
@@ -176,7 +195,9 @@ namespace VoidDays.Services
         }
         public Day GetCurrentStoredDay()
         {
-            return _dayRepository.Get().LastOrDefault();
+            var currentStoredDay = _dayRepository.Get().LastOrDefault();
+            _unitOfWork.Reload(currentStoredDay);
+            return currentStoredDay;
         }
         public Day GetPreviousDay(Day day)
         {
@@ -234,17 +255,7 @@ namespace VoidDays.Services
         private void QueueCheckForUpdatedDay()
         {
             Day currentStoredDay = GetCurrentStoredDay();
-            Day updatedDay = SyncToCurrentDay(currentStoredDay); //day is the new updated day
-            SaveChanges();
-
-            if (updatedDay != null) //actually updated the day, null if no update
-            {
-                _currentDay = updatedDay;
-                _eventAggregator.GetEvent<NextDayEvent>().Publish(updatedDay);
-                Log.GeneralLog("Published next day event");
-            }
         }
-
         private void NextDayHandler(object o, ElapsedEventArgs e)
         {
             var timer = (Timer)o;
@@ -254,18 +265,21 @@ namespace VoidDays.Services
             //if (current.Date > _currentDay.Start.Date && current.TimeOfDay > _settings.EndTime)
             if (current.Date > currentStoredDay.Start.Date && current.TimeOfDay > _settings.EndTime)
             {
-
-
                 timer.Enabled = false;
                 var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
                 SetIsLoading(loadLock);
                 Log.GeneralLog("NextDayHandler");
                 //check if other client already next dayed
                 //day in db
+                Day updatedDay = SyncToCurrentDay(currentStoredDay); //day is the new updated day
+                SaveChanges();
 
-                QueueCheckForUpdatedDay();
-
-
+                if (updatedDay != null) //actually updated the day, null if no update
+                {
+                    _currentDay = updatedDay;
+                    _eventAggregator.GetEvent<NextDayEvent>().Publish(updatedDay);
+                    Log.GeneralLog("Published next day event");
+                }
                 //timer = SetupTimer(_currentDay, _settings.EndTime);
                 Log.GeneralLog(String.Format("setup timer, current day = {0}", _currentDay.DayNumber));
                 Log.GeneralLog(String.Format("setup timer, EndTime = {0}", _settings.EndTime.ToString()));

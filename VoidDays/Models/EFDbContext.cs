@@ -29,7 +29,6 @@ namespace VoidDays.Models
             Database.Connection.StateChange += StateChangeHandler;
             this.Configuration.LazyLoadingEnabled = true;            
         }
-
         private void StateChangeHandler(object sender, System.Data.StateChangeEventArgs e)
         {
             //this.ConnectionState = e.CurrentState;
