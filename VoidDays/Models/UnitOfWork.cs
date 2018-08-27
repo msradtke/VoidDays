@@ -100,6 +100,10 @@ namespace VoidDays.Models
             _dayRepository.SetContext(_context);
             _goalItemRepository.SetContext(_context);*/
         }
+        public void Transaction(string tableName, Action work)
+        {
+            _context.Transaction(tableName, work);
+        }
 
         private bool disposed = false;
         protected virtual void Dispose(bool disposing)
