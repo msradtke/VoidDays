@@ -30,7 +30,7 @@ namespace VoidDays
         protected override void OnStartup(StartupEventArgs e)
         {
 
-            Database.SetInitializer<DbContext>(null);
+            Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
             base.OnStartup(e);
             ConfigureContainer();
 

@@ -11,6 +11,7 @@ using System.Data;
 
 namespace VoidDays.Models
 {
+    [DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]
     public class EFDbContext : DbContext, IDbContext
     {
         public DbSet<Goal> Goals { get; set; }
@@ -20,17 +21,21 @@ namespace VoidDays.Models
         public DbSet<Settings> Settings { get; set; }
         public ConnectionState ConnectionState { get; private set; }
         public EFDbContext()
-            : base("VoidDaysContext")
+            : base("VoidDays.Properties.Settings.VoidDaysConnectionString")
         {
-
+            
             //this.Database.Log = s => Log.DBLog(s);
             this.Database.Log = s => Console.WriteLine(s);
-            Database.SetInitializer<EFDbContext>(null);
+            
+            Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
             Database.Connection.StateChange += StateChangeHandler;
             this.Configuration.LazyLoadingEnabled = true;
 
         }
-
+        static EFDbContext()
+        {
+            DbConfiguration.SetConfiguration(new MySql.Data.Entity.MySqlEFConfiguration());
+        }
         private void StateChangeHandler(object sender, System.Data.StateChangeEventArgs e)
         {
             //this.ConnectionState = e.CurrentState;
@@ -67,5 +72,4 @@ namespace VoidDays.Models
     {
         IDbContext CreateDbContext();
     }
-
 }

@@ -56,7 +56,7 @@ namespace VoidDays.Models
             get
             {
 
-               if (this._dayRepository == null)
+                if (this._dayRepository == null)
                 {
                     this._dayRepository = _repositoryBaseFactory.CreateDayRepository(_context);
                 }
@@ -90,7 +90,7 @@ namespace VoidDays.Models
         public void Save()
         {
             _context.Save();
-            
+
             /*Dispose();
             _context = _contextFactory.CreateDbContext();
 
@@ -120,7 +120,8 @@ namespace VoidDays.Models
         }
         public void Reload(object entity)
         {
-            _context.Reload(entity);
+            if (entity != null)
+                _context.Reload(entity);
         }
 
     }
