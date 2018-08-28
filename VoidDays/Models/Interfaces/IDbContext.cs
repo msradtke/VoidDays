@@ -12,7 +12,6 @@ namespace VoidDays.Models.Interfaces
         Database Database { get; }
         DbSet<TEntity> GetDbSet<TEntity>() where TEntity : class;
         DbEntityEntry Entry(object entity);
-        void Transaction(string tableName, Action work);
         void Save();
         void Dispose();
         void Reload(object entity);

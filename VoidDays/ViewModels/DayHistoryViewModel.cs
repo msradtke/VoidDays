@@ -23,16 +23,17 @@ namespace VoidDays.ViewModels
             LoadingViewModel = new LoadingViewModel();
 
             _adminService = adminService;
+            _adminService.Initialize();
             _viewModelFactory = viewModelFactory;
-            
+
             _eventAggregator = eventAggregator;
 
             _eventAggregator.GetEvent<NextDayEvent>().Subscribe(NextDayEventHandler);
-            
+
         }
         public List<Day> AllDays { get; set; }
-        
-            public List<List<Day>> Weeks { get; set; }
+
+        public List<List<Day>> Weeks { get; set; }
         public ObservableCollection<WeekViewModelAggregate> WeekViewModelAggregates { get; set; }
         public bool IsLoading { get; set; }
         public LoadingViewModel LoadingViewModel { get; set; }
@@ -49,12 +50,11 @@ namespace VoidDays.ViewModels
                     {
                         AllDays = _adminService.GetAllDays();
                         Weeks = new List<List<Day>>();
-                        Weeks = new List<List<Day>>();
                         WeekViewModelAggregates = new ObservableCollection<WeekViewModelAggregate>();
                         GetWeeks();
                         CreateWeekViewModels();
-                    //System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(5000));
-                }
+                        //System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(5000));
+                    }
                     )
                     .ContinueWith(x => IsLoading = false);
             }
@@ -67,15 +67,25 @@ namespace VoidDays.ViewModels
             {
                 Initialize();
             });
-            
+
         }
         private void GetWeeks()
         {
             var newWeek = new List<Day>();
             var sortedByDaysNumber = AllDays.OrderBy(x => x.DayNumber).ToList();
+            var highestDayNumber = AllDays.Max(x => x.DayNumber);
+
             bool weekAdded = false;
-            foreach (var day in sortedByDaysNumber)
+            Day previousDay = null;
+            for (int i = 0; i <= highestDayNumber; ++i)
             {
+                var day = sortedByDaysNumber.FirstOrDefault(x => x.DayNumber == i);
+                if (day == null)
+                {
+                    if (previousDay == null)
+                        throw new InvalidOperationException();
+                    day = _adminService.GetVoidDayAfter(previousDay);
+                }
                 weekAdded = false;
                 newWeek.Add(day);
                 if (day.Start.DayOfWeek == DayOfWeek.Saturday)
@@ -84,11 +94,12 @@ namespace VoidDays.ViewModels
                     newWeek = new List<Day>();
                     weekAdded = true;
                 }
-            }
-            if(!weekAdded)
-                Weeks.Add(newWeek);
 
-            
+                previousDay = day;
+            }
+
+            if (!weekAdded)
+                Weeks.Add(newWeek);
         }
 
         private void CreateWeekViewModels()
@@ -99,12 +110,12 @@ namespace VoidDays.ViewModels
 
                 var vmAggr = new WeekViewModelAggregate();
                 vmAggr.WeekViewModel = _viewModelFactory.CreateDayHistoryWeekViewModel(week);
-                vmAggr.WeekName = GetWeekName(week.OrderBy(x=>x.Start).FirstOrDefault());
+                vmAggr.WeekName = GetWeekName(week.OrderBy(x => x.Start).FirstOrDefault());
                 App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
                 {
                     WeekViewModelAggregates.Add(vmAggr);
                 });
-                
+
             }
         }
 
@@ -121,7 +132,7 @@ namespace VoidDays.ViewModels
             return "";
         }
 
-        private static DateTime StartOfWeek( DateTime dt, DayOfWeek startOfWeek)
+        private static DateTime StartOfWeek(DateTime dt, DayOfWeek startOfWeek)
         {
             int diff = dt.DayOfWeek - startOfWeek;
             if (diff < 0)

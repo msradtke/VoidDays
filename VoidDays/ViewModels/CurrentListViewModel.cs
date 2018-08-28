@@ -24,6 +24,7 @@ namespace VoidDays.ViewModels
         private IViewModelFactory _viewModelFactory;
         private IDialogService _dialogService;
         private IAdminService _adminService;
+        private List<Day> _allDays;
         IEventAggregator _eventAggregator;
         public CurrentListViewModel(IEventAggregator eventAggregator, IUnitOfWork unitOfWork, IGoalService goalService, IViewModelFactory viewModelFactory, IDialogService dialogService, IAdminService adminService)
         {
@@ -34,6 +35,7 @@ namespace VoidDays.ViewModels
             _viewModelFactory = viewModelFactory;
             _dialogService = dialogService;
             _adminService = adminService;
+            _adminService.Initialize();
             _eventAggregator = eventAggregator;
             NewGoalCommand = new ActionCommand(AddNewGoal);
             EditGoalItemCommand = new ActionCommand(EditGoalItem);
@@ -47,8 +49,10 @@ namespace VoidDays.ViewModels
             GoalItemViewModelAggregates = new ObservableCollection<GoalItemViewModelAggregate>();
             //_eventAggregator.GetEvent<GoalItemStatusChange>().Subscribe(HandleGoalStatusChange);
             IsPreviousDayComplete = false;
+            GetAllDays();
             Today = _adminService.GetCurrentStoredDay();
             var csd = _adminService.GetCurrentStoredDay();
+            SetCurrentStoredDayGoalItems(csd);
             SetDay(csd);
         }
         public ICommand NewGoalCommand { get; private set; }
@@ -58,6 +62,7 @@ namespace VoidDays.ViewModels
         public ICommand ForwardCommand { get; set; }
         #region Properties
         public ObservableCollection<GoalItem> CurrentGoalItems { get; set; }
+        public ObservableCollection<GoalItem> CurrentStoredDayGoalItems { get; set; }
         public ObservableCollection<IGoalItemViewModel> GoalItemViewModels { get; set; }
         public ObservableCollection<GoalItemViewModelAggregate> GoalItemViewModelAggregates { get; set; }
         public GoalItemViewModelAggregate SelectedGoalItemViewModel { get; set; }
@@ -90,9 +95,9 @@ namespace VoidDays.ViewModels
                         UpdateCurrentDayStatus();
                         SetPreviousDayStatus();
 
-                        NextDay = _adminService.GetNextDay(CurrentDay);
+                        NextDay = _allDays.FirstOrDefault(x=>x.DayNumber == CurrentDay.DayNumber + 1);
                         IsForwardEnabled = NextDay == null ? false : true;
-                        PreviousDay = _adminService.GetPreviousDay(CurrentDay);
+                        PreviousDay = _allDays.FirstOrDefault(x => x.DayNumber == CurrentDay.DayNumber - 1);
                         IsBackEnabled = PreviousDay == null ? false : true;
 
                         IsToday = CurrentDay == Today ? true : false;
@@ -101,6 +106,14 @@ namespace VoidDays.ViewModels
                 .ContinueWith(x => IsLoading = false);
             }
 
+        }
+        private void SetCurrentStoredDayGoalItems(Day csd)
+        {
+            CurrentStoredDayGoalItems = _goalService.GetGoalItemsByDayNumber(csd.DayNumber).ToObservableCollection();
+        }
+        private void GetAllDays()
+        {
+            _allDays = _adminService.GetAllVoidDays();
         }
         private void GoalItemDeletedHandler(GoalItem goalItem)
         {
@@ -157,7 +170,7 @@ namespace VoidDays.ViewModels
         }
         private void UpdateCurrentDayStatus()
         {
-            if (CurrentGoalItems.FirstOrDefault(x => x.IsComplete == false) == null) //if no uncomplete goals
+            if (CurrentStoredDayGoalItems.FirstOrDefault(x => x.IsComplete == false) == null) //if no uncomplete goals
             {
                 _eventAggregator.GetEvent<CurrentDayStatusEvent>().Publish(true); //all complete
             }
@@ -176,7 +189,7 @@ namespace VoidDays.ViewModels
         }
         private void SetPreviousDayStatus()
         {
-            PreviousDay = _adminService.GetPreviousDay(CurrentDay);
+            PreviousDay = _allDays.FirstOrDefault(x => x.DayNumber == CurrentDay.DayNumber - 1);
             if (PreviousDay != null)
             {
                 IsPreviousDayComplete = !PreviousDay.IsVoid;

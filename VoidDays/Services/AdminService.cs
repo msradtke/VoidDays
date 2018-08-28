@@ -69,7 +69,7 @@ namespace VoidDays.Services
             var firstDay = _dayRepository.Get(x => x.DayNumber == 0).FirstOrDefault();
             var daySpan = DateTime.Today - firstDay.Start;
             var dayNum = daySpan.Days;
-            day.DayNumber = dayNum;
+            day.DayNumber = dayNum + 1;
             day.Start = DateTime.Today + settings.StartTime;
             var addDay = day.Start.AddDays(1);
             var subtractSecond = day.Start.AddSeconds(-1);
@@ -99,10 +99,50 @@ namespace VoidDays.Services
             //SyncToCurrentDay(currentDay);
             return nextDay;
         }
+        public Day GetVoidDayAfter(Day previousday)
+        {
+            previousday.IsActive = false;
+            var nextDay = new Day();
+            var settings = GetSettings();
+            nextDay.DayNumber = previousday.DayNumber + 1;
+            var startDateTime = new DateTime();
+            startDateTime = previousday.Start.Date;
+            nextDay.Start = startDateTime.AddDays(1) + settings.StartTime;
+            var addDay = nextDay.Start.AddDays(1);
+            var subtractSecond = addDay.AddSeconds(-1);
+            nextDay.End = subtractSecond;
+            nextDay.IsActive = false;
+            nextDay.IsVoid = true;
+            return nextDay;
+        }
+        public List<Day> GetAllVoidDays()
+        {
+            var allDays = GetAllDays();
+            var highestDayNumber = allDays.Max(x => x.DayNumber);
+
+            List<Day> allVoidDays = new List<Day>();
+            Day previousDay = null;
+            for (int i = 0; i <= highestDayNumber; ++i)
+            {
+                var day = allDays.FirstOrDefault(x => x.DayNumber == i);
+                if (day == null)
+                {
+                    if (previousDay == null)
+                        throw new InvalidOperationException();
+                    day = GetVoidDayAfter(previousDay);
+                }
+
+                allVoidDays.Add(day);
+                previousDay = day;
+            }
+            return allVoidDays;
+        }
         public Day CreateFirstDay()
         {
             var firstDay = new Day();
             var settings = GetSettings();
+            if (settings == null)
+                return null;
             firstDay.DayNumber = 0;
 
             firstDay.Start = DateTime.UtcNow.Date + settings.StartTime;
@@ -153,15 +193,10 @@ namespace VoidDays.Services
                     SaveGoalItem(item);
                 }
                 currentStoredDay.IsActive = false;
-
-                var nextDay = CreateNextDay(currentStoredDay);
+                var nextDay = CreateToday(); 
 
                 CreateAllGoalItems(nextDay.DayNumber);
-
-                if (!CheckForCurrentDay(nextDay, out current))
-                {
-                    SyncToCurrentDay(current);
-                }
+                
                 return nextDay;
             }
             return currentStoredDay;
@@ -221,7 +256,7 @@ namespace VoidDays.Services
         {
             return _dayRepository.Get(x => x.DayNumber == day.DayNumber + 1).LastOrDefault();
         }
-        private Timer timer;
+        private Timer timer; 
 
         public Timer SetupTimer(Day currentDay, TimeSpan alertTime)
         {

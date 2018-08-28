@@ -23,5 +23,7 @@ namespace VoidDays.Services.Interfaces
         Day SyncToCurrentDay(Day currentStoredDay);
         void Initialize();
         void SetIsLoading(LoadingLock loadLock);
+        Day GetVoidDayAfter(Day previousDay);
+        List<Day> GetAllVoidDays();
     }
 }
