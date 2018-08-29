@@ -103,7 +103,7 @@ namespace VoidDays.ViewModels
         private void SetupTimer()
         {
             _settings = _adminService.GetSettings();
-            _timer = _adminService.SetUpTimer(_settings.EndTime);
+            _timer = _adminService.SetUpTimer(_settings.EndTime.TimeOfDay);
         }
         private void ShowHistory()
         {

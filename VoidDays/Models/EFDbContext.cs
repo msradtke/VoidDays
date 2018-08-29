@@ -8,10 +8,15 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using VoidDays.Logging;
 using System.Data;
+using System.Data.SQLite;
+using System.Data.SQLite.EF6;
+using System.Data.Entity.Core.Common;
+using SQLite.CodeFirst;
 
 namespace VoidDays.Models
 {
-    [DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]
+    //[DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]
+    [DbConfigurationType(typeof(DatabaseConfiguration))]
     public class EFDbContext : DbContext, IDbContext
     {
         public DbSet<Goal> Goals { get; set; }
@@ -21,13 +26,15 @@ namespace VoidDays.Models
         public DbSet<Settings> Settings { get; set; }
         public ConnectionState ConnectionState { get; private set; }
         public EFDbContext()
-            : base("VoidDays.Properties.Settings.VoidDaysConnectionString")
+            //: base("VoidDays.Properties.Settings.VoidDaysConnectionString")
+            :base("VoidDaysLiteContext")
         {
             
             //this.Database.Log = s => Log.DBLog(s);
             this.Database.Log = s => Console.WriteLine(s);
+
+            //Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
             
-            Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
             //Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
             Database.Connection.StateChange += StateChangeHandler;
             this.Configuration.LazyLoadingEnabled = true;
@@ -35,7 +42,8 @@ namespace VoidDays.Models
         }
         static EFDbContext()
         {
-            DbConfiguration.SetConfiguration(new MySql.Data.Entity.MySqlEFConfiguration());
+            DbConfiguration.SetConfiguration(new DatabaseConfiguration());
+
         }
         private void StateChangeHandler(object sender, System.Data.StateChangeEventArgs e)
         {
@@ -45,6 +53,7 @@ namespace VoidDays.Models
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            Database.SetInitializer<EFDbContext>(new SqliteCreateDatabaseIfNotExists<EFDbContext>(modelBuilder));
             modelBuilder.Entity<GoalItem>().ToTable("goal_items");
             modelBuilder.Entity<Goal>().ToTable("goals");
             modelBuilder.Entity<Day>().ToTable("days");
@@ -72,5 +81,14 @@ namespace VoidDays.Models
     public interface IDbContextFactory
     {
         IDbContext CreateDbContext();
+    }
+    class DatabaseConfiguration : DbConfiguration
+    {
+        public DatabaseConfiguration()
+        {
+            SetProviderFactory("System.Data.SQLite", SQLiteFactory.Instance);
+            SetProviderFactory("System.Data.SQLite.EF6", SQLiteProviderFactory.Instance);
+            SetProviderServices("System.Data.SQLite", (DbProviderServices)SQLiteProviderFactory.Instance.GetService(typeof(DbProviderServices)));
+        }
     }
 }

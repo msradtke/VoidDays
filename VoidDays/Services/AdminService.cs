@@ -70,7 +70,7 @@ namespace VoidDays.Services
             var daySpan = DateTime.Today - firstDay.Start;
             var dayNum = daySpan.Days;
             day.DayNumber = dayNum + 1;
-            day.Start = DateTime.Today + settings.StartTime;
+            day.Start = DateTime.Today + settings.StartTime.TimeOfDay;
             var addDay = day.Start.AddDays(1);
             var subtractSecond = day.Start.AddSeconds(-1);
             day.End = subtractSecond;
@@ -88,7 +88,7 @@ namespace VoidDays.Services
             nextDay.DayNumber = currentDay.DayNumber + 1;
             var startDateTime = new DateTime();
             startDateTime = currentDay.Start.Date;
-            nextDay.Start = startDateTime.AddDays(1) + settings.StartTime;
+            nextDay.Start = startDateTime.AddDays(1) + settings.StartTime.TimeOfDay;
             var addDay = nextDay.Start.AddDays(1);
             var subtractSecond = addDay.AddSeconds(-1);
             nextDay.End = subtractSecond;
@@ -107,7 +107,7 @@ namespace VoidDays.Services
             nextDay.DayNumber = previousday.DayNumber + 1;
             var startDateTime = new DateTime();
             startDateTime = previousday.Start.Date;
-            nextDay.Start = startDateTime.AddDays(1) + settings.StartTime;
+            nextDay.Start = startDateTime.AddDays(1) + settings.StartTime.TimeOfDay;
             var addDay = nextDay.Start.AddDays(1);
             var subtractSecond = addDay.AddSeconds(-1);
             nextDay.End = subtractSecond;
@@ -145,7 +145,7 @@ namespace VoidDays.Services
                 return null;
             firstDay.DayNumber = 0;
 
-            firstDay.Start = DateTime.UtcNow.Date + settings.StartTime;
+            firstDay.Start = DateTime.UtcNow.Date + settings.StartTime.TimeOfDay;
             firstDay.End = firstDay.Start.Add(new TimeSpan(23, 59, 59));
             firstDay.IsActive = true;
 
@@ -183,8 +183,10 @@ namespace VoidDays.Services
             {
                 //complete this day, foreach goalitem on this day not completed, void
                 var goalItems = GetGoalItemsByDayNumber(currentStoredDay.DayNumber).ToList();
+                bool noGoalItems = true;
                 foreach (var item in goalItems)
                 {
+                    noGoalItems = false;
                     if (item.IsComplete == false)
                     {
                         item.IsVoid = true;
@@ -192,7 +194,10 @@ namespace VoidDays.Services
                     }
                     SaveGoalItem(item);
                 }
+                if (noGoalItems)
+                    currentStoredDay.IsVoid = true;
                 currentStoredDay.IsActive = false;
+                SaveChanges();
                 var nextDay = CreateToday(); 
 
                 CreateAllGoalItems(nextDay.DayNumber);
@@ -298,7 +303,7 @@ namespace VoidDays.Services
             Day currentStoredDay = GetCurrentStoredDay();
 
             //if (current.Date > _currentDay.Start.Date && current.TimeOfDay > _settings.EndTime)
-            if (current.Date > currentStoredDay.Start.Date && current.TimeOfDay > _settings.EndTime)
+            if (current.Date > currentStoredDay.Start.Date && current.TimeOfDay > _settings.EndTime.TimeOfDay)
             {
                 timer.Enabled = false;
                 var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };

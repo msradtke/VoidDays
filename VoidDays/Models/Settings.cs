@@ -13,9 +13,9 @@ namespace VoidDays.Models
         [Column("settings_id")]
         public int SettingsId { get; set; }
         [Column("start_time")]
-        public TimeSpan StartTime { get; set; }
+        public DateTime StartTime { get; set; }
         [Column("end_time")]
-        public TimeSpan EndTime { get; set; }
+        public DateTime EndTime { get; set; }
         [Column("start_day")]
         public DateTime StartDay { get; set; }
         [Column("is_updating")]
