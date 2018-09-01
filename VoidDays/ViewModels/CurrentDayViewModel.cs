@@ -9,11 +9,8 @@ using VoidDays.ViewModels.Interfaces;
 using PropertyChanged;
 namespace VoidDays.ViewModels
 {
-    [ImplementPropertyChanged]
-    public class CurrentDayViewModel : ICurrentDayViewModel
-    {
-        
-        IEventAggregator _eventAggregator;
+    public class CurrentDayViewModel : ViewModelBase,ICurrentDayViewModel
+    {        
         public CurrentDayViewModel(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;

@@ -11,7 +11,6 @@ using Prism.Events;
 using VoidDays.ViewModels.Events;
 namespace VoidDays.ViewModels
 {
-    [ImplementPropertyChanged]
     public class AddNewGoalViewModel : ViewModelBase
     {
         IDialogService _dialogService;

@@ -10,10 +10,10 @@
         <Grid.Style>
             <Style TargetType="Grid">
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsCurrentDayComplete}" Value="True">
+                    <DataTrigger Binding="{Binding IsCurrentDayComplete, UpdateSourceTrigger=PropertyChanged}" Value="True">
                         <Setter Property="Background" Value="LightGreen"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding IsCurrentDayComplete}" Value="False">
+                    <DataTrigger Binding="{Binding IsCurrentDayComplete, UpdateSourceTrigger=PropertyChanged}" Value="False">
                         <Setter Property="Background" Value="LightYellow"/>
                     </DataTrigger>
                 </Style.Triggers>

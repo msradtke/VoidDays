@@ -26,14 +26,13 @@ namespace VoidDays.Models
         public DbSet<Settings> Settings { get; set; }
         public ConnectionState ConnectionState { get; private set; }
         public EFDbContext()
-            //: base("VoidDays.Properties.Settings.VoidDaysConnectionString")
-            :base("VoidDaysLiteContext")
-        {
-            
+            : base("VoidDays.Properties.Settings.VoidDaysConnectionString")
+            //:base("VoidDaysLiteContext")
+        {            
             //this.Database.Log = s => Log.DBLog(s);
             this.Database.Log = s => Console.WriteLine(s);
 
-            //Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
+            Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
             
             //Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
             Database.Connection.StateChange += StateChangeHandler;
@@ -47,13 +46,13 @@ namespace VoidDays.Models
         }
         private void StateChangeHandler(object sender, System.Data.StateChangeEventArgs e)
         {
-            //this.ConnectionState = e.CurrentState;
+            this.ConnectionState = e.CurrentState;
             //throw new NotImplementedException();
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            Database.SetInitializer<EFDbContext>(new SqliteCreateDatabaseIfNotExists<EFDbContext>(modelBuilder));
+            //Database.SetInitializer<EFDbContext>(new SqliteCreateDatabaseIfNotExists<EFDbContext>(modelBuilder));
             modelBuilder.Entity<GoalItem>().ToTable("goal_items");
             modelBuilder.Entity<Goal>().ToTable("goals");
             modelBuilder.Entity<Day>().ToTable("days");

@@ -16,7 +16,7 @@ using VoidDays.ViewModels.Events;
 namespace VoidDays.ViewModels
 {
     [ImplementPropertyChanged]
-    public class CurrentListViewModel : ICurrentListViewModel
+    public class CurrentListViewModel : ViewModelBase, ICurrentListViewModel
     {
         private IUnitOfWork _unitOfWork;
         private IRepositoryBase<Goal> _goalRepository;
@@ -120,6 +120,7 @@ namespace VoidDays.ViewModels
             _goalService.DeleteGoalItem(goalItem, CurrentDay);
             CurrentGoalItems.Remove(goalItem);
             SetCurrentGoalItemViewModels();
+            UpdateCurrentDayStatus();
         }
         private void SetDayToTodayHandler()
         {
@@ -170,6 +171,7 @@ namespace VoidDays.ViewModels
         }
         private void UpdateCurrentDayStatus()
         {
+            SetCurrentStoredDayGoalItems(Today);
             if (CurrentStoredDayGoalItems.FirstOrDefault(x => x.IsComplete == false) == null) //if no uncomplete goals
             {
                 _eventAggregator.GetEvent<CurrentDayStatusEvent>().Publish(true); //all complete

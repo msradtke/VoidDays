@@ -5,14 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using PropertyChanged;
 using Prism.Events;
+using System.ComponentModel;
+
 namespace VoidDays.ViewModels
 {
-    [ImplementPropertyChanged]
-    public class ViewModelBase
+    public class ViewModelBase : INotifyPropertyChanged
     {
         protected IEventAggregator _eventAggregator; 
         public ViewModelBase()
         {
         }
+        public void RaisePropertyChanged(string propertyName)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
