@@ -11,10 +11,12 @@ namespace VoidDays.Services
     {
         IAdminService _adminService;
         IGoalService _goalService;
-        public StartupService(IAdminService adminService, IGoalService goalService)
+        IUserService _userService;
+        public StartupService(IAdminService adminService, IGoalService goalService, IUserService userService)
         {
             _adminService = adminService;
             _goalService = goalService;
+            _userService = userService;
         }
 
         public void Initialize()
@@ -35,6 +37,7 @@ namespace VoidDays.Services
 
             _goalService.SyncGoalItems(currentStoredDay.DayNumber);
             loadLock.IsLoading = false;
+            _userService.TestEncrypt();
             _adminService.SetIsLoading(loadLock);
         }
         /*private void SyncToCurrentDay(Day currentStoredDay)

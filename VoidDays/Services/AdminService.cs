@@ -10,6 +10,7 @@ using System.Timers;
 using VoidDays.ViewModels.Events;
 using Prism.Events;
 using VoidDays.Logging;
+using VoidDays.Debug;
 
 namespace VoidDays.Services
 {
@@ -39,6 +40,10 @@ namespace VoidDays.Services
             _settingsRepository = _unitOfWork.SettingsRepository;
             _goalRepository = _unitOfWork.GoalRepository;
             _settings = GetSettings();
+
+            //debug
+            if (_settings == null)
+                DebugService.InitSettings();
         }
         public bool CheckForCurrentDay(Day currentStoredDay, out Day day)
         {

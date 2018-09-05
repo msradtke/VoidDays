@@ -19,6 +19,7 @@ namespace VoidDays.Models
         private IRepositoryBase<Day> _dayRepository;
         private IRepositoryBase<GoalItemsCreated> _goalItemsCreatedRepository;
         private IRepositoryBase<Settings> _settingsRepository;
+        private IRepositoryBase<User> _userRepository;
 
         public UnitOfWork(IRepositoryBaseFactory repositoryBaseFactory, IDbContextFactory contextFactory)
         {
@@ -26,6 +27,17 @@ namespace VoidDays.Models
             _contextFactory = contextFactory;
             _context = _contextFactory.CreateDbContext();
 
+        }
+        public IRepositoryBase<User> UserRepository
+        {
+            get
+            {
+                if (this._userRepository == null)
+                {
+                    this._userRepository = _repositoryBaseFactory.CreateUserRepository(_context);
+                }
+                return _userRepository;
+            }
         }
         public IRepositoryBase<Goal> GoalRepository
         {
@@ -136,5 +148,6 @@ namespace VoidDays.Models
         RepositoryBase<Day> CreateDayRepository(IDbContext context);
         RepositoryBase<GoalItemsCreated> CreateGoalItemsCreatedRepository(IDbContext context);
         RepositoryBase<Settings> CreateSettingsRepository(IDbContext context);
+        RepositoryBase<User> CreateUserRepository(IDbContext context);
     }
 }

@@ -17,6 +17,8 @@ using VoidDays.Services.Interfaces;
 using VoidDays.Services;
 using Prism.Events;
 using VoidDays.Resources;
+using VoidDays.Debug;
+
 namespace VoidDays
 {
     /// <summary>
@@ -30,7 +32,7 @@ namespace VoidDays
         protected override void OnStartup(StartupEventArgs e)
         {
 
-            Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
+            //Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
             base.OnStartup(e);
             ConfigureContainer();
 
@@ -40,7 +42,7 @@ namespace VoidDays
 
             Current.MainWindow.Show();
 
-
+            DebugService.Initialize(container);
 
             Task.Factory.StartNew(() =>
           {
@@ -64,6 +66,7 @@ namespace VoidDays
             container.Bind<IViewModelFactory>().ToFactory();
             container.Bind<IDbContextFactory>().ToFactory();
 
+
             container.Bind<IDbContext>().To<EFDbContext>().InTransientScope();
             container.Bind<ICurrentListViewModel>().To<CurrentListViewModel>().InTransientScope();
             container.Bind<IMainViewContainerViewModel>().To<MainViewContainerViewModel>().InTransientScope();
@@ -74,6 +77,7 @@ namespace VoidDays
             container.Bind<ISmallHistoryDayViewModelContainer>().To<SmallHistoryDayViewModelContainer>().InTransientScope();
             container.Bind<IDayHistoryViewModel>().To<DayHistoryViewModel>().InTransientScope();
 
+            container.Bind<IUserService>().To<UserService>().InSingletonScope();
             container.Bind<IGoalService>().To<GoalService>().InSingletonScope();
             container.Bind<IDialogService>().To<DialogService>().InSingletonScope();
             container.Bind<IStartupService>().To<StartupService>().InTransientScope();

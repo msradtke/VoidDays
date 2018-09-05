@@ -24,7 +24,9 @@ namespace VoidDays.Models
         public DbSet<Day> Days { get; set; }
         public DbSet<GoalItemsCreated> GoalItemsCreated { get; set; }
         public DbSet<Settings> Settings { get; set; }
+        public DbSet<User> Users { get; set; }
         public ConnectionState ConnectionState { get; private set; }
+        
         public EFDbContext()
             : base("VoidDays.Properties.Settings.VoidDaysConnectionString")
             //:base("VoidDaysLiteContext")
@@ -32,9 +34,9 @@ namespace VoidDays.Models
             //this.Database.Log = s => Log.DBLog(s);
             this.Database.Log = s => Console.WriteLine(s);
 
-            Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
+            //Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
             
-            //Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
+            Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
             Database.Connection.StateChange += StateChangeHandler;
             this.Configuration.LazyLoadingEnabled = true;
 
@@ -59,6 +61,7 @@ namespace VoidDays.Models
             modelBuilder.Entity<GoalItemsCreated>().ToTable("goal_items_created");
             modelBuilder.Entity<Settings>().ToTable("settings");
             modelBuilder.Entity<GoalItem>().HasRequired(x => x.Goal);
+
             //modelBuilder.Entity<GoalItem>().HasOptional(x => x.Message);
         }
         public DbSet<TEntity> GetDbSet<TEntity>() where TEntity : class
