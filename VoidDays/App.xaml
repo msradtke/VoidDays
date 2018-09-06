@@ -15,6 +15,12 @@
         <Style TargetType="Button">
             <Setter Property="Margin" Value="2"/>
         </Style>
+        <DataTemplate DataType="{x:Type viewmodels:MainContainerViewModel}">
+            <views:MainContainer/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
+            <views:LoginView/>
+        </DataTemplate>
         <DataTemplate DataType="{x:Type viewmodels:LoadingViewModel}">
             <res:Loading/>
         </DataTemplate>
@@ -82,7 +88,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <Style x:Key="RedGlowItemContainerOld" TargetType="ListBoxItem">
             <Setter Property="Template">
                 <Setter.Value>

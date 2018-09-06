@@ -34,9 +34,9 @@ namespace VoidDays.Models
             //this.Database.Log = s => Log.DBLog(s);
             this.Database.Log = s => Console.WriteLine(s);
 
-            //Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
+            Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
             
-            Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
+            //Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
             Database.Connection.StateChange += StateChangeHandler;
             this.Configuration.LazyLoadingEnabled = true;
 
@@ -44,14 +44,12 @@ namespace VoidDays.Models
         static EFDbContext()
         {
             //DbConfiguration.SetConfiguration(new DatabaseConfiguration());
-
         }
         private void StateChangeHandler(object sender, System.Data.StateChangeEventArgs e)
         {
             this.ConnectionState = e.CurrentState;
             //throw new NotImplementedException();
         }
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             //Database.SetInitializer<EFDbContext>(new SqliteCreateDatabaseIfNotExists<EFDbContext>(modelBuilder));
@@ -71,7 +69,6 @@ namespace VoidDays.Models
 
         public void Save()
         {
-
             this.SaveChanges();
         }
         public void Reload(object entity)
@@ -84,6 +81,7 @@ namespace VoidDays.Models
     {
         IDbContext CreateDbContext();
     }
+
     class DatabaseConfiguration : DbConfiguration
     {
         public DatabaseConfiguration()

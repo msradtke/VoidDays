@@ -22,7 +22,7 @@ namespace VoidDays.Services
         {
             var dataKey = SecretBox.GenerateKey();
             var intermediateKey = SecretBox.GenerateKey();
-            
+
             var User = new User();
             User.UserName = "mick";
             User.Password = "password";
@@ -36,11 +36,11 @@ namespace VoidDays.Services
             var pass = User.Password.ToString();
             var encryptDataKey = EncryptString(Utilities.BinaryToHex(dataKey), intermediateKey);
             User.DataKeyCipher = encryptDataKey;
-            
+
             //returns a 32 byte hash
             var passHashKey = GenericHash.Hash(pass, (byte[])null, 32);
-            var passwordHash = PasswordHash.ScryptHashBinary(Encoding.UTF8.GetBytes(pass),passHashKey,PasswordHash.Strength.Medium);
-            var encryptInterKey = EncryptString(Utilities.BinaryToHex(intermediateKey),passwordHash);
+            var passwordHash = PasswordHash.ScryptHashBinary(Encoding.UTF8.GetBytes(pass), passHashKey, PasswordHash.Strength.Medium);
+            var encryptInterKey = EncryptString(Utilities.BinaryToHex(intermediateKey), passwordHash);
             User.IntermediateKeyCipher = encryptInterKey;
             var actualPasswordHash = PasswordHash.ScryptHashString(pass, PasswordHash.Strength.Medium);
             User.PasswordHash = actualPasswordHash;
@@ -57,19 +57,17 @@ namespace VoidDays.Services
                 Console.WriteLine("true");
                 //correct password
             }
-
-
-
-            var dec = Decrypt(mick.Message,Utilities.HexToBinary(unEnDataKey));
+            var dec = Decrypt(mick.Message, Utilities.HexToBinary(unEnDataKey));
 
 
         }
-        public bool Login(string userName, string password)
+        public bool Login(string userName, string password, out User user)
         {
-            var user = _userRepository.Get(x => x.UserName == userName).FirstOrDefault();
-            if (user == null)
+            var usr = _userRepository.Get(x => x.UserName == userName).FirstOrDefault();
+            user = usr;
+            if (usr == null)
                 return false;
-            if (VerifyPasswordHash(password, user.PasswordHash))
+            if (VerifyPasswordHash(password, usr.PasswordHash))
                 return true;
 
             return false;
@@ -87,7 +85,7 @@ namespace VoidDays.Services
         public string Decrypt(string cipher, byte[] key)
         {
 
-            byte[] cipherBytes = Utilities.HexToBinary(cipher);            
+            byte[] cipherBytes = Utilities.HexToBinary(cipher);
             var nonce = cipherBytes.Take(24).ToArray();
             var messageBytes = cipherBytes.Skip(24).ToArray();
             var message = Utilities.BinaryToHex(messageBytes);
@@ -109,6 +107,7 @@ namespace VoidDays.Services
 
     public interface IUserService
     {
+        bool Login(string userName, string password, out User user);
         void TestEncrypt();
     }
 }

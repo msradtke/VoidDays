@@ -10,17 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VoidDays.ViewModels;
-using VoidDays.ViewModels.Interfaces;
+
 namespace VoidDays.Views
 {
     /// <summary>
-    /// Interaction logic for MainContainer.xaml
+    /// Interaction logic for LoginView.xaml
     /// </summary>
-    public partial class MainContainer : UserControl
+    public partial class LoginView : UserControl
     {
-        public MainContainer()
+        public LoginView()
         {
             InitializeComponent();
         }

@@ -27,8 +27,7 @@ namespace VoidDays
     public partial class App : Application
     {
         private IKernel container;
-        private MainContainer MainContainer;
-        private MainContainerViewModel MainContainerViewModel;
+        private MainWindowViewModel _mainWindowViewModel;
         protected override void OnStartup(StartupEventArgs e)
         {
 
@@ -40,20 +39,23 @@ namespace VoidDays
             //Current.MainWindow.Show();
             ComposeObjects();
 
-            Current.MainWindow.Show();
+            //Current.MainWindow.Show();
 
             DebugService.Initialize(container);
-
+            _mainWindowViewModel.IsLoading = true;
+            Current.MainWindow.Show();
+            
             Task.Factory.StartNew(() =>
           {
               //MainContainer.MainContainerViewModel.Initialize();
               var _startupService = this.container.Get<IStartupService>();
               _startupService.Initialize();
-              MainContainerViewModel.Initialize();
+              //MainContainerViewModel.Initialize();
+              _mainWindowViewModel.IsLoading = false;
           }
           );
+          
 
-            
 
         }
 
@@ -65,6 +67,8 @@ namespace VoidDays
             container.Bind<IRepositoryBaseFactory>().ToFactory();
             container.Bind<IViewModelFactory>().ToFactory();
             container.Bind<IDbContextFactory>().ToFactory();
+            container.Bind<IMainContainerViewModelFactory>().ToFactory();
+            container.Bind<ILoginViewModelFactory>().ToFactory();
 
 
             container.Bind<IDbContext>().To<EFDbContext>().InTransientScope();
@@ -88,10 +92,13 @@ namespace VoidDays
 
         private void ComposeObjects()
         {
-            MainContainer = this.container.Get<MainContainer>();
-            MainContainerViewModel = (MainContainerViewModel)MainContainer.DataContext;
-            Current.MainWindow = MainContainer;
+            
+            Current.MainWindow = new MainWindow();
+            _mainWindowViewModel = container.Get<MainWindowViewModel>();
+            Current.MainWindow.DataContext = _mainWindowViewModel;
+            //Current.MainWindow = MainContainer;
             Current.MainWindow.Title = "VoidDays";
+            
         }
 
 

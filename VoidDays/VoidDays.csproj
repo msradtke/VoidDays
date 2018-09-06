@@ -198,8 +198,10 @@
     <Compile Include="ViewModels\Interfaces\ISmallHistoryDayViewModelContainer.cs" />
     <Compile Include="ViewModels\Interfaces\IViewModelFactory.cs" />
     <Compile Include="ViewModels\LoadingViewModel.cs" />
+    <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainContainerViewModel.cs" />
     <Compile Include="ViewModels\MainViewContainerViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\PreviousDayViewModel.cs" />
     <Compile Include="ViewModels\SmallHistoryDayViewModel.cs" />
     <Compile Include="ViewModels\SmallHistoryDayViewModelContainer.cs" />
@@ -233,6 +235,9 @@
     </Compile>
     <Compile Include="Views\GoalItemView.xaml.cs">
       <DependentUpon>GoalItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LoginView.xaml.cs">
+      <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainContainer.xaml.cs">
       <DependentUpon>MainContainer.xaml</DependentUpon>
@@ -309,6 +314,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GoalItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LoginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

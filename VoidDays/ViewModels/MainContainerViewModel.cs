@@ -21,11 +21,12 @@ namespace VoidDays.ViewModels
         Lazy<IMainViewContainerViewModel> _lazyMainViewContainerViewModel;
         Lazy<IDayHistoryViewModel> _lazyDayHistoryViewModel;
         List<LoadingLock> _loadingLocks;
-        public MainContainerViewModel(IEventAggregator eventAggregator, Lazy<ISmallHistoryDayViewModelContainer> smallHistoryDayViewModelContainer, Lazy<IMainViewContainerViewModel> mainViewContainerViewModel, Lazy<IDayHistoryViewModel> dayHistoryViewModel, IAdminService adminService)
+        public MainContainerViewModel(User user,IEventAggregator eventAggregator, Lazy<ISmallHistoryDayViewModelContainer> smallHistoryDayViewModelContainer, Lazy<IMainViewContainerViewModel> mainViewContainerViewModel, Lazy<IDayHistoryViewModel> dayHistoryViewModel, IAdminService adminService)
         {
-            IsLoading = true;
-
             LoadingViewModel = new LoadingViewModel();
+            IsLoading = true;
+            User = user;
+            
             _eventAggregator = eventAggregator;
             _adminService = adminService;
             _lazySmallHistoryDayViewModelContainer = smallHistoryDayViewModelContainer;
@@ -113,5 +114,11 @@ namespace VoidDays.ViewModels
         public IDayHistoryViewModel DayHistoryViewModel { get; set; }
         public bool IsLoading { get; set; }
         public LoadingViewModel LoadingViewModel {get;set;}
+        public User User { get; set; }
+    }
+
+    public interface IMainContainerViewModelFactory
+    {
+        MainContainerViewModel CreateMainContainerViewModel(User user);
     }
 }
