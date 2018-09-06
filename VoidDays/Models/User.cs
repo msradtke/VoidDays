@@ -18,10 +18,10 @@ namespace VoidDays.Models
         public string Message { get; set; }
 
         [NotMapped]
-        public SecureString Password { get; set; }
+        public string Password { get; set; }
         [NotMapped]
-        public SecureString DataKey { get; set; }
+        public string DataKey { get; set; }
         [NotMapped]
-        public SecureString IntermediateKey { get; set; }
+        public string IntermediateKey { get; set; }
     }
 }

@@ -37,8 +37,6 @@ namespace VoidDays.ViewModels
         public void Initialize()
         {
             _eventAggregator.GetEvent<LoadingEvent>().Subscribe(LoadingEventListener);
-
-
             _loadingLocks = new List<LoadingLock>();
 
             HistoryCommand = new ActionCommand(ShowHistory);
@@ -49,7 +47,6 @@ namespace VoidDays.ViewModels
             {
                 var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
                 AddLoadLock(loadLock);
-                
                 IsLoading = true;
                 Task.Factory.StartNew(() =>
                 {
@@ -61,13 +58,8 @@ namespace VoidDays.ViewModels
                     SetupTimer();
                     CurrentView = MainViewContainerViewModel;
                     RemoveLoadLock(loadLock);
-
                 });
-                
-                
             }
-
-
         }
 
         private void AddLoadLock(LoadingLock loadLock)
@@ -94,8 +86,7 @@ namespace VoidDays.ViewModels
                 RemoveLoadLock(loadLock);
         }
         private void RemoveLoadLock(LoadingLock loadlLock)
-        {
-            
+        {            
             _loadingLocks.Remove(loadlLock);
             if (_loadingLocks.Count == 0)
                 IsLoading = false;

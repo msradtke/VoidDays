@@ -15,8 +15,8 @@ using SQLite.CodeFirst;
 
 namespace VoidDays.Models
 {
-    //[DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]
-    [DbConfigurationType(typeof(DatabaseConfiguration))]
+    [DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]
+    //[DbConfigurationType(typeof(DatabaseConfiguration))]
     public class EFDbContext : DbContext, IDbContext
     {
         public DbSet<Goal> Goals { get; set; }
@@ -43,7 +43,7 @@ namespace VoidDays.Models
         }
         static EFDbContext()
         {
-            DbConfiguration.SetConfiguration(new DatabaseConfiguration());
+            //DbConfiguration.SetConfiguration(new DatabaseConfiguration());
 
         }
         private void StateChangeHandler(object sender, System.Data.StateChangeEventArgs e)

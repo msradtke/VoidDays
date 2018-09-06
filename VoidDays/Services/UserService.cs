@@ -25,36 +25,46 @@ namespace VoidDays.Services
             
             var User = new User();
             User.UserName = "mick";
-            User.Password = new SecureString();
-            User.Password.AppendChar('p');
-            User.DataKey = new SecureString();
-            User.DataKey.AppendChar('d');
-            User.IntermediateKey = new SecureString();
-            User.IntermediateKey.AppendChar('i');
+            User.Password = "password";
+            User.DataKey = "datakey";
+            User.IntermediateKey = "interkey";
 
             var message = "this is the message";
             var encrypted = EncryptString(message, dataKey);
             User.Message = encrypted;
 
+            var pass = User.Password.ToString();
             var encryptDataKey = EncryptString(Utilities.BinaryToHex(dataKey), intermediateKey);
             User.DataKeyCipher = encryptDataKey;
-            var salty = Utilities.BinaryToHex(PasswordHash.ScryptGenerateSalt());
-            var bitty = Utilities.HexToBinary(salty);
-            var passwordHash = PasswordHash.ScryptHashBinary(User.Password.ToString(),salty,PasswordHash.Strength.Medium);
-            var salt = Sodium.SodiumCore.GetRandomBytes(1);
-            //var bytes = Encoding.UTF8.GetBytes(passwordHash);
+            
+            //returns a 32 byte hash
+            var passHashKey = GenericHash.Hash(pass, (byte[])null, 32);
+            var passwordHash = PasswordHash.ScryptHashBinary(Encoding.UTF8.GetBytes(pass),passHashKey,PasswordHash.Strength.Medium);
             var encryptInterKey = EncryptString(Utilities.BinaryToHex(intermediateKey),passwordHash);
             User.IntermediateKeyCipher = encryptInterKey;
-            
+            var actualPasswordHash = PasswordHash.ScryptHashString(pass, PasswordHash.Strength.Medium);
+            User.PasswordHash = actualPasswordHash;
+
             _userRepository.Insert(User);
             _unitOfWork.Save();
 
             var mick = _userRepository.Get(x => x.UserName == "mick").FirstOrDefault();
-            var unEnInterKey = Decrypt(mick.IntermediateKeyCipher, Encoding.UTF8.GetBytes(User.Password.ToString()));
+            var unEnInterKey = Decrypt(mick.IntermediateKeyCipher, passwordHash);
             var unEnDataKey = Decrypt(mick.DataKeyCipher, Utilities.HexToBinary(unEnInterKey));
+
+            if (PasswordHash.ScryptHashStringVerify(mick.PasswordHash, pass))
+            {
+                Console.WriteLine("true");
+                //correct password
+            }
+
+
+
             var dec = Decrypt(mick.Message,Utilities.HexToBinary(unEnDataKey));
+
+
         }
-        public bool Login(string userName, SecureString password)
+        public bool Login(string userName, string password)
         {
             var user = _userRepository.Get(x => x.UserName == userName).FirstOrDefault();
             if (user == null)
@@ -87,9 +97,9 @@ namespace VoidDays.Services
             return secretMessage;
         }
 
-        public bool VerifyPasswordHash(SecureString password, string hash)
+        public bool VerifyPasswordHash(string password, string hash)
         {
-            if (PasswordHash.ScryptHashStringVerify(hash, password.ToString()))
+            if (PasswordHash.ScryptHashStringVerify(hash, password))
             {
                 return true;
             }

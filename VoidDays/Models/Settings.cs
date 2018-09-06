@@ -7,7 +7,6 @@ using PropertyChanged;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace VoidDays.Models
 {
-    [ImplementPropertyChanged]
     public class Settings
     {
         [Column("settings_id")]
