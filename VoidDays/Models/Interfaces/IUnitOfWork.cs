@@ -18,6 +18,5 @@ namespace VoidDays.Models.Interfaces
         IRepositoryBase<Day> DayRepository { get; }
         IRepositoryBase<GoalItemsCreated> GoalItemsCreatedRepository { get; }
         IRepositoryBase<Settings> SettingsRepository { get; }
-        IRepositoryBase<User> UserRepository { get; }
     }
 }

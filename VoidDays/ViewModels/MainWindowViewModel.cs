@@ -31,9 +31,9 @@ namespace VoidDays.ViewModels
         public object CurrentView { get; set; }
         public object LoadingViewModel { get; set; }
 
-        void LoginSuccess(User user)
+        void LoginSuccess()
         {
-            var vm = _mainContainerViewModelFactory.CreateMainContainerViewModel(user);
+            var vm = _mainContainerViewModelFactory.CreateMainContainerViewModel();
             
             CurrentView = vm;
             vm.Initialize();

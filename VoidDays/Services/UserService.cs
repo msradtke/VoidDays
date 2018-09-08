@@ -11,15 +11,14 @@ namespace VoidDays.Services
 {
     public class UserService : IUserService
     {
-        IRepositoryBase<User> _userRepository;
         IUnitOfWork _unitOfWork;
         public UserService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _userRepository = _unitOfWork.UserRepository;
         }
         public void TestEncrypt()
         {
+            /*
             var dataKey = SecretBox.GenerateKey();
             var intermediateKey = SecretBox.GenerateKey();
 
@@ -45,10 +44,10 @@ namespace VoidDays.Services
             var actualPasswordHash = PasswordHash.ScryptHashString(pass, PasswordHash.Strength.Medium);
             User.PasswordHash = actualPasswordHash;
 
-            _userRepository.Insert(User);
+            //_userRepository.Insert(User);
             _unitOfWork.Save();
 
-            var mick = _userRepository.Get(x => x.UserName == "mick").FirstOrDefault();
+            //var mick = _userRepository.Get(x => x.UserName == "mick").FirstOrDefault();
             var unEnInterKey = Decrypt(mick.IntermediateKeyCipher, passwordHash);
             var unEnDataKey = Decrypt(mick.DataKeyCipher, Utilities.HexToBinary(unEnInterKey));
 
@@ -58,19 +57,11 @@ namespace VoidDays.Services
                 //correct password
             }
             var dec = Decrypt(mick.Message, Utilities.HexToBinary(unEnDataKey));
-
+            */
 
         }
         public bool Login(string userName, string password, out User user)
         {
-            var usr = _userRepository.Get(x => x.UserName == userName).FirstOrDefault();
-            user = usr;
-            if (usr == null)
-                return false;
-            if (VerifyPasswordHash(password, usr.PasswordHash))
-                return true;
-
-            return false;
         }
         public string EncryptString(string message, byte[] key)
         {

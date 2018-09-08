@@ -19,5 +19,5 @@ namespace VoidDays.ViewModels.Events
     public class DeleteGoalItemEvent : PubSubEvent<GoalItem> { }
     public class NextDayEvent : PubSubEvent<Day> { }
     public class LoadingEvent : PubSubEvent<LoadingLock> { }
-    public class LoginEvent : PubSubEvent<User> { }
+    public class LoginEvent : PubSubEvent { }
 }

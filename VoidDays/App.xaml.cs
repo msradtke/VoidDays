@@ -41,20 +41,21 @@ namespace VoidDays
 
             //Current.MainWindow.Show();
 
-            DebugService.Initialize(container);
+            //DebugService.Initialize(container);
             _mainWindowViewModel.IsLoading = true;
             Current.MainWindow.Show();
-            
-            Task.Factory.StartNew(() =>
+
+            /*Task.Factory.StartNew(() =>
           {
               //MainContainer.MainContainerViewModel.Initialize();
-              var _startupService = this.container.Get<IStartupService>();
-              _startupService.Initialize();
+              //var _startupService = this.container.Get<IStartupService>();
+              //
               //MainContainerViewModel.Initialize();
-              _mainWindowViewModel.IsLoading = false;
-          }
-          );
-          
+              // 
+          }*/
+            _mainWindowViewModel.IsLoading = false;
+            
+
 
 
         }
@@ -92,13 +93,13 @@ namespace VoidDays
 
         private void ComposeObjects()
         {
-            
+
             Current.MainWindow = new MainWindow();
             _mainWindowViewModel = container.Get<MainWindowViewModel>();
             Current.MainWindow.DataContext = _mainWindowViewModel;
             //Current.MainWindow = MainContainer;
             Current.MainWindow.Title = "VoidDays";
-            
+
         }
 
 

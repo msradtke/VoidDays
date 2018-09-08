@@ -24,7 +24,6 @@ namespace VoidDays.Models
         public DbSet<Day> Days { get; set; }
         public DbSet<GoalItemsCreated> GoalItemsCreated { get; set; }
         public DbSet<Settings> Settings { get; set; }
-        public DbSet<User> Users { get; set; }
         public ConnectionState ConnectionState { get; private set; }
         
         public EFDbContext()
@@ -34,10 +33,9 @@ namespace VoidDays.Models
             //this.Database.Log = s => Log.DBLog(s);
             this.Database.Log = s => Console.WriteLine(s);
 
-            Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
-            
-            //Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
-            Database.Connection.StateChange += StateChangeHandler;
+            //Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
+
+            Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
             this.Configuration.LazyLoadingEnabled = true;
 
         }
@@ -66,7 +64,6 @@ namespace VoidDays.Models
         {
             return this.Set<TEntity>();
         }
-
         public void Save()
         {
             this.SaveChanges();

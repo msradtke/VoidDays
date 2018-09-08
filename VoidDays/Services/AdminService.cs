@@ -147,7 +147,10 @@ namespace VoidDays.Services
             var firstDay = new Day();
             var settings = GetSettings();
             if (settings == null)
-                return null;
+            {
+                settings = GetDefaultSettings();
+                InsertSettings(settings);
+            }
             firstDay.DayNumber = 0;
 
             firstDay.Start = DateTime.UtcNow.Date + settings.StartTime.TimeOfDay;
@@ -159,6 +162,20 @@ namespace VoidDays.Services
 
             //SyncToCurrentDay(currentDay);
             return firstDay;
+        }
+        public void InsertSettings(Settings settings)
+        {
+            _settingsRepository.Insert(settings);
+        }
+        public Settings GetDefaultSettings()
+        {
+            var settings = new Settings();
+            
+            settings.StartDay = DateTime.Today.ToUniversalTime();
+            settings.StartTime = new DateTime(2000, 1, 1, 8, 0, 0);
+            settings.EndTime = new DateTime(2000, 1, 1, 7, 59, 59);
+            settings.IsUpdating = false;
+            return settings;
         }
 
         public void SetIsLoading(LoadingLock loadLock)
@@ -209,7 +226,7 @@ namespace VoidDays.Services
                 
                 return nextDay;
             }
-            return currentStoredDay;
+            return current;
         }
 
         public void SaveChanges()
