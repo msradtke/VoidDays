@@ -6,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidDays.Models.Interfaces;
+using VoidDays.Services;
+using VoidDays.Services.Interfaces;
+
 namespace VoidDays.Models
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
@@ -13,18 +16,20 @@ namespace VoidDays.Models
         IDbContextFactory _contextFactory;
         private IDbContext _context;
         private IRepositoryBaseFactory _repositoryBaseFactory;
-
+        IDatabaseService _databaseService;
         private IRepositoryBase<Goal> _goalRepository;
         private IRepositoryBase<GoalItem> _goalItemRepository;
         private IRepositoryBase<Day> _dayRepository;
         private IRepositoryBase<GoalItemsCreated> _goalItemsCreatedRepository;
         private IRepositoryBase<Settings> _settingsRepository;
 
-        public UnitOfWork(IRepositoryBaseFactory repositoryBaseFactory, IDbContextFactory contextFactory)
+        public UnitOfWork(IRepositoryBaseFactory repositoryBaseFactory, IDbContextFactory contextFactory, IDatabaseService databaseService)
         {
             _repositoryBaseFactory = repositoryBaseFactory;
             _contextFactory = contextFactory;
-            _context = _contextFactory.CreateDbContext();
+            _databaseService = databaseService;
+            var connectionString = _databaseService.ConnectionString;
+            _context = _contextFactory.CreateDbContext(connectionString);
 
         }
         public IRepositoryBase<Goal> GoalRepository

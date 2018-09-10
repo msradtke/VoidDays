@@ -7,15 +7,19 @@ using System.Threading.Tasks;
 using VoidDays.Models.Interfaces;
 using VoidDays.Models;
 using Sodium;
+using VoidDays.Services;
+
 namespace VoidDays.Services
 {
     public class UserService : IUserService
     {
-        IUnitOfWork _unitOfWork;
-        public UserService(IUnitOfWork unitOfWork)
+        IDatabaseService _databaseService;
+        public UserService(IDatabaseService databaseService)
         {
-            _unitOfWork = unitOfWork;
+            _databaseService = databaseService;
         }
+        public static string ConnectionString { get; private set; }
+
         public void TestEncrypt()
         {
             /*
@@ -60,8 +64,17 @@ namespace VoidDays.Services
             */
 
         }
-        public bool Login(string userName, string password, out User user)
+        public void Login(string userName, string password, string schema)
         {
+            SetConnectionString(userName, password, schema);
+        }
+        void SetConnectionString(string userName, string password, string schema)
+        {
+            _databaseService.ConnectionString = "server=localhost;user id=" + userName + ";password=" + password + ";persistsecurityinfo=True;database=" + schema;
+        }
+        public string GetConnectionString()
+        {
+            return ConnectionString;
         }
         public string EncryptString(string message, byte[] key)
         {
@@ -98,7 +111,10 @@ namespace VoidDays.Services
 
     public interface IUserService
     {
-        bool Login(string userName, string password, out User user);
+        void Login(string userName, string password, string schema);
         void TestEncrypt();
+        string GetConnectionString();
     }
+
+
 }

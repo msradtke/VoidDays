@@ -176,6 +176,7 @@
       <DependentUpon>Loading.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\AdminService.cs" />
+    <Compile Include="Services\DatabaseService.cs" />
     <Compile Include="Services\Interfaces\DialogService.cs" />
     <Compile Include="Services\GoalService.cs" />
     <Compile Include="Services\Interfaces\IAdminService.cs" />

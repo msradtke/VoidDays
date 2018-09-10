@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoidDays.Models;
+using VoidDays.Services;
 using VoidDays.ViewModels.Events;
 
 namespace VoidDays.ViewModels
@@ -13,14 +14,17 @@ namespace VoidDays.ViewModels
     {
         IMainContainerViewModelFactory _mainContainerViewModelFactory;
         ILoginViewModelFactory _loginViewModelFactory;
+        IStartupServiceFactory _startupServiceFactory;
 
         public MainWindowViewModel(IEventAggregator eventAggregator,
             IMainContainerViewModelFactory mainContainerViewModelFactory,
-            ILoginViewModelFactory loginViewModelFactory)
+            ILoginViewModelFactory loginViewModelFactory,
+            IStartupServiceFactory startupServiceFactory)
         {
             _eventAggregator = eventAggregator;
             _mainContainerViewModelFactory = mainContainerViewModelFactory;
             _loginViewModelFactory = loginViewModelFactory;
+            _startupServiceFactory = startupServiceFactory;
             LoadingViewModel = new LoadingViewModel();
             _eventAggregator.GetEvent<LoginEvent>().Subscribe(LoginSuccess);
 
@@ -36,6 +40,9 @@ namespace VoidDays.ViewModels
             var vm = _mainContainerViewModelFactory.CreateMainContainerViewModel();
             
             CurrentView = vm;
+            var startup = _startupServiceFactory.CreateStartupService();
+            startup.Initialize();
+
             vm.Initialize();
         }
     }

@@ -72,4 +72,9 @@ namespace VoidDays.Services
 
 
     }
+
+    public interface IStartupServiceFactory
+    {
+        StartupService CreateStartupService();
+    }
 }

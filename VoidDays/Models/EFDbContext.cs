@@ -25,17 +25,17 @@ namespace VoidDays.Models
         public DbSet<GoalItemsCreated> GoalItemsCreated { get; set; }
         public DbSet<Settings> Settings { get; set; }
         public ConnectionState ConnectionState { get; private set; }
-        
-        public EFDbContext()
-            : base("VoidDays.Properties.Settings.VoidDaysConnectionString")
+        string _connectionString;
+        public EFDbContext(string connectionString)
+            : base(connectionString)
             //:base("VoidDaysLiteContext")
         {            
             //this.Database.Log = s => Log.DBLog(s);
             this.Database.Log = s => Console.WriteLine(s);
 
-            //Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
+            Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
 
-            Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
+            //Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
             this.Configuration.LazyLoadingEnabled = true;
 
         }
@@ -76,7 +76,7 @@ namespace VoidDays.Models
 
     public interface IDbContextFactory
     {
-        IDbContext CreateDbContext();
+        IDbContext CreateDbContext(string connectionString);
     }
 
     class DatabaseConfiguration : DbConfiguration

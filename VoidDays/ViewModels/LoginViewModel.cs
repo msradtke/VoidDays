@@ -14,14 +14,14 @@ namespace VoidDays.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
-        IStartupService _startupService;
+
         IUserService _userService;
         VoidDaysLoginServiceClient _loginClient;
-        public LoginViewModel(IEventAggregator eventAggregator, IUserService userService, IStartupService startupService)
+        public LoginViewModel(IEventAggregator eventAggregator, IUserService userService)
         {
             _eventAggregator = eventAggregator;
             _userService = userService;
-            _startupService = startupService;
+            
 
             _loginClient = new VoidDaysLoginServiceClient();
             Username = "";
@@ -37,11 +37,13 @@ namespace VoidDays.ViewModels
         void Login()
         {
             var schema = _loginClient.LoginUser(Username, Password);
-            if(schema == null)
+            if (schema == null)
+            {
                 LoginMessage = "Invalid login.";
-            var user = new User();
+                return;
+            }
+            _userService.Login(Username, Password, schema);
             
-            _startupService.Initialize();
             _eventAggregator.GetEvent<LoginEvent>().Publish();
         }
     }
