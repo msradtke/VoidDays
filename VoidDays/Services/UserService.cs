@@ -64,6 +64,10 @@ namespace VoidDays.Services
             */
 
         }
+        public void CreateUser(string username, string password)
+        {
+
+        }
         public void Login(string userName, string password, string schema)
         {
             SetConnectionString(userName, password, schema);

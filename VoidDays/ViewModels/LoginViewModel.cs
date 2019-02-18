@@ -36,15 +36,28 @@ namespace VoidDays.ViewModels
 
         void Login()
         {
-            var schema = _loginClient.LoginUser(Username, Password);
-            if (schema == null)
+            try
             {
-                LoginMessage = "Invalid login.";
-                return;
+                var schema = _loginClient.LoginUser(Username, Password);
+                if (schema == null)
+                {
+                    LoginMessage = "Invalid login.";
+                    return;
+                }
+                _userService.Login(Username, Password, schema);
+
+                _eventAggregator.GetEvent<LoginEvent>().Publish();
             }
-            _userService.Login(Username, Password, schema);
-            
-            _eventAggregator.GetEvent<LoginEvent>().Publish();
+            catch(Exception e)
+
+            {
+                
+            }
+        }
+
+        void CreateUser()
+        {
+
         }
     }
     public interface ILoginViewModelFactory

@@ -155,6 +155,7 @@
     </Compile>
     <Compile Include="Debug\DebugService.cs" />
     <Compile Include="Logging\Logging.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Day.cs" />
     <Compile Include="Models\EFDbContext.cs" />
     <Compile Include="Models\Goal.cs" />
@@ -169,6 +170,7 @@
     <Compile Include="Models\Password.cs" />
     <Compile Include="Models\RepositoryBase.cs" />
     <Compile Include="Models\Settings.cs" />
+    <Compile Include="Models\TestModel.cs" />
     <Compile Include="Models\UnitOfWork.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserProfile.cs" />
@@ -188,6 +190,7 @@
     <Compile Include="ViewModels\ActionCommand.cs" />
     <Compile Include="ViewModels\AddNewGoalViewModel.cs" />
     <Compile Include="ViewModels\CompleteGoalItemViewModel.cs" />
+    <Compile Include="ViewModels\CreateUserViewModel.cs" />
     <Compile Include="ViewModels\CurrentDayViewModel.cs" />
     <Compile Include="ViewModels\CurrentListViewModel.cs" />
     <Compile Include="ViewModels\DayHistoryViewModel.cs" />
@@ -223,6 +226,9 @@
     </Compile>
     <Compile Include="Views\Converters\BaseConverter.cs" />
     <Compile Include="Views\Converters\GoalItemBackgroundConverter.cs" />
+    <Compile Include="Views\CreateUserView.xaml.cs">
+      <DependentUpon>CreateUserView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CurrentDayView.xaml.cs">
       <DependentUpon>CurrentDayView.xaml</DependentUpon>
     </Compile>
@@ -294,6 +300,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\CompleteGoalItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CreateUserView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

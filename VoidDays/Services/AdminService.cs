@@ -77,7 +77,7 @@ namespace VoidDays.Services
             day.DayNumber = dayNum + 1;
             day.Start = DateTime.Today + settings.StartTime.TimeOfDay;
             var addDay = day.Start.AddDays(1);
-            var subtractSecond = day.Start.AddSeconds(-1);
+            var subtractSecond = addDay.AddSeconds(-1);
             day.End = subtractSecond;
             day.IsActive = true;
             _dayRepository.Insert(day);
