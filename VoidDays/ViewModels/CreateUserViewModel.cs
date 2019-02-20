@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VoidDays.ViewModels
 {
-    public class CreateUserViewModel
+    public class CreateUserViewModel : ICreateUserViewModel
     {
         public CreateUserViewModel()
         {
@@ -29,5 +29,11 @@ namespace VoidDays.ViewModels
         }
 
         
+    }
+
+    public interface ICreateUserViewModel { }
+    public interface ICreateUserViewModelFactory
+    {
+        ICreateUserViewModel CreateCreateUserViewModel();
     }
 }

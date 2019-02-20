@@ -13,17 +13,14 @@ namespace VoidDays.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         IMainContainerViewModelFactory _mainContainerViewModelFactory;
-        ILoginViewModelFactory _loginViewModelFactory;
         IStartupServiceFactory _startupServiceFactory;
 
         public MainWindowViewModel(IEventAggregator eventAggregator,
             IMainContainerViewModelFactory mainContainerViewModelFactory,
-            ILoginViewModelFactory loginViewModelFactory,
             IStartupServiceFactory startupServiceFactory)
         {
             _eventAggregator = eventAggregator;
             _mainContainerViewModelFactory = mainContainerViewModelFactory;
-            _loginViewModelFactory = loginViewModelFactory;
             _startupServiceFactory = startupServiceFactory;
             LoadingViewModel = new LoadingViewModel();
             _eventAggregator.GetEvent<LoginEvent>().Subscribe(LoginSuccess);

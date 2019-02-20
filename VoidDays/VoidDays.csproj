@@ -230,6 +230,7 @@
     <Compile Include="ViewModels\PreviousDayViewModel.cs" />
     <Compile Include="ViewModels\SmallHistoryDayViewModel.cs" />
     <Compile Include="ViewModels\SmallHistoryDayViewModelContainer.cs" />
+    <Compile Include="ViewModels\StartupContainer.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModelFactory.cs" />
     <Compile Include="Views\AddNewGoal.xaml.cs">
