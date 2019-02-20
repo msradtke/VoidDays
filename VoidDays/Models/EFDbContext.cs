@@ -12,6 +12,9 @@ using System.Data.SQLite;
 using System.Data.SQLite.EF6;
 using System.Data.Entity.Core.Common;
 using SQLite.CodeFirst;
+using MySql.Data.Entity;
+using System.Data.Entity.Migrations.Sql;
+using System.Data.Entity.Migrations.Model;
 
 namespace VoidDays.Models
 {
@@ -39,7 +42,6 @@ namespace VoidDays.Models
             this.Database.Log = s => Console.WriteLine(s);
 
             Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
-            //Database.SetInitializer<EFDbContext>(new MigrateDatabaseToLatestVersion<>
             //Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
             this.Configuration.LazyLoadingEnabled = true;
 
@@ -91,6 +93,27 @@ namespace VoidDays.Models
             SetProviderFactory("System.Data.SQLite", SQLiteFactory.Instance);
             SetProviderFactory("System.Data.SQLite.EF6", SQLiteProviderFactory.Instance);
             SetProviderServices("System.Data.SQLite", (DbProviderServices)SQLiteProviderFactory.Instance.GetService(typeof(DbProviderServices)));
+        }
+    }
+    public class myMigrationSQLGenerator : MySqlMigrationSqlGenerator
+    {
+        private string TrimSchemaPrefix(string table)
+        {
+            if (table.StartsWith("dbo."))
+                return table.Replace("dbo.", "");
+            return table;
+        }
+
+        protected override MigrationStatement Generate(CreateIndexOperation op)
+        {
+            var u = new MigrationStatement();
+            string unique = (op.IsUnique ? "UNIQUE" : ""), columns = "";
+            foreach (var col in op.Columns)
+            {
+                columns += ($"`{col}` DESC{(op.Columns.IndexOf(col) < op.Columns.Count - 1 ? ", " : "")}");
+            }
+            u.Sql = $"CREATE {unique} INDEX `{op.Name}` ON `{TrimSchemaPrefix(op.Table)}` ({columns}) USING BTREE";
+            return u;
         }
     }
 }

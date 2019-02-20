@@ -74,7 +74,7 @@ namespace VoidDays.Services
         }
         void SetConnectionString(string userName, string password, string schema)
         {
-            _databaseService.ConnectionString = "server=localhost;user id=" + userName + ";password=" + password + ";persistsecurityinfo=True;database=" + schema;
+            _databaseService.ConnectionString = "server=3.16.24.128;Port=3306;user id=" + userName + ";password=" + password + ";persistsecurityinfo=True;database=" + schema;
         }
         public string GetConnectionString()
         {

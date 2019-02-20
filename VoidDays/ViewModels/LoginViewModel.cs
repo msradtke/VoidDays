@@ -9,7 +9,7 @@ using VoidDays.Models;
 using VoidDays.Services;
 using VoidDays.Services.Interfaces;
 using VoidDays.ViewModels.Events;
-using VoidDays.VoidDaysLoginService;
+using VoidDays.ServiceReference2;
 namespace VoidDays.ViewModels
 {
     public class LoginViewModel : ViewModelBase
