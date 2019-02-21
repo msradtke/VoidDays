@@ -14,18 +14,21 @@ namespace VoidDays.ViewModels
     {
         IMainContainerViewModelFactory _mainContainerViewModelFactory;
         IStartupServiceFactory _startupServiceFactory;
+        private readonly IStartupContainerViewModelFactory _startupContainerViewModelFactory;
 
         public MainWindowViewModel(IEventAggregator eventAggregator,
             IMainContainerViewModelFactory mainContainerViewModelFactory,
-            IStartupServiceFactory startupServiceFactory)
+            IStartupServiceFactory startupServiceFactory,
+            IStartupContainerViewModelFactory startupContainerViewModelFactory)
         {
             _eventAggregator = eventAggregator;
             _mainContainerViewModelFactory = mainContainerViewModelFactory;
             _startupServiceFactory = startupServiceFactory;
+            _startupContainerViewModelFactory = startupContainerViewModelFactory;
             LoadingViewModel = new LoadingViewModel();
             _eventAggregator.GetEvent<LoginEvent>().Subscribe(LoginSuccess);
 
-            CurrentView = _loginViewModelFactory.CreateLoginViewModel();
+            CurrentView = _startupContainerViewModelFactory.CreateStartupContainerViewModel();
         }
 
         public bool IsLoading { get; set; }

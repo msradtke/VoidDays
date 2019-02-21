@@ -35,8 +35,16 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" HorizontalAlignment="Right">
-                <Button IsEnabled="{Binding IsToday}" Command="{Binding NewGoalCommand}">New Goal</Button>
+            <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Center">
+                <Label Content="{Binding CurrentDay.Start.DayOfWeek}"></Label>
+                <Label Content="{Binding CurrentDay.Start.Date}"></Label>
+                <Label>-</Label>
+                <Label Content="{Binding CurrentDay.End.DayOfWeek}"></Label>
+                <Label Content="{Binding CurrentDay.End.Date}"></Label>
+                
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right">
+                <Button IsEnabled="{Binding IsToday}" HorizontalAlignment="Right" Command="{Binding NewGoalCommand}">New Goal</Button>
             </StackPanel>
             <Grid Grid.Row="1">
                 <Grid.Style>

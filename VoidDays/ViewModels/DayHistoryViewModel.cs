@@ -48,7 +48,7 @@ namespace VoidDays.ViewModels
                 Task.Factory.StartNew
                     (() =>
                     {
-                        AllDays = _adminService.GetAllDays();
+                        AllDays = _adminService.GetAllVoidDays();
                         Weeks = new List<List<Day>>();
                         WeekViewModelAggregates = new ObservableCollection<WeekViewModelAggregate>();
                         GetWeeks();

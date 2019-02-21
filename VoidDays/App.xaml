@@ -15,6 +15,10 @@
         <Style TargetType="Button">
             <Setter Property="Margin" Value="2"/>
         </Style>
+        <DataTemplate DataType="{x:Type viewmodels:StartupContainerViewModel}">
+            <views:StartupContainerView/>
+        </DataTemplate>
+        
         <DataTemplate DataType="{x:Type viewmodels:MainContainerViewModel}">
             <views:MainContainer/>
         </DataTemplate>

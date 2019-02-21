@@ -73,7 +73,9 @@ namespace VoidDays
             container.Bind<IStartupServiceFactory>().ToFactory();
             container.Bind<ICreateUserViewModelFactory>().ToFactory();
             container.Bind<ICreateUserViewModel>().To<CreateUserViewModel>().InTransientScope();
-
+            container.Bind<IStartupContainerViewModel>().To<StartupContainerViewModel>().InTransientScope();
+            container.Bind<IStartupContainerViewModelFactory>().ToFactory();
+            container.Bind<IUnitOfWorkFactory>().ToFactory();
             container.Bind<IDatabaseService>().To<DatabaseService>().InSingletonScope();
             container.Bind<IDbContext>().To<EFDbContext>().InTransientScope();
             container.Bind<ICurrentListViewModel>().To<CurrentListViewModel>().InTransientScope();

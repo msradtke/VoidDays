@@ -230,7 +230,7 @@
     <Compile Include="ViewModels\PreviousDayViewModel.cs" />
     <Compile Include="ViewModels\SmallHistoryDayViewModel.cs" />
     <Compile Include="ViewModels\SmallHistoryDayViewModelContainer.cs" />
-    <Compile Include="ViewModels\StartupContainer.cs" />
+    <Compile Include="ViewModels\StartupContainerViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModelFactory.cs" />
     <Compile Include="Views\AddNewGoal.xaml.cs">
@@ -285,6 +285,9 @@
     </Compile>
     <Compile Include="Views\Splash.xaml.cs">
       <DependentUpon>Splash.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StartupContainerView.xaml.cs">
+      <DependentUpon>StartupContainerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="VoidDaysDataSet.cs">
       <DependentUpon>VoidDaysDataSet.xsd</DependentUpon>
@@ -375,6 +378,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Splash.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StartupContainerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

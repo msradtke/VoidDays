@@ -17,17 +17,22 @@ namespace VoidDays.Models
         private IDbContext _context;
         private IRepositoryBaseFactory _repositoryBaseFactory;
         IDatabaseService _databaseService;
+        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private IRepositoryBase<Goal> _goalRepository;
         private IRepositoryBase<GoalItem> _goalItemRepository;
         private IRepositoryBase<Day> _dayRepository;
         private IRepositoryBase<GoalItemsCreated> _goalItemsCreatedRepository;
         private IRepositoryBase<Settings> _settingsRepository;
 
-        public UnitOfWork(IRepositoryBaseFactory repositoryBaseFactory, IDbContextFactory contextFactory, IDatabaseService databaseService)
+        public UnitOfWork(IRepositoryBaseFactory repositoryBaseFactory,
+            IDbContextFactory contextFactory,
+            IDatabaseService databaseService,
+            IUnitOfWorkFactory unitOfWorkFactory)
         {
             _repositoryBaseFactory = repositoryBaseFactory;
             _contextFactory = contextFactory;
             _databaseService = databaseService;
+            _unitOfWorkFactory = unitOfWorkFactory;
             var connectionString = _databaseService.ConnectionString;
             _context = _contextFactory.CreateDbContext(connectionString);
 
@@ -36,7 +41,6 @@ namespace VoidDays.Models
         {
             get
             {
-
                 if (this._goalRepository == null)
                 {
                     this._goalRepository = _repositoryBaseFactory.CreateGoalRepository(_context);
@@ -48,7 +52,6 @@ namespace VoidDays.Models
         {
             get
             {
-
                 if (this._goalItemRepository == null)
                 {
                     this._goalItemRepository = _repositoryBaseFactory.CreateGoalItemRepository(_context);
@@ -60,7 +63,6 @@ namespace VoidDays.Models
         {
             get
             {
-
                 if (this._dayRepository == null)
                 {
                     this._dayRepository = _repositoryBaseFactory.CreateDayRepository(_context);
@@ -72,7 +74,6 @@ namespace VoidDays.Models
         {
             get
             {
-
                 if (this._goalItemsCreatedRepository == null)
                 {
                     this._goalItemsCreatedRepository = _repositoryBaseFactory.CreateGoalItemsCreatedRepository(_context);
@@ -84,7 +85,6 @@ namespace VoidDays.Models
         {
             get
             {
-
                 if (this._settingsRepository == null)
                 {
                     this._settingsRepository = _repositoryBaseFactory.CreateSettingsRepository(_context);
@@ -132,7 +132,6 @@ namespace VoidDays.Models
             if (entity != null)
                 _context.Reload(entity);
         }
-
     }
     public interface IRepositoryBaseFactory
     {
@@ -141,5 +140,9 @@ namespace VoidDays.Models
         RepositoryBase<Day> CreateDayRepository(IDbContext context);
         RepositoryBase<GoalItemsCreated> CreateGoalItemsCreatedRepository(IDbContext context);
         RepositoryBase<Settings> CreateSettingsRepository(IDbContext context);
+    }
+    public interface IUnitOfWorkFactory
+    {
+        IUnitOfWork CreateUnitOfWork();
     }
 }
