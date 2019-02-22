@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Prism.Events;
+using VoidDays.DTO;
 using VoidDays.Models;
 namespace VoidDays.ViewModels.Events
 {
@@ -19,5 +20,8 @@ namespace VoidDays.ViewModels.Events
     public class DeleteGoalItemEvent : PubSubEvent<GoalItem> { }
     public class NextDayEvent : PubSubEvent<Day> { }
     public class LoadingEvent : PubSubEvent<LoadingLock> { }
-    public class LoginEvent : PubSubEvent { }
+    public class LoginSuccessEvent : PubSubEvent { }
+    public class TryLoginEvent : PubSubEvent<LoginPayload> { }
+    public class TryCreateUserEvent : PubSubEvent<CreateUserPayload> { }
+    public class CreateUserSuccessEvent : PubSubEvent<CreateUserPayload> { }
 }

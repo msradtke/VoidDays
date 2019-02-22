@@ -8,14 +8,20 @@ using VoidDays.Models.Interfaces;
 using VoidDays.Models;
 using Sodium;
 using VoidDays.Services;
+using VoidDays.ServiceReference2;
+using System.Data.SqlClient;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace VoidDays.Services
 {
     public class UserService : IUserService
     {
+        private VoidDaysLoginServiceClient _loginClient;
         IDatabaseService _databaseService;
         public UserService(IDatabaseService databaseService)
         {
+            _loginClient = new VoidDaysLoginServiceClient();
             _databaseService = databaseService;
         }
         public static string ConnectionString { get; private set; }
@@ -64,21 +70,55 @@ namespace VoidDays.Services
             */
 
         }
-        public void CreateUser(string username, string password)
+
+        public bool CreateUser(string username, string password)
         {
+            try
+            {
+                _loginClient.CreateUser(username, password);
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool Login(string userName, string password, string server, out string message) //should be a security token or something from server
+        {
+            message = "Login successful.";
+            var schema = _loginClient.LoginUser(userName, password);
+            var connectionString = SetConnectionString(userName, password, schema, server);
+            if (CheckIfDatabaseExists("server = " + server + "; Port = 3306; user id = " + userName + "; password = " + password + "; persistsecurityinfo = True;"))
+                return true;
+            message = "Cannot connect to server";
+            return false;
 
         }
-        public void Login(string userName, string password, string schema)
+        string SetConnectionString(string userName, string password, string schema, string server)
         {
-            SetConnectionString(userName, password, schema);
-        }
-        void SetConnectionString(string userName, string password, string schema)
-        {
-            _databaseService.ConnectionString = "server=3.16.24.128;Port=3306;user id=" + userName + ";password=" + password + ";persistsecurityinfo=True;database=" + schema;
+            _databaseService.ConnectionString = "server=" + server + "; Port=3306;user id=" + userName + ";password=" + password + ";persistsecurityinfo=True;database=" + schema;
+            return _databaseService.ConnectionString;
         }
         public string GetConnectionString()
         {
             return ConnectionString;
+        }
+        bool CheckIfDatabaseExists(string connectionString)
+        {
+            using (EFDbContext dbContext = new EFDbContext(connectionString))
+            {
+                try
+                {
+                    dbContext.Database.Connection.Open();
+                    dbContext.Database.Connection.Close();
+                }
+                catch
+                {
+                    return false;
+                }
+                return true;
+            }
         }
         public string EncryptString(string message, byte[] key)
         {
@@ -92,7 +132,6 @@ namespace VoidDays.Services
         }
         public string Decrypt(string cipher, byte[] key)
         {
-
             byte[] cipherBytes = Utilities.HexToBinary(cipher);
             var nonce = cipherBytes.Take(24).ToArray();
             var messageBytes = cipherBytes.Skip(24).ToArray();
@@ -111,14 +150,92 @@ namespace VoidDays.Services
             }
             return false;
         }
+        
+        public string CreateAppDataFolder()
+        {
+            var directory = GetUserDirectoryPath();
+            var directoryInfo = Directory.CreateDirectory(directory);
+            return directoryInfo.FullName;
+        }
+        public void RecreateAppSettingsFile()
+        {
+            CreateAppDataFolder();
+            var fullFilename = GetAppSettingsFilePath();
+            if (File.Exists(fullFilename))
+                File.Delete(fullFilename);
+            var settings = new AppSettings();
+            var serialize = new XmlSerializer(typeof(AppSettings));
+            using (TextWriter tw = new StreamWriter(fullFilename))
+            {
+                serialize.Serialize(tw, settings);
+            }
+        }
+        public string GetAppSettingsFilePath()
+        {
+            return GetUserDirectoryPath() + "settings.xml";
+        }
+        public string GetUserDirectoryPath()
+        {
+            //todo: make this a directory path
+            var directory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            directory += "VoidDays";
+            return directory;
+        }
+
+        AppSettings _appSettings;
+        public AppSettings GetAppSettings()
+        {
+            if (_appSettings != null)
+                return _appSettings;
+            var settings = new AppSettings();
+            var serialize = new XmlSerializer(typeof(AppSettings));
+            if (!File.Exists(GetAppSettingsFilePath()))
+                RecreateAppSettingsFile();
+            using (TextReader tr = new StreamReader(GetAppSettingsFilePath()))
+            {
+                _appSettings = (AppSettings)serialize.Deserialize(tr);
+            }
+            return _appSettings;
+        }
+        public void SaveAppSettingsFile(AppSettings appSettings)
+        {
+            var fullFilename = GetAppSettingsFilePath();
+            var serialize = new XmlSerializer(typeof(AppSettings));
+            using (TextWriter tw = new StreamWriter(fullFilename))
+            {
+                serialize.Serialize(tw, appSettings);
+            }
+        }
+        public void SaveDefaultServerAddress(string serverAddress)
+        {
+            _appSettings = null;
+            GetAppSettings();
+            _appSettings.ServerAddress = serverAddress;
+            SaveAppSettingsFile(_appSettings);
+        }
+        public void SetLastUser(string username)
+        {
+            _appSettings = null;
+            GetAppSettings();
+            _appSettings.LastUser = username;
+            SaveAppSettingsFile(_appSettings);
+        }
     }
 
     public interface IUserService
     {
-        void Login(string userName, string password, string schema);
+        bool Login(string userName, string password, string server, out string message);
         void TestEncrypt();
         string GetConnectionString();
+        bool CreateUser(string username, string password);
+        AppSettings GetAppSettings();
+        void SaveDefaultServerAddress(string serverAddress);
+        void SetLastUser(string username);
     }
 
+    public interface IUserServiceFactory
+    {
+        UserService CreateUserService();
+    }
 
 }

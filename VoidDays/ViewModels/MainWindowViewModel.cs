@@ -26,7 +26,7 @@ namespace VoidDays.ViewModels
             _startupServiceFactory = startupServiceFactory;
             _startupContainerViewModelFactory = startupContainerViewModelFactory;
             LoadingViewModel = new LoadingViewModel();
-            _eventAggregator.GetEvent<LoginEvent>().Subscribe(LoginSuccess);
+            _eventAggregator.GetEvent<LoginSuccessEvent>().Subscribe(LoginSuccess);
 
             CurrentView = _startupContainerViewModelFactory.CreateStartupContainerViewModel();
         }

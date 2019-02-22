@@ -86,6 +86,8 @@ namespace VoidDays
             container.Bind<ICurrentDayViewModel>().To<CurrentDayViewModel>().InTransientScope();
             container.Bind<ISmallHistoryDayViewModelContainer>().To<SmallHistoryDayViewModelContainer>().InTransientScope();
             container.Bind<IDayHistoryViewModel>().To<DayHistoryViewModel>().InTransientScope();
+            container.Bind<ILoginSettingsViewModelFactory>().ToFactory();
+            container.Bind<IUserServiceFactory>().ToFactory();
 
             container.Bind<IUserService>().To<UserService>().InSingletonScope();
             container.Bind<IGoalService>().To<GoalService>().InSingletonScope();

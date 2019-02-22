@@ -15,6 +15,12 @@
         <Style TargetType="Button">
             <Setter Property="Margin" Value="2"/>
         </Style>
+        <DataTemplate DataType="{x:Type viewmodels:CreateUserViewModel}">
+            <views:CreateUserView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:LoginSettingsViewModel}">
+            <views:LoginSettingsView/>
+        </DataTemplate>
         <DataTemplate DataType="{x:Type viewmodels:StartupContainerViewModel}">
             <views:StartupContainerView/>
         </DataTemplate>

@@ -26,6 +26,6 @@
         <PasswordBox Grid.Row="2" Grid.Column="1" PasswordChanged="PasswordBox_PasswordChanged"></PasswordBox>
         <Label Grid.Row="3">Verify Password:</Label>
         <PasswordBox Grid.Row="3" Grid.Column="1" PasswordChanged="VerifyPasswordBox_PasswordChanged"></PasswordBox>
-        <Button Grid.Row="4" Grid.Column="1" Command="{Binding LoginCommand}">Login</Button>
+        <Button Grid.Row="4" Grid.Column="1" Command="{Binding CreateUserCommand}">Create User</Button>
     </Grid>
 </UserControl>

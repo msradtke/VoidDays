@@ -164,12 +164,15 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Debug\DebugService.cs" />
+    <Compile Include="DTO\CreateUserPayload.cs" />
+    <Compile Include="DTO\LoginPayload.cs" />
     <Compile Include="Logging\Logging.cs" />
     <Compile Include="Migrations\201902200116376_beta.cs" />
     <Compile Include="Migrations\201902200116376_beta.Designer.cs">
       <DependentUpon>201902200116376_beta.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\AppSettings.cs" />
     <Compile Include="Models\Day.cs" />
     <Compile Include="Models\EFDbContext.cs" />
     <Compile Include="Models\Goal.cs" />
@@ -223,6 +226,7 @@
     <Compile Include="ViewModels\Interfaces\ISmallHistoryDayViewModelContainer.cs" />
     <Compile Include="ViewModels\Interfaces\IViewModelFactory.cs" />
     <Compile Include="ViewModels\LoadingViewModel.cs" />
+    <Compile Include="ViewModels\LoginSettingsViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainContainerViewModel.cs" />
     <Compile Include="ViewModels\MainViewContainerViewModel.cs" />
@@ -264,6 +268,9 @@
     </Compile>
     <Compile Include="Views\GoalItemView.xaml.cs">
       <DependentUpon>GoalItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LoginSettingsView.xaml.cs">
+      <DependentUpon>LoginSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
@@ -350,6 +357,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GoalItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LoginSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

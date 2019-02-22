@@ -28,13 +28,13 @@ namespace VoidDays.Views
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (DataContext != null)
-            { ((dynamic)DataContext).SecurePassword = ((PasswordBox)sender).SecurePassword; }
+            { ((dynamic)DataContext).SecurePassword = ((PasswordBox)sender).Password; }
         }
 
         private void VerifyPasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (DataContext != null)
-            { ((dynamic)DataContext).SecureVerifyPassword = ((PasswordBox)sender).SecurePassword; }
+            { ((dynamic)DataContext).SecureVerifyPassword = ((PasswordBox)sender).Password; }
         }
     }
 }

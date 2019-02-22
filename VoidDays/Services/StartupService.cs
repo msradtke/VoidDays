@@ -37,7 +37,6 @@ namespace VoidDays.Services
 
             _goalService.SyncGoalItems(currentStoredDay.DayNumber);
             loadLock.IsLoading = false;
-            _userService.TestEncrypt();
             _adminService.SetIsLoading(loadLock);
         }
         /*private void SyncToCurrentDay(Day currentStoredDay)

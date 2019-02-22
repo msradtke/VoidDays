@@ -10,21 +10,22 @@ using VoidDays.Services;
 using VoidDays.Services.Interfaces;
 using VoidDays.ViewModels.Events;
 using VoidDays.ServiceReference2;
+using VoidDays.DTO;
+
 namespace VoidDays.ViewModels
 {
-    public class LoginViewModel : ViewModelBase
+    public class LoginViewModel : ViewModelBase, ILoginViewModel
     {
 
         IUserService _userService;
         VoidDaysLoginServiceClient _loginClient;
+        AppSettings _appSettings;
         public LoginViewModel(IEventAggregator eventAggregator, IUserService userService)
         {
             _eventAggregator = eventAggregator;
             _userService = userService;
-            
-
-            _loginClient = new VoidDaysLoginServiceClient();
-            Username = "";
+            _appSettings = _userService.GetAppSettings();
+            Username = _appSettings.LastUser;
             Password = "";
             LoginCommand = new ActionCommand(Login);
         }
@@ -36,29 +37,19 @@ namespace VoidDays.ViewModels
 
         void Login()
         {
-            try
-            {
-                var schema = _loginClient.LoginUser(Username, Password);
-                if (schema == null)
-                {
-                    LoginMessage = "Invalid login.";
-                    return;
-                }
-                _userService.Login(Username, Password, schema);
-
-                _eventAggregator.GetEvent<LoginEvent>().Publish();
-            }
-            catch(Exception e)
-
-            {
-                
-            }
+            _eventAggregator.GetEvent<TryLoginEvent>().Publish(new LoginPayload { Username = Username, Password = Password });
+    
         }
 
         void CreateUser()
         {
 
         }
+    }
+    public interface ILoginViewModel : IViewModelBase
+    {
+        string Username { get; set; }
+        string Password { get; set; }
     }
     public interface ILoginViewModelFactory
     {
