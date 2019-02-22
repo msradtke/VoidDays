@@ -15,7 +15,7 @@ using Prism.Events;
 using VoidDays.ViewModels.Events;
 namespace VoidDays.ViewModels
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class CurrentListViewModel : ViewModelBase, ICurrentListViewModel
     {
         private IUnitOfWork _unitOfWork;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using PropertyChanged;
 namespace VoidDays.Models
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class GoalHistory
     {
         public List<History> MessageHistory { get; set; }

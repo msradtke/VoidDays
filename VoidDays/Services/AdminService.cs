@@ -22,15 +22,17 @@ namespace VoidDays.Services
         IRepositoryBase<GoalItem> _goalItemRepository;
         IRepositoryBase<Goal> _goalRepository;
         IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         IEventAggregator _eventAggregator;
         Settings _settings;
         private Day _currentDay;
         private bool _checkForDbUpdate; //for checking if other client updated db
-        public AdminService(IUnitOfWork unitOfWork, IEventAggregator eventAggregator)
+        public AdminService(IUnitOfWorkFactory  unitOfWorkFactory, IEventAggregator eventAggregator)
         {
             _checkForDbUpdate = false;
+            _unitOfWorkFactory = unitOfWorkFactory;
             _eventAggregator = eventAggregator;
-            _unitOfWork = unitOfWork;
+            _unitOfWork = _unitOfWorkFactory.CreateUnitOfWork();
             _dayRepository = _unitOfWork.DayRepository;
         }
         public void Initialize()
@@ -271,7 +273,10 @@ namespace VoidDays.Services
         }
         public List<Day> GetAllDays()
         {
-            return _dayRepository.Get().ToList();
+            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            {                
+                return unitOfWork.DayRepository.Get().ToList();
+            }
         }
         public Settings GetSettings()
         {
@@ -305,7 +310,7 @@ namespace VoidDays.Services
             //this.timer = new Timer(timeToGo.Milliseconds);
             this.timer = new Timer(5000);
             this.timer.AutoReset = true;
-            timer.Elapsed += NextDayHandler;
+            timer.Elapsed += TestNextDayHandler;
             timer.Enabled = true;
 
             return timer;
@@ -325,7 +330,7 @@ namespace VoidDays.Services
             Day currentStoredDay = GetCurrentStoredDay();
 
             //if (current.Date > _currentDay.Start.Date && current.TimeOfDay > _settings.EndTime)
-            if (current.Date > currentStoredDay.Start.Date && current.TimeOfDay > _settings.EndTime.TimeOfDay)
+            //if (current.Date > currentStoredDay.Start.Date && current.TimeOfDay > _settings.EndTime.TimeOfDay)
             {
                 timer.Enabled = false;
                 var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
@@ -350,6 +355,45 @@ namespace VoidDays.Services
                 loadLock.IsLoading = false;
                 SetIsLoading(loadLock);
             }
+        }
+        void TestNextDayHandler(object o, ElapsedEventArgs e)
+        {
+            var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork();
+            var dayRepo = _unitOfWork.DayRepository;
+            var goalItems = GetGoalItemsByDayNumber(_currentDay.DayNumber).ToList();
+            bool noGoalItems = true;
+            foreach (var item in goalItems)
+            {
+                noGoalItems = false;
+                if (item.IsComplete == false)
+                {
+                    item.IsVoid = true;
+                    _currentDay.IsVoid = true;
+                }
+                SaveGoalItem(item);
+            }
+            if (noGoalItems)
+                _currentDay.IsVoid = true;
+            _currentDay.IsActive = false;
+            SaveChanges();
+
+            var day = new Day();
+            var settings = GetSettings();
+            var firstDay = dayRepo.Get(x => x.DayNumber == 0).FirstOrDefault();
+            var daySpan = DateTime.Today - firstDay.Start;
+            var dayNum = daySpan.Days;
+            day.DayNumber = _currentDay.DayNumber + 1;
+            day.Start = _currentDay.Start.AddDays(1);
+            var addDay = day.Start.AddDays(1);
+            var subtractSecond = addDay.AddSeconds(-1);
+            day.End = subtractSecond;
+            day.IsActive = true;
+            dayRepo.Insert(day);
+            unitOfWork.Save();
+            //SyncToCurrentDay(currentDay);
+            CreateAllGoalItems(day.DayNumber);
+            _currentDay = day;
+            _eventAggregator.GetEvent<NextDayEvent>().Publish(_currentDay);
         }
     }
 }

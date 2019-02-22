@@ -143,6 +143,6 @@ namespace VoidDays.Models
     }
     public interface IUnitOfWorkFactory
     {
-        IUnitOfWork CreateUnitOfWork();
+        UnitOfWork CreateUnitOfWork();
     }
 }

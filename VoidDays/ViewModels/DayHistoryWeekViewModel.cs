@@ -11,7 +11,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 namespace VoidDays.ViewModels
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class DayHistoryWeekViewModel
     {
         

@@ -12,7 +12,7 @@ using Prism.Events;
 using VoidDays.ViewModels.Events;
 namespace VoidDays.ViewModels
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class DayHistoryViewModel : IDayHistoryViewModel
     {
         IAdminService _adminService;
@@ -142,7 +142,7 @@ namespace VoidDays.ViewModels
             return dt.AddDays(-1 * diff).Date;
         }
     }
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class WeekViewModelAggregate
     {
         public object WeekViewModel { get; set; }

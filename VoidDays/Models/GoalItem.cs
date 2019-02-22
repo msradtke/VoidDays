@@ -7,7 +7,7 @@ using PropertyChanged;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace VoidDays.Models
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class GoalItem
     {
         [Column("goal_item_id")]

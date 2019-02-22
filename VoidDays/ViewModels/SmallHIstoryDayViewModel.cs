@@ -8,8 +8,7 @@ using VoidDays.Models;
 
 namespace VoidDays.ViewModels
 {
-    [ImplementPropertyChanged]
-    public class SmallHistoryDayViewModel 
+    public class SmallHistoryDayViewModel :ViewModelBase
     {
         public SmallHistoryDayViewModel(Day day)
         {

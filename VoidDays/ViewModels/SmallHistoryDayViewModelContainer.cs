@@ -12,7 +12,7 @@ using Prism.Events;
 using VoidDays.ViewModels.Events;
 namespace VoidDays.ViewModels
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class SmallHistoryDayViewModelContainer : ISmallHistoryDayViewModelContainer
     {
         IAdminService _adminService;
@@ -41,6 +41,7 @@ namespace VoidDays.ViewModels
 
         private void GetPreviousDays()
         {
+            //todo: fix day numbers
             _firstDay = _currentStoredDay.DayNumber - _previousDayCount;
             _endDay = _currentStoredDay.DayNumber - 1;
             Days = _adminService.GetDaysByDayNumber(_firstDay, _endDay);
