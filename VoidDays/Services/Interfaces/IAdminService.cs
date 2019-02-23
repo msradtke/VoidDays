@@ -18,7 +18,7 @@ namespace VoidDays.Services.Interfaces
         List<Day> GetAllDays();
         Timer SetupTimer(Day currentDay, TimeSpan alertTime);
         Timer SetUpTimer(TimeSpan alertTime);
-        Settings GetSettings();
+        Settings GetSettings(bool reload = false);
         Day SyncToCurrentDay(Day currentStoredDay);
         void Initialize();
         void SetIsLoading(LoadingLock loadLock);

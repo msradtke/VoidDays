@@ -7,13 +7,13 @@ namespace VoidDays.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class beta : IMigrationMetadata
+    public sealed partial class goalUpdate : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(beta));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(goalUpdate));
         
         string IMigrationMetadata.Id
         {
-            get { return "201902200116376_beta"; }
+            get { return "201902231957036_goalUpdate"; }
         }
         
         string IMigrationMetadata.Source

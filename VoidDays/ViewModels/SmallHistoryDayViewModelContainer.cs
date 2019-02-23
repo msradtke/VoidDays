@@ -30,7 +30,7 @@ namespace VoidDays.ViewModels
 
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<NextDayEvent>().Subscribe(NextDayEventHandler);
-
+            //_eventAggregator.GetEvent<CheckNextDayEvent>().Subscribe(NextDayEventHandler);
             Days = new List<Day>();
             GetPreviousDays();
             SetSmallHistoryDayViewModels();
@@ -48,18 +48,20 @@ namespace VoidDays.ViewModels
         }
         private void NextDayEventHandler(Day NextDay)
         {
+
             App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
             {
-                _currentStoredDay = _adminService.GetCurrentStoredDay();
+                _currentStoredDay = NextDay;
                 GetPreviousDays();
                 SetSmallHistoryDayViewModels();
             });
+
 
         }
         private void SetSmallHistoryDayViewModels()
         {
             SmallHistoryDayViewModels = new ObservableCollection<object>();
-            for (int i = _firstDay; i<= _endDay; ++i)
+            for (int i = _firstDay; i <= _endDay; ++i)
             {
                 object vm;
                 var day = Days.FirstOrDefault(x => x.DayNumber == i);

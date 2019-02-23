@@ -25,7 +25,7 @@ namespace VoidDays.Services
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         IEventAggregator _eventAggregator;
         private readonly IDialogService _dialogService;
-        Settings _settings;
+        private static Settings _settings;
         private Day _currentDay;
         private bool _checkForDbUpdate; //for checking if other client updated db
         public AdminService(IUnitOfWorkFactory unitOfWorkFactory, IEventAggregator eventAggregator, IDialogService dialogService)
@@ -72,7 +72,7 @@ namespace VoidDays.Services
             return isCurrentDay;
         }
         public Day CreateToday()
-        {
+        {//todo: remove _repo
             var day = new Day();
             var settings = GetSettings();
             var firstDay = _dayRepository.Get(x => x.DayNumber == 0).FirstOrDefault();
@@ -248,7 +248,7 @@ namespace VoidDays.Services
                 }
                 return current;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _dialogService.OpenErrorDialog(e.Message, "sync to current day");
                 return null;
@@ -305,11 +305,14 @@ namespace VoidDays.Services
                 return unitOfWork.DayRepository.Get().ToList();
             }
         }
-        public Settings GetSettings()
+        public Settings GetSettings(bool reload = false)
         {
-            var settings = _settingsRepository.Get().FirstOrDefault();
-            _unitOfWork.Reload(settings);
-            return settings;
+            if (_settings == null || reload == true)
+                using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+                {
+                    _settings = unitOfWork.SettingsRepository.Get().FirstOrDefault();
+                }
+            return _settings;
         }
         public Day GetNextDay(Day day)
         {

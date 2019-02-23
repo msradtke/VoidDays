@@ -24,6 +24,9 @@ namespace VoidDays.Models
         public bool IsComplete { get; set; }
         [Column("is_deleted")]
         public bool IsDeleted { get; set; }
-
+        [Column("delete_date")]
+        public DateTime DeleteDate { get; set; }
+        [Column("complete_date")]
+        public DateTime CompleteDate { get; set; }
     }
 }

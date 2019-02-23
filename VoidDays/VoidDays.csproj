@@ -167,9 +167,9 @@
     <Compile Include="DTO\CreateUserPayload.cs" />
     <Compile Include="DTO\LoginPayload.cs" />
     <Compile Include="Logging\Logging.cs" />
-    <Compile Include="Migrations\201902200116376_beta.cs" />
-    <Compile Include="Migrations\201902200116376_beta.Designer.cs">
-      <DependentUpon>201902200116376_beta.cs</DependentUpon>
+    <Compile Include="Migrations\201902231957036_goalUpdate.cs" />
+    <Compile Include="Migrations\201902231957036_goalUpdate.Designer.cs">
+      <DependentUpon>201902231957036_goalUpdate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AppSettings.cs" />
@@ -411,8 +411,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Migrations\201902200116376_beta.resx">
-      <DependentUpon>201902200116376_beta.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201902231957036_goalUpdate.resx">
+      <DependentUpon>201902231957036_goalUpdate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

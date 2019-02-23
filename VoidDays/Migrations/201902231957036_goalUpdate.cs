@@ -3,7 +3,7 @@ namespace VoidDays.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class beta : DbMigration
+    public partial class goalUpdate : DbMigration
     {
         public override void Up()
         {
@@ -50,6 +50,8 @@ namespace VoidDays.Migrations
                         is_active = c.Boolean(nullable: false),
                         is_complete = c.Boolean(nullable: false),
                         is_deleted = c.Boolean(nullable: false),
+                        delete_date = c.DateTime(nullable: false, precision: 0),
+                        complete_date = c.DateTime(nullable: false, precision: 0),
                     })
                 .PrimaryKey(t => t.goal_id);
             

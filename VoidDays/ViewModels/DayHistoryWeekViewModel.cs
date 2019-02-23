@@ -43,29 +43,30 @@ namespace VoidDays.ViewModels
         private void CreateDayViewModels()
         {
             var day = new Day();
-            int nullDateCount = 1;
-            Day lastDayBuffer = new Day();
+            
+            Day firstNotNullDay = Days.FirstOrDefault(x=>x.DayNumber == Days.Where(y => y != null).Min(y => x.DayNumber));
+            int nullDateCount = 7 - Days.Count;
             for (int i = 0; i < 7; ++i)
             {
                 var dayOfWeek = (DayOfWeek)i;
+                
                 day = Days.FirstOrDefault(x => x.Start.DayOfWeek == dayOfWeek);
-
-
+                
 
                 var vm = _viewModelFactory.CreateSmallHistoryDayViewModel(day);
 
                 if (day != null)
                 {
-                    lastDayBuffer = day;
+
                     var dayvm = new DayViewModelAggregate { DayName = day.Start.ToString("ddd"), DayViewModel = vm, DisplayDate = day.Start.ToShortDateString() };
                     DayViewModelAggregates.Add(dayvm);
                 }
                 else
                 {
-                    var nullDate = lastDayBuffer.Start.AddDays(nullDateCount);
+                    var nullDate = firstNotNullDay.Start.AddDays(-nullDateCount);
                     var dayvm = new DayViewModelAggregate { DayName = CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedDayNames[i], DayViewModel = vm, DisplayDate = nullDate.ToShortDateString() };
                     DayViewModelAggregates.Add(dayvm);
-                    ++nullDateCount;
+                    --nullDateCount;
                 }
             }
         }

@@ -38,6 +38,10 @@ namespace VoidDays.Services
                 return goalItems.ToList();
             }
         }
+        public List<GoalItem> GetGoalItemsForVoidDay(int day)
+        {
+            throw new NotImplementedException();
+        }
         public List<GoalItem> SyncGoalItems(int dayNumber)
         {
             List<GoalItem> newGoalItems = new List<GoalItem>();
