@@ -36,6 +36,5 @@ namespace VoidDays.Models
         public int SatisfyScale { get; set; }
 
         public virtual Goal Goal { get; set; }
-
     }
 }

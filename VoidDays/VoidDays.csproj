@@ -167,9 +167,13 @@
     <Compile Include="DTO\CreateUserPayload.cs" />
     <Compile Include="DTO\LoginPayload.cs" />
     <Compile Include="Logging\Logging.cs" />
-    <Compile Include="Migrations\201902231957036_goalUpdate.cs" />
-    <Compile Include="Migrations\201902231957036_goalUpdate.Designer.cs">
-      <DependentUpon>201902231957036_goalUpdate.cs</DependentUpon>
+    <Compile Include="Migrations\201902232220246_InitialSnapshot.cs" />
+    <Compile Include="Migrations\201902232220246_InitialSnapshot.Designer.cs">
+      <DependentUpon>201902232220246_InitialSnapshot.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902232237073_goalItemUpdate.cs" />
+    <Compile Include="Migrations\201902232237073_goalItemUpdate.Designer.cs">
+      <DependentUpon>201902232237073_goalItemUpdate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AppSettings.cs" />
@@ -411,8 +415,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Migrations\201902231957036_goalUpdate.resx">
-      <DependentUpon>201902231957036_goalUpdate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201902232220246_InitialSnapshot.resx">
+      <DependentUpon>201902232220246_InitialSnapshot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902232237073_goalItemUpdate.resx">
+      <DependentUpon>201902232237073_goalItemUpdate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -517,6 +524,7 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -15,6 +15,7 @@ using SQLite.CodeFirst;
 using MySql.Data.Entity;
 using System.Data.Entity.Migrations.Sql;
 using System.Data.Entity.Migrations.Model;
+using VoidDays.Migrations;
 
 namespace VoidDays.Models
 {
@@ -40,8 +41,8 @@ namespace VoidDays.Models
         {            
             //this.Database.Log = s => Log.DBLog(s);
             this.Database.Log = s => Console.WriteLine(s);
-
-            Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
+            Database.SetInitializer<EFDbContext>(new MigrateDatabaseToLatestVersion<EFDbContext, Configuration>(true));
+            //Database.SetInitializer<EFDbContext>(new CreateDatabaseIfNotExists<EFDbContext>());
             //Database.SetInitializer<EFDbContext>(new DropCreateDatabaseAlways<EFDbContext>());
             this.Configuration.LazyLoadingEnabled = true;
 

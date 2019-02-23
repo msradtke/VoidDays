@@ -3,7 +3,7 @@ namespace VoidDays.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class goalUpdate : DbMigration
+    public partial class InitialSnapshot : DbMigration
     {
         public override void Up()
         {
@@ -34,6 +34,8 @@ namespace VoidDays.Migrations
                         day_number = c.Int(nullable: false),
                         complete_message = c.String(unicode: false),
                         satisfy_scale = c.Int(nullable: false),
+                        CompletedDate = c.DateTime(nullable: false, precision: 0),
+                        DeletedDate = c.DateTime(nullable: false, precision: 0),
                     })
                 .PrimaryKey(t => t.goal_item_id)
                 .ForeignKey("dbo.goals", t => t.goal_id, cascadeDelete: true)
