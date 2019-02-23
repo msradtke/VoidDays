@@ -29,15 +29,21 @@ namespace VoidDays.Services
             var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
             _adminService.SetIsLoading(loadLock);
 
-            if (!_adminService.CheckForCurrentDay(out currentStoredDay))
+            try
             {
-                currentStoredDay = _adminService.SyncToCurrentDay(currentStoredDay);
-                _adminService.SaveChanges();
+                if (!_adminService.CheckForCurrentDay(out currentStoredDay))
+                {
+                    currentStoredDay = _adminService.SyncToCurrentDay(currentStoredDay);
+                    _goalService.SyncGoalItems(currentStoredDay.DayNumber);
+                    loadLock.IsLoading = false;
+                    _adminService.SetIsLoading(loadLock);
+                }
+            }
+            catch
+            {
+                Initialize();
             }
 
-            _goalService.SyncGoalItems(currentStoredDay.DayNumber);
-            loadLock.IsLoading = false;
-            _adminService.SetIsLoading(loadLock);
         }
         /*private void SyncToCurrentDay(Day currentStoredDay)
         {

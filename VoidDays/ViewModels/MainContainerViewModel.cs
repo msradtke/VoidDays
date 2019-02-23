@@ -27,13 +27,21 @@ namespace VoidDays.ViewModels
             IsLoading = true;
 
             _eventAggregator = eventAggregator;
+            _eventAggregator.GetEvent<SetDayEvent>().Subscribe(SetDay);
             _adminService = adminService;
             _lazySmallHistoryDayViewModelContainer = smallHistoryDayViewModelContainer;
             _lazyMainViewContainerViewModel = mainViewContainerViewModel;
             _lazyDayHistoryViewModel = dayHistoryViewModel;            
         }
+
+        private void SetDay(Day obj)
+        {
+            CurrentView = MainViewContainerViewModel;
+        }
+
         public ICommand HistoryCommand { get; set; }
         public ICommand CurrentDayCommand { get; set; }
+        public ICommand LogoutCommand { get; set; }
         public void Initialize()
         {
             _eventAggregator.GetEvent<LoadingEvent>().Subscribe(LoadingEventListener);
@@ -41,6 +49,7 @@ namespace VoidDays.ViewModels
 
             HistoryCommand = new ActionCommand(ShowHistory);
             CurrentDayCommand = new ActionCommand(ShowCurrentDay);
+            LogoutCommand = new ActionCommand(Logout);
             IsLoading = false;
 
             //if (!IsLoading)
@@ -60,6 +69,11 @@ namespace VoidDays.ViewModels
                     RemoveLoadLock(loadLock);
                 });
             }
+        }
+
+        private void Logout()
+        {
+            _eventAggregator.GetEvent<LogoutEvent>().Publish(true);
         }
 
         private void AddLoadLock(LoadingLock loadLock)

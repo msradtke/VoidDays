@@ -59,7 +59,6 @@ namespace VoidDays.Models
         {
             _dbSet.Add(entity);
         }
-
         public virtual void Delete(object id)
         {
             TEntity entityToDelete = _dbSet.Find(id);

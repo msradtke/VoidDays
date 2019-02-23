@@ -24,5 +24,7 @@ namespace VoidDays.ViewModels.Events
     public class TryLoginEvent : PubSubEvent<LoginPayload> { }
     public class TryCreateUserEvent : PubSubEvent<CreateUserPayload> { }
     public class CreateUserSuccessEvent : PubSubEvent<CreateUserPayload> { }
-    public class CreateUserSuccessEvent : PubSubEvent<CreateUserPayload> { }
+    public class SetDayEvent : PubSubEvent<Day> { }
+    public class LogoutEvent : PubSubEvent<bool> { }
+    public class CheckNextDayEvent : PubSubEvent<Day> { }
 }

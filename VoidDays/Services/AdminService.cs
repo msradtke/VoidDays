@@ -24,14 +24,16 @@ namespace VoidDays.Services
         IUnitOfWork _unitOfWork;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         IEventAggregator _eventAggregator;
+        private readonly IDialogService _dialogService;
         Settings _settings;
         private Day _currentDay;
         private bool _checkForDbUpdate; //for checking if other client updated db
-        public AdminService(IUnitOfWorkFactory unitOfWorkFactory, IEventAggregator eventAggregator)
+        public AdminService(IUnitOfWorkFactory unitOfWorkFactory, IEventAggregator eventAggregator, IDialogService dialogService)
         {
             _checkForDbUpdate = false;
             _unitOfWorkFactory = unitOfWorkFactory;
             _eventAggregator = eventAggregator;
+            _dialogService = dialogService;
             _unitOfWork = _unitOfWorkFactory.CreateUnitOfWork();
             _dayRepository = _unitOfWork.DayRepository;
         }
@@ -202,43 +204,55 @@ namespace VoidDays.Services
 
         public Day SyncToCurrentDay(Day currentStoredDay)
         {
-            Day current;
-            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            try
             {
-                var goalItemRepo = unitOfWork.GoalItemRepository;
-                var goalRepo = unitOfWork.GoalRepository;
-                if (!CheckForCurrentDay(currentStoredDay, out current)) //if latest day in db is not today
+                Day current;
+                using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
                 {
-                    //complete this day, foreach goalitem on this day not completed, void
-                    var goalItems = GetGoalItemsByDayNumber(currentStoredDay.DayNumber, goalItemRepo).ToList();
-                    bool noGoalItems = true;
-                    foreach (var item in goalItems)
+                    var goalItemRepo = unitOfWork.GoalItemRepository;
+                    var goalRepo = unitOfWork.GoalRepository;
+                    if (!CheckForCurrentDay(currentStoredDay, out current)) //if latest day in db is not today
                     {
-                        noGoalItems = false;
-                        if (item.IsComplete == false)
+                        currentStoredDay = unitOfWork.DayRepository.Get(x => x.DayId == currentStoredDay.DayId).FirstOrDefault();
+                        //complete this day, foreach goalitem on this day not completed, void
+                        var goalItems = GetGoalItemsByDayNumber(currentStoredDay.DayNumber, goalItemRepo).ToList();
+                        bool noGoalItems = true;
+                        foreach (var item in goalItems)
                         {
-                            item.IsVoid = true;
-                            currentStoredDay.IsVoid = true;
+                            noGoalItems = false;
+                            if (item.IsComplete == false)
+                            {
+                                item.IsVoid = true;
+                                currentStoredDay.IsVoid = true;
+                            }
+                            SaveGoalItem(item, goalRepo, goalItemRepo);
                         }
-                        SaveGoalItem(item, goalRepo, goalItemRepo);
+                        if (noGoalItems)
+                            currentStoredDay.IsVoid = true;
+                        currentStoredDay.IsActive = false;
+                        var nextDay = CreateToday();
+                        CreateAllGoalItems(nextDay.DayNumber, unitOfWork.GoalRepository, unitOfWork.GoalItemRepository);
+                        try
+                        {
+                            unitOfWork.Save();
+                            //_dialogService.OpenErrorDialog("save success", "success");
+                        }
+                        catch
+                        {
+                            return null;
+                        }
+
+
+                        return nextDay;
                     }
-                    if (noGoalItems)
-                        currentStoredDay.IsVoid = true;
-                    currentStoredDay.IsActive = false;
-                    SaveChanges();
-                    var nextDay = CreateToday();
-
-                    CreateAllGoalItems(nextDay.DayNumber, unitOfWork.GoalRepository, unitOfWork.GoalItemRepository);
-
-                    return nextDay;
                 }
+                return current;
             }
-            return current;
-        }
-
-        public void SaveChanges()
-        {
-            _unitOfWork.Save();
+            catch(Exception e)
+            {
+                _dialogService.OpenErrorDialog(e.Message, "sync to current day");
+                return null;
+            }
         }
         public void CreateAllGoalItems(int dayNumber, IRepositoryBase<Goal> goalRepo, IRepositoryBase<GoalItem> goalItemRepo)
         {
@@ -268,9 +282,13 @@ namespace VoidDays.Services
         }
         public Day GetCurrentStoredDay()
         {
-            var currentStoredDay = _dayRepository.Get().LastOrDefault();
-            _unitOfWork.Reload(currentStoredDay);
+            Day currentStoredDay;
+            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            {
+                currentStoredDay = unitOfWork.DayRepository.Get().LastOrDefault();
+            }
             return currentStoredDay;
+
         }
         public Day GetPreviousDay(Day day)
         {
@@ -317,9 +335,9 @@ namespace VoidDays.Services
 
             var t = new System.Timers.Timer();
             //this.timer = new Timer(timeToGo.Milliseconds);
-            this.timer = new Timer(1000000);
+            this.timer = new Timer(10000);
             this.timer.AutoReset = true;
-            timer.Elapsed += TestNextDayHandler;
+            timer.Elapsed += NextDayHandler;
             timer.Enabled = true;
 
             return timer;
@@ -339,31 +357,43 @@ namespace VoidDays.Services
             Day currentStoredDay = GetCurrentStoredDay();
 
             //if (current.Date > _currentDay.Start.Date && current.TimeOfDay > _settings.EndTime)
-            //if (current.Date > currentStoredDay.Start.Date && current.TimeOfDay > _settings.EndTime.TimeOfDay)
+            if (current.Date > currentStoredDay.Start.Date && current.TimeOfDay > _settings.EndTime.TimeOfDay)
             {
-                timer.Enabled = false;
-                var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
-                SetIsLoading(loadLock);
-                Log.GeneralLog("NextDayHandler");
-                //check if other client already next dayed
-                //day in db
-                Day updatedDay = SyncToCurrentDay(currentStoredDay); //day is the new updated day
-                SaveChanges();
-
-                if (updatedDay != null) //actually updated the day, null if no update
+                using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
                 {
-                    _currentDay = updatedDay;
-                    _eventAggregator.GetEvent<NextDayEvent>().Publish(updatedDay);
-                    Log.GeneralLog("Published next day event");
-                }
-                //timer = SetupTimer(_currentDay, _settings.EndTime);
-                Log.GeneralLog(String.Format("setup timer, current day = {0}", _currentDay.DayNumber));
-                Log.GeneralLog(String.Format("setup timer, EndTime = {0}", _settings.EndTime.ToString()));
+                    timer.Enabled = false;
+                    var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
+                    SetIsLoading(loadLock);
+                    Log.GeneralLog("NextDayHandler");
+                    //check if other client already next dayed
+                    //day in db
 
-                timer.Enabled = true;
-                loadLock.IsLoading = false;
-                SetIsLoading(loadLock);
+                    Day updatedDay = SyncToCurrentDay(currentStoredDay); //day is the new updated day
+                    if (updatedDay == null)
+                    {
+                        timer.Enabled = true;
+                        loadLock.IsLoading = false;
+                        SetIsLoading(loadLock);
+                        return;
+                    }
+
+                    if (updatedDay != null) //actually updated the day, null if no update
+                    {
+                        _currentDay = updatedDay;
+                        _eventAggregator.GetEvent<NextDayEvent>().Publish(updatedDay);
+                        Log.GeneralLog("Published next day event");
+                    }
+                    //timer = SetupTimer(_currentDay, _settings.EndTime);
+                    Log.GeneralLog(String.Format("setup timer, current day = {0}", _currentDay.DayNumber));
+                    Log.GeneralLog(String.Format("setup timer, EndTime = {0}", _settings.EndTime.ToString()));
+
+                    timer.Enabled = true;
+                    loadLock.IsLoading = false;
+                    SetIsLoading(loadLock);
+                }
             }
+            else
+                _eventAggregator.GetEvent<CheckNextDayEvent>().Publish(currentStoredDay);
         }
         void TestNextDayHandler(object o, ElapsedEventArgs e)
         {
@@ -389,7 +419,6 @@ namespace VoidDays.Services
                 if (noGoalItems)
                     _currentDay.IsVoid = true;
                 _currentDay.IsActive = false;
-                SaveChanges();
 
                 var day = new Day();
                 var settings = GetSettings();

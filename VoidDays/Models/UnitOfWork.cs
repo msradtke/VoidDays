@@ -37,6 +37,8 @@ namespace VoidDays.Models
             _context = _contextFactory.CreateDbContext(connectionString);
 
         }
+        public IDbContext Context { get => _context; set => _context = value; }
+
         public IRepositoryBase<Goal> GoalRepository
         {
             get
@@ -111,6 +113,8 @@ namespace VoidDays.Models
         }
 
         private bool disposed = false;
+        private DbContext _context1;
+
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)

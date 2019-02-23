@@ -44,17 +44,19 @@ namespace VoidDays.ViewModels
             ForwardCommand = new ActionCommand(GoToNextDay);
             _eventAggregator.GetEvent<SetListToTodayEvent>().Subscribe(SetDayToTodayHandler);
             _eventAggregator.GetEvent<NextDayEvent>().Subscribe(NextDayEventHandler);
+            _eventAggregator.GetEvent<CheckNextDayEvent>().Subscribe(NextDayEventHandler);
             _eventAggregator.GetEvent<DeleteGoalItemEvent>().Subscribe(GoalItemDeletedHandler);
+            _eventAggregator.GetEvent<SetDayEvent>().Subscribe(SetDay);
 
             GoalItemViewModels = new ObservableCollection<IGoalItemViewModel>();
             GoalItemViewModelAggregates = new ObservableCollection<GoalItemViewModelAggregate>();
             //_eventAggregator.GetEvent<GoalItemStatusChange>().Subscribe(HandleGoalStatusChange);
             IsPreviousDayComplete = false;
-            GetAllDays();
+            //GetAllDays();
             Today = _adminService.GetCurrentStoredDay();
-            var csd = _adminService.GetCurrentStoredDay();
-            SetCurrentStoredDayGoalItems(csd);
-            SetDay(csd);
+            //var csd = _adminService.GetCurrentStoredDay();
+            //SetCurrentStoredDayGoalItems(Today);
+            SetDay(Today);
         }
         public ICommand NewGoalCommand { get; private set; }
         public ICommand EditGoalItemCommand { get; private set; }
@@ -80,8 +82,6 @@ namespace VoidDays.ViewModels
         #endregion
         public void SetDay(Day day)
         {
-            if (IsLoading == false)
-            {
                 IsLoading = true;
                 Task.Factory.StartNew(() =>
                     {
@@ -104,8 +104,7 @@ namespace VoidDays.ViewModels
                         IsToday = CurrentDay == Today ? true : false;
                     }
                 )
-                .ContinueWith(x => IsLoading = false);
-            }
+                .ContinueWith(x => IsLoading = false);            
 
         }
         private void SetCurrentStoredDayGoalItems(Day csd)
@@ -131,9 +130,12 @@ namespace VoidDays.ViewModels
         }
         private void NextDayEventHandler(Day day)//from timer, means completely new day
         {
-            Today = day;
-            SetDay(Today);
-            IsToday = true;
+            if (day.DayNumber != Today.DayNumber)
+            {
+                Today = day;
+                SetDay(Today);
+                IsToday = true;
+            }
         }
         private void GetCurrentGoalItems()
         {

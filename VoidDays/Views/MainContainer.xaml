@@ -41,7 +41,8 @@
 
             <RowDefinition Height="*"/>
             <RowDefinition Height="75"/>
-        </Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
             <Button HorizontalAlignment="Left" Command="{Binding HistoryCommand}">History</Button>
             <Button HorizontalAlignment="Left" Command="{Binding CurrentDayCommand}">Current Day</Button>
@@ -51,6 +52,7 @@
         <StackPanel Grid.Row="2">
             <ContentControl Content="{Binding SmallHistoryDayViewModelContainer}"/>
         </StackPanel>
+            <Button Grid.Row="3" HorizontalAlignment="Left" Command="{Binding LogoutCommand}">Logout</Button>
 </Grid>
     </Grid>
 </UserControl>

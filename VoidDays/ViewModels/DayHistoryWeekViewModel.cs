@@ -10,22 +10,24 @@ using VoidDays.ViewModels.Interfaces;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows.Input;
+using VoidDays.ViewModels.Events;
+using Prism.Events;
 
 namespace VoidDays.ViewModels
 {
-    [AddINotifyPropertyChangedInterface]
-    public class DayHistoryWeekViewModel
+    public class DayHistoryWeekViewModel : ViewModelBase
     {
-        
+
         IViewModelFactory _viewModelFactory;
-        public DayHistoryWeekViewModel(List<Day> days, IViewModelFactory viewModelFactory)
+        public DayHistoryWeekViewModel(IEventAggregator eventAggregator, List<Day> days, IViewModelFactory viewModelFactory)
         {
+            _eventAggregator = eventAggregator;
             _viewModelFactory = viewModelFactory;
 
             Days = days;
 
             DayViewModelAggregates = new ObservableCollection<DayViewModelAggregate>();
-            DoubleClickDayCommand = new ActionCommand(DoubleClickDay, ()=>true);
+            DoubleClickDayCommand = new ActionCommand(DoubleClickDay, () => true);
             CreateDayViewModels();
         }
 
@@ -33,30 +35,37 @@ namespace VoidDays.ViewModels
         {
             var vm = (DayViewModelAggregate)dayVm;
             var day = vm.DayViewModel.Day;
-
+            if (day != null)
+                _eventAggregator.GetEvent<SetDayEvent>().Publish(day);
         }
 
         public ICommand DoubleClickDayCommand { get; set; }
         private void CreateDayViewModels()
         {
             var day = new Day();
-            
-            for(int i = 0; i < 7; ++i)
+            int nullDateCount = 1;
+            Day lastDayBuffer = new Day();
+            for (int i = 0; i < 7; ++i)
             {
                 var dayOfWeek = (DayOfWeek)i;
                 day = Days.FirstOrDefault(x => x.Start.DayOfWeek == dayOfWeek);
+
+
 
                 var vm = _viewModelFactory.CreateSmallHistoryDayViewModel(day);
 
                 if (day != null)
                 {
-                    var dayvm = new DayViewModelAggregate { DayName = day.Start.ToString("ddd"), DayViewModel = vm };
+                    lastDayBuffer = day;
+                    var dayvm = new DayViewModelAggregate { DayName = day.Start.ToString("ddd"), DayViewModel = vm, DisplayDate = day.Start.ToShortDateString() };
                     DayViewModelAggregates.Add(dayvm);
                 }
                 else
                 {
-                    var dayvm = new DayViewModelAggregate { DayName = CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedDayNames[i], DayViewModel = vm };
+                    var nullDate = lastDayBuffer.Start.AddDays(nullDateCount);
+                    var dayvm = new DayViewModelAggregate { DayName = CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedDayNames[i], DayViewModel = vm, DisplayDate = nullDate.ToShortDateString() };
                     DayViewModelAggregates.Add(dayvm);
+                    ++nullDateCount;
                 }
             }
         }
@@ -66,6 +75,7 @@ namespace VoidDays.ViewModels
     public class DayViewModelAggregate
     {
         public string DayName { get; set; }
+        public string DisplayDate { get; set; }
         public SmallHistoryDayViewModel DayViewModel { get; set; }
     }
 }

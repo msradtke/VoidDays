@@ -39,6 +39,7 @@ namespace VoidDays.ViewModels
             _dialogService = dialogService;
             _databaseService = databaseService;
             TabItems = new ObservableCollection<IViewModelBase>();
+            LoadingViewModel = new LoadingViewModel();
 
             LoginViewModel = _loginViewModelFactory.CreateLoginViewModel();
             LoginViewModel.TabHeader = "Login";
@@ -48,7 +49,7 @@ namespace VoidDays.ViewModels
             LoginSettingsViewModel.TabHeader = "Login Settings";
             _userService = _userServiceFactory.CreateUserService();
 
-            
+
 
             _eventAggregator.GetEvent<TryLoginEvent>().Subscribe(TryLogin);
             _eventAggregator.GetEvent<TryCreateUserEvent>().Subscribe(CreateUser);
@@ -59,27 +60,35 @@ namespace VoidDays.ViewModels
 
         private void TryLogin(LoginPayload payload)
         {
-            var server = LoginSettingsViewModel.ServerAddress;
-            string message = "";
-            bool success = false;
-            try
+            IsLoading = true;
+            Task.Factory.StartNew(() =>
             {
-                success = _userService.Login(payload.Username, payload.Password, server,out message);
-            }
-            catch (Exception e)
-            {
-                _dialogService.OpenErrorDialog(e.Message, "Login Failed");
-                return;
-            }
-            if (success)
-            {
-                _eventAggregator.GetEvent<LoginSuccessEvent>().Publish();
-                _userService.SetLastUser(payload.Username);   
-            }
-            else
-            {
-                _dialogService.OpenErrorDialog(message, "Error.");
-            }
+                var server = LoginSettingsViewModel.ServerAddress;
+                string message = "";
+                bool success = false;
+                try
+                {
+                    success = _userService.Login(payload.Username, payload.Password, server, out message);
+                }
+                catch (Exception e)
+                {
+                    _dialogService.OpenErrorDialog(e.Message, "Login Failed");
+                    IsLoading = false;
+                    return;
+                }
+                if (success)
+                {
+                    _eventAggregator.GetEvent<LoginSuccessEvent>().Publish();
+                    _userService.SetLastUser(payload.Username);
+                    IsLoading = false;
+                }
+                else
+                {
+                    _dialogService.OpenErrorDialog(message, "Error.");
+                    IsLoading = false;
+                }
+
+            });
         }
         private void CreateUser(CreateUserPayload payload)
         {
@@ -105,13 +114,15 @@ namespace VoidDays.ViewModels
             LoginViewModel.Password = "";
             SelectedTabItem = LoginViewModel;
         }
-        
+
+
         public IViewModelBase CurrentView { get; set; }
         public ILoginViewModel LoginViewModel { get; set; }
         public IViewModelBase CreateUserViewModel { get; set; }
         public ILoginSettingViewModel LoginSettingsViewModel { get; set; }
         public AppSettings AppSettings { get; set; }
-
+        public bool IsLoading { get; set; }
+        public LoadingViewModel LoadingViewModel { get; set; }
     }
     public interface IStartupContainerViewModel { }
     public interface IStartupContainerViewModelFactory

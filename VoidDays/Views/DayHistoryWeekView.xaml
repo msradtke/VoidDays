@@ -10,7 +10,9 @@
         <ItemsControl ItemsSource="{Binding DayViewModelAggregates}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"/>
+                    <UniformGrid>
+                        <UniformGrid.Columns>7</UniformGrid.Columns>
+                    </UniformGrid>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
 
@@ -23,10 +25,12 @@
                         </Grid.InputBindings>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Label HorizontalAlignment="Center" Content="{Binding DayName}"></Label>
-                        <Grid Grid.Row="1" HorizontalAlignment="Center">
+                        <Label Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Content="{Binding DisplayDate}"></Label>
+                        <Grid Grid.Row="2" HorizontalAlignment="Center">
                             <ContentControl Content="{Binding DayViewModel}">
                                 
                             </ContentControl>
