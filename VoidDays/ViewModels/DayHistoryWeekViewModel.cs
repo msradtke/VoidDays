@@ -9,6 +9,8 @@ using VoidDays.Models;
 using VoidDays.ViewModels.Interfaces;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Windows.Input;
+
 namespace VoidDays.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
@@ -23,10 +25,18 @@ namespace VoidDays.ViewModels
             Days = days;
 
             DayViewModelAggregates = new ObservableCollection<DayViewModelAggregate>();
-
+            DoubleClickDayCommand = new ActionCommand(DoubleClickDay, ()=>true);
             CreateDayViewModels();
         }
 
+        private void DoubleClickDay(object dayVm)
+        {
+            var vm = (DayViewModelAggregate)dayVm;
+            var day = vm.DayViewModel.Day;
+
+        }
+
+        public ICommand DoubleClickDayCommand { get; set; }
         private void CreateDayViewModels()
         {
             var day = new Day();
@@ -56,6 +66,6 @@ namespace VoidDays.ViewModels
     public class DayViewModelAggregate
     {
         public string DayName { get; set; }
-        public object DayViewModel { get; set; }
+        public SmallHistoryDayViewModel DayViewModel { get; set; }
     }
 }

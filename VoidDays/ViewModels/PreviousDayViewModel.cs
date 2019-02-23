@@ -9,8 +9,7 @@ using VoidDays.ViewModels.Interfaces;
 using PropertyChanged;
 namespace VoidDays.ViewModels
 {
-    [AddINotifyPropertyChangedInterface]
-    public class PreviousDayViewModel : IPreviousDayViewModel
+    public class PreviousDayViewModel : ViewModelBase, IPreviousDayViewModel
     {
         IEventAggregator _eventAggregator;
         public PreviousDayViewModel(IEventAggregator eventAggregator)

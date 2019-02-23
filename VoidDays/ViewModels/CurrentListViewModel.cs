@@ -45,6 +45,7 @@ namespace VoidDays.ViewModels
             _eventAggregator.GetEvent<SetListToTodayEvent>().Subscribe(SetDayToTodayHandler);
             _eventAggregator.GetEvent<NextDayEvent>().Subscribe(NextDayEventHandler);
             _eventAggregator.GetEvent<DeleteGoalItemEvent>().Subscribe(GoalItemDeletedHandler);
+
             GoalItemViewModels = new ObservableCollection<IGoalItemViewModel>();
             GoalItemViewModelAggregates = new ObservableCollection<GoalItemViewModelAggregate>();
             //_eventAggregator.GetEvent<GoalItemStatusChange>().Subscribe(HandleGoalStatusChange);
@@ -84,7 +85,7 @@ namespace VoidDays.ViewModels
                 IsLoading = true;
                 Task.Factory.StartNew(() =>
                     {
-
+                        _allDays = _adminService.GetAllVoidDays();
                         CurrentDay = day;
                         GetCurrentGoalItems();
                         App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE

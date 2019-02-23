@@ -12,7 +12,7 @@ using System.Collections.ObjectModel;
 using Prism.Events;
 namespace VoidDays.ViewModels
 {
-    public class CompleteGoalItemViewModel
+    public class CompleteGoalItemViewModel : ViewModelBase
     {
         IDialogService _dialogService;
         IGoalService _goalService;

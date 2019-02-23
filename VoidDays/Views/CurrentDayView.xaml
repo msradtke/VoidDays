@@ -7,6 +7,12 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
         <Grid.Style>
             <Style TargetType="Grid">
                 <Style.Triggers>
@@ -19,6 +25,18 @@
                 </Style.Triggers>
             </Style>
         </Grid.Style>
-            
+        <TextBlock HorizontalAlignment="Center" 
+                   VerticalAlignment="Center"
+                   FontWeight="Bold"
+                   FontSize="18"
+                   Margin="4"
+            >
+            <TextBlock.LayoutTransform>
+                <TransformGroup>
+                    <RotateTransform Angle="90"/>
+                </TransformGroup>
+            </TextBlock.LayoutTransform>
+            Today
+        </TextBlock>
     </Grid>
 </UserControl>

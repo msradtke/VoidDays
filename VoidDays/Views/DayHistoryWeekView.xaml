@@ -13,17 +13,23 @@
                     <StackPanel Orientation="Horizontal"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-            
+
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="5">
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DataContext.DoubleClickDayCommand,RelativeSource={RelativeSource
+      Mode=FindAncestor, AncestorType = UserControl}}" CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Label HorizontalAlignment="Center" Content="{Binding DayName}"></Label>
                         <Grid Grid.Row="1" HorizontalAlignment="Center">
-                            <ContentControl Content="{Binding DayViewModel}"/>
+                            <ContentControl Content="{Binding DayViewModel}">
+                                
+                            </ContentControl>
                         </Grid>
                     </Grid>
                 </DataTemplate>

@@ -17,7 +17,9 @@
 
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding Day.Start.DayOfWeek}"></TextBlock>
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding Day.Start.Date,StringFormat='{}{0:MM/dd}'}"></TextBlock>
                             <ContentControl Margin="2" Content="{Binding}"/>
                     </StackPanel>
                 </DataTemplate>

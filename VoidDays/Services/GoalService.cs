@@ -10,20 +10,20 @@ namespace VoidDays.Services
 {
     public class GoalService : IGoalService
     {
-        IUnitOfWork _unitOfWork;
-        IRepositoryBase<GoalItem> _goalItemRepository;
-        IRepositoryBase<Goal> _goalRepository;
+        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         IAdminService _adminService;
-        public GoalService(IUnitOfWork unitOfWork, IAdminService adminService)
+        public GoalService(IUnitOfWorkFactory unitOfWorkFactory, IAdminService adminService)
         {
-            _unitOfWork = unitOfWork;
-            _goalItemRepository = _unitOfWork.GoalItemRepository;
-            _goalRepository = _unitOfWork.GoalRepository;
+            _unitOfWorkFactory = unitOfWorkFactory;
             _adminService = adminService;
         }
         public Goal GetGoalById(int id)
         {
-            return _goalRepository.GetByID(id);
+            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            {
+                return unitOfWork.GoalRepository.GetByID(id);
+            }
+            
         }
         public List<GoalItem> GetCurrentGoalItems()
         {
@@ -32,56 +32,37 @@ namespace VoidDays.Services
         }
         public List<GoalItem> GetGoalItemsByDayNumber(int day)
         {
-            var goalItems = _goalItemRepository.Get(x => x.DayNumber == day);
-            return goalItems.ToList();
-        }
-        public void SaveGoalItem(GoalItem goalItem)
-        {
-            var gi = _goalItemRepository.GetByID(goalItem.GoalItemId);
-
-            _goalItemRepository.Update(gi);
-            /*gi.IsComplete = goalItem.IsComplete;
-            gi.Goal.Message = goalItem.Goal.Message;
-            gi.Goal.Title = goalItem.Goal.Title;
-            gi.CompleteMessage = goalItem.CompleteMessage;*/
-            _goalRepository.Update(gi.Goal);
-            _unitOfWork.Save();
-        }
-        public void CreateAllGoalItems(int dayNumber)
-        {
-            var goals = _goalRepository.Get(x => x.IsActive).ToList();
-            foreach (var goal in goals)
+            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                var goalitem = new GoalItem();
-                goalitem.Goal = goal;
-                goalitem.IsComplete = false;
-                goalitem.Message = goal.Message;
-                goalitem.Title = goal.Title;
-                goalitem.DayNumber = dayNumber;
-                goalitem.DateTime = DateTime.UtcNow;
-
-
-                _goalItemRepository.Insert(goalitem);
+                var goalItems = unitOfWork.GoalItemRepository.Get(x => x.DayNumber == day);
+                return goalItems.ToList();
             }
-            _unitOfWork.Save();
         }
         public List<GoalItem> SyncGoalItems(int dayNumber)
         {
-            var newGoalItems = new List<GoalItem>();
-            var goals = _goalRepository.Get(x => x.IsActive).ToList();
-            var goalItems = _goalItemRepository.Get(x => x.DayNumber == dayNumber);
-            foreach (var goal in goals)
+            List<GoalItem> newGoalItems = new List<GoalItem>();
+            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                if(goalItems.FirstOrDefault(x => x.GoalId == goal.GoalId) == null)
+                var goalRepo = unitOfWork.GoalRepository;
+                var goalItemRepo = unitOfWork.GoalItemRepository;
+
+                var goals = goalRepo.Get(x => x.IsActive).ToList();
+                var goalItems = goalItemRepo.Get(x => x.DayNumber == dayNumber);
+                foreach (var goal in goals)
                 {
-                    var newItem = CreateGoalItem(goal, dayNumber);
-                    newGoalItems.Add(newItem);
+                    if (goalItems.FirstOrDefault(x => x.GoalId == goal.GoalId) == null)
+                    {
+                        var newItem = CreateGoalItem(goal, dayNumber,goalItemRepo);
+                        newGoalItems.Add(newItem);
+                    }
+
                 }
-                
+                unitOfWork.Save();// save created goal items
             }
             return newGoalItems;
         }
-        public GoalItem CreateGoalItem(Goal goal, int dayNumber)
+
+        public GoalItem CreateGoalItem(Goal goal, int dayNumber, IRepositoryBase<GoalItem> goalItemRepo)
         {
             var goalitem = new GoalItem();
             goalitem.Goal = goal;
@@ -91,28 +72,45 @@ namespace VoidDays.Services
             goalitem.DayNumber = dayNumber;
             goalitem.DateTime = DateTime.UtcNow;
 
-            _goalItemRepository.Insert(goalitem);
-            _unitOfWork.Save();
+            goalItemRepo.Insert(goalitem);
             return goalitem;
         }
         public void SaveNewGoal(Goal goal)
         {
-            _goalRepository.Insert(goal);
-            _unitOfWork.Save();
+            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            {
+                unitOfWork.GoalRepository.Insert(goal);
+                unitOfWork.Save();
+            }
+        }
+        public void SaveGoalItem(GoalItem goalItem)
+        {
+            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            {
+                unitOfWork.GoalItemRepository.Update(goalItem);
+                unitOfWork.Save();
+            }
         }
 
         public void DeleteGoal(GoalItem goalItem)
         {
-            var goal = _goalRepository.GetByID(goalItem.GoalId);
-            goal.IsActive = false;
-            _goalRepository.Update(goal);
-            _unitOfWork.Save();
+            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            {
+                var goal = unitOfWork.GoalRepository.GetByID(goalItem.GoalId);
+                goal.IsActive = false;
+                unitOfWork.GoalRepository.Update(goal);
+                unitOfWork.Save();
+            }
         }
         public void DeleteGoalItem(GoalItem goalItem, Day day)
         {
-            var delete = _goalItemRepository.Get(x => x.GoalId == goalItem.GoalId && x.DayNumber == day.DayNumber).FirstOrDefault();
-            _goalItemRepository.Delete(delete.GoalItemId);
-            _unitOfWork.Save();
+            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            {
+                var delete = unitOfWork.GoalItemRepository.Get(x => x.GoalId == goalItem.GoalId && x.DayNumber == day.DayNumber).FirstOrDefault();
+                unitOfWork.GoalItemRepository.Delete(delete.GoalItemId);
+                unitOfWork.Save();
+            }
+            
         }
     }
 }

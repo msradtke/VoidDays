@@ -40,9 +40,6 @@
                         <DataTrigger Binding="{Binding Day.IsActive}" Value="True">
                             <Setter Property="Background" Value="Yellow"></Setter>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding Day.IsActive}" Value="False">
-                            <Setter Property="Background" Value="Red"></Setter>
-                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Grid.Style>

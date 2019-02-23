@@ -27,7 +27,7 @@ namespace VoidDays.Services
         Settings _settings;
         private Day _currentDay;
         private bool _checkForDbUpdate; //for checking if other client updated db
-        public AdminService(IUnitOfWorkFactory  unitOfWorkFactory, IEventAggregator eventAggregator)
+        public AdminService(IUnitOfWorkFactory unitOfWorkFactory, IEventAggregator eventAggregator)
         {
             _checkForDbUpdate = false;
             _unitOfWorkFactory = unitOfWorkFactory;
@@ -172,7 +172,7 @@ namespace VoidDays.Services
         public Settings GetDefaultSettings()
         {
             var settings = new Settings();
-            
+
             settings.StartDay = DateTime.Today.ToUniversalTime();
             settings.StartTime = new DateTime(2000, 1, 1, 8, 0, 0);
             settings.EndTime = new DateTime(2000, 1, 1, 7, 59, 59);
@@ -187,46 +187,51 @@ namespace VoidDays.Services
         }
 
 
-        public List<GoalItem> GetGoalItemsByDayNumber(int day)
+        public List<GoalItem> GetGoalItemsByDayNumber(int day, IRepositoryBase<GoalItem> goalItemRepo)
         {
-            var goalItems = _goalItemRepository.Get(x => x.DayNumber == day, null);
+            var goalItems = goalItemRepo.Get(x => x.DayNumber == day, null);
             return goalItems.ToList();
         }
-        public void SaveGoalItem(GoalItem goalItem)
+        public void SaveGoalItem(GoalItem goalItem, IRepositoryBase<Goal> goalRepo, IRepositoryBase<GoalItem> goalItemRepo)
         {
-            _goalItemRepository.Update(goalItem);
+            goalItemRepo.Update(goalItem);
             goalItem.Goal.Message = goalItem.Message;
             goalItem.Goal.Title = goalItem.Title;
-            _goalRepository.Update(goalItem.Goal);
+            goalRepo.Update(goalItem.Goal);
         }
 
         public Day SyncToCurrentDay(Day currentStoredDay)
         {
             Day current;
-            if (!CheckForCurrentDay(currentStoredDay, out current)) //if latest day in db is not today
+            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                //complete this day, foreach goalitem on this day not completed, void
-                var goalItems = GetGoalItemsByDayNumber(currentStoredDay.DayNumber).ToList();
-                bool noGoalItems = true;
-                foreach (var item in goalItems)
+                var goalItemRepo = unitOfWork.GoalItemRepository;
+                var goalRepo = unitOfWork.GoalRepository;
+                if (!CheckForCurrentDay(currentStoredDay, out current)) //if latest day in db is not today
                 {
-                    noGoalItems = false;
-                    if (item.IsComplete == false)
+                    //complete this day, foreach goalitem on this day not completed, void
+                    var goalItems = GetGoalItemsByDayNumber(currentStoredDay.DayNumber, goalItemRepo).ToList();
+                    bool noGoalItems = true;
+                    foreach (var item in goalItems)
                     {
-                        item.IsVoid = true;
-                        currentStoredDay.IsVoid = true;
+                        noGoalItems = false;
+                        if (item.IsComplete == false)
+                        {
+                            item.IsVoid = true;
+                            currentStoredDay.IsVoid = true;
+                        }
+                        SaveGoalItem(item, goalRepo, goalItemRepo);
                     }
-                    SaveGoalItem(item);
-                }
-                if (noGoalItems)
-                    currentStoredDay.IsVoid = true;
-                currentStoredDay.IsActive = false;
-                SaveChanges();
-                var nextDay = CreateToday(); 
+                    if (noGoalItems)
+                        currentStoredDay.IsVoid = true;
+                    currentStoredDay.IsActive = false;
+                    SaveChanges();
+                    var nextDay = CreateToday();
 
-                CreateAllGoalItems(nextDay.DayNumber);
-                
-                return nextDay;
+                    CreateAllGoalItems(nextDay.DayNumber, unitOfWork.GoalRepository, unitOfWork.GoalItemRepository);
+
+                    return nextDay;
+                }
             }
             return current;
         }
@@ -235,9 +240,12 @@ namespace VoidDays.Services
         {
             _unitOfWork.Save();
         }
-        public void CreateAllGoalItems(int dayNumber)
+        public void CreateAllGoalItems(int dayNumber, IRepositoryBase<Goal> goalRepo, IRepositoryBase<GoalItem> goalItemRepo)
         {
-            var goals = _goalRepository.Get(x => x.IsActive).ToList();
+            if (goalRepo == null || goalItemRepo == null)
+                return;
+
+            var goals = goalRepo.Get(x => x.IsActive).ToList();
             foreach (var goal in goals)
             {
                 var goalitem = new GoalItem();
@@ -247,8 +255,9 @@ namespace VoidDays.Services
                 goalitem.Title = goal.Title;
                 goalitem.DayNumber = dayNumber;
                 goalitem.DateTime = DateTime.UtcNow;
-                _goalItemRepository.Insert(goalitem);
+                goalItemRepo.Insert(goalitem);
             }
+
         }
         public List<Day> GetDaysByDayNumber(int start, int end)
         {
@@ -274,7 +283,7 @@ namespace VoidDays.Services
         public List<Day> GetAllDays()
         {
             using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
-            {                
+            {
                 return unitOfWork.DayRepository.Get().ToList();
             }
         }
@@ -288,7 +297,7 @@ namespace VoidDays.Services
         {
             return _dayRepository.Get(x => x.DayNumber == day.DayNumber + 1).LastOrDefault();
         }
-        private Timer timer; 
+        private Timer timer;
 
         public Timer SetupTimer(Day currentDay, TimeSpan alertTime)
         {
@@ -308,7 +317,7 @@ namespace VoidDays.Services
 
             var t = new System.Timers.Timer();
             //this.timer = new Timer(timeToGo.Milliseconds);
-            this.timer = new Timer(5000);
+            this.timer = new Timer(1000000);
             this.timer.AutoReset = true;
             timer.Elapsed += TestNextDayHandler;
             timer.Enabled = true;
@@ -358,42 +367,48 @@ namespace VoidDays.Services
         }
         void TestNextDayHandler(object o, ElapsedEventArgs e)
         {
-            var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork();
-            var dayRepo = _unitOfWork.DayRepository;
-            var goalItems = GetGoalItemsByDayNumber(_currentDay.DayNumber).ToList();
-            bool noGoalItems = true;
-            foreach (var item in goalItems)
+            //_unitOfWork = null;
+            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                noGoalItems = false;
-                if (item.IsComplete == false)
+                var dayRepo = unitOfWork.DayRepository;
+                var goalRepo = unitOfWork.GoalRepository;
+                var goalItemRepo = unitOfWork.GoalItemRepository;
+                _currentDay = dayRepo.Get().LastOrDefault();
+                var goalItems = GetGoalItemsByDayNumber(_currentDay.DayNumber, goalItemRepo).ToList();
+                bool noGoalItems = true;
+                foreach (var item in goalItems)
                 {
-                    item.IsVoid = true;
-                    _currentDay.IsVoid = true;
+                    noGoalItems = false;
+                    if (item.IsComplete == false)
+                    {
+                        item.IsVoid = true;
+                        _currentDay.IsVoid = true;
+                    }
+                    SaveGoalItem(item, goalRepo, goalItemRepo);
                 }
-                SaveGoalItem(item);
-            }
-            if (noGoalItems)
-                _currentDay.IsVoid = true;
-            _currentDay.IsActive = false;
-            SaveChanges();
+                if (noGoalItems)
+                    _currentDay.IsVoid = true;
+                _currentDay.IsActive = false;
+                SaveChanges();
 
-            var day = new Day();
-            var settings = GetSettings();
-            var firstDay = dayRepo.Get(x => x.DayNumber == 0).FirstOrDefault();
-            var daySpan = DateTime.Today - firstDay.Start;
-            var dayNum = daySpan.Days;
-            day.DayNumber = _currentDay.DayNumber + 1;
-            day.Start = _currentDay.Start.AddDays(1);
-            var addDay = day.Start.AddDays(1);
-            var subtractSecond = addDay.AddSeconds(-1);
-            day.End = subtractSecond;
-            day.IsActive = true;
-            dayRepo.Insert(day);
-            unitOfWork.Save();
-            //SyncToCurrentDay(currentDay);
-            CreateAllGoalItems(day.DayNumber);
-            _currentDay = day;
-            _eventAggregator.GetEvent<NextDayEvent>().Publish(_currentDay);
+                var day = new Day();
+                var settings = GetSettings();
+                var firstDay = dayRepo.Get(x => x.DayNumber == 0).FirstOrDefault();
+                var daySpan = DateTime.Today - firstDay.Start;
+                var dayNum = daySpan.Days;
+                day.DayNumber = _currentDay.DayNumber + 1;
+                day.Start = _currentDay.Start.AddDays(1);
+                var addDay = day.Start.AddDays(1);
+                var subtractSecond = addDay.AddSeconds(-1);
+                day.End = subtractSecond;
+                day.IsActive = true;
+                dayRepo.Insert(day);
+                //SyncToCurrentDay(currentDay);
+                CreateAllGoalItems(day.DayNumber, goalRepo, goalItemRepo);
+                _currentDay = day;
+                unitOfWork.Save();
+                _eventAggregator.GetEvent<NextDayEvent>().Publish(_currentDay);
+            }
         }
     }
 }

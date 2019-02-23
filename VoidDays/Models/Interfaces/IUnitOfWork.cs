@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace VoidDays.Models.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
 
         void Save();
-        void Dispose();
         void Reload(object entity);
         void Transaction(string tableName, Action work);
         IRepositoryBase<Goal> GoalRepository { get;}

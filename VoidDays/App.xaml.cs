@@ -76,7 +76,7 @@ namespace VoidDays
             container.Bind<IStartupContainerViewModel>().To<StartupContainerViewModel>().InTransientScope();
             container.Bind<IStartupContainerViewModelFactory>().ToFactory();
             container.Bind<IUnitOfWorkFactory>().ToFactory();
-            container.Bind<IDatabaseService>().To<DatabaseService>().InSingletonScope();
+            container.Bind<IDatabaseService>().To<DatabaseService>().InTransientScope();
             container.Bind<IDbContext>().To<EFDbContext>().InTransientScope();
             container.Bind<ICurrentListViewModel>().To<CurrentListViewModel>().InTransientScope();
             container.Bind<IMainViewContainerViewModel>().To<MainViewContainerViewModel>().InTransientScope();
@@ -89,8 +89,8 @@ namespace VoidDays
             container.Bind<ILoginSettingsViewModelFactory>().ToFactory();
             container.Bind<IUserServiceFactory>().ToFactory();
 
-            container.Bind<IUserService>().To<UserService>().InSingletonScope();
-            container.Bind<IGoalService>().To<GoalService>().InSingletonScope();
+            container.Bind<IUserService>().To<UserService>().InTransientScope();
+            container.Bind<IGoalService>().To<GoalService>().InTransientScope();
             container.Bind<IDialogService>().To<DialogService>().InSingletonScope();
             container.Bind<IStartupService>().To<StartupService>().InTransientScope();
             container.Bind<IAdminService>().To<AdminService>().InTransientScope();

@@ -8,7 +8,8 @@ namespace VoidDays.Services
 {
     public class DatabaseService : IDatabaseService
     {
-        public string ConnectionString { get; set; }
+        private static string _connectionString;
+        public string ConnectionString { get => _connectionString; set => _connectionString = value; }
     }
 
     public interface IDatabaseService

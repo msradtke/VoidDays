@@ -40,7 +40,7 @@
             <RowDefinition Height="Auto"/>
 
             <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="75"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
             <Button HorizontalAlignment="Left" Command="{Binding HistoryCommand}">History</Button>
