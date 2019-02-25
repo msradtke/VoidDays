@@ -73,7 +73,7 @@ namespace VoidDays.ViewModels
         public List<Day> Days { get; set; }
         public ObservableCollection<DayViewModelAggregate> DayViewModelAggregates { get; set; }
     }
-    public class DayViewModelAggregate
+    public class DayViewModelAggregate : ViewModelBase
     {
         public string DayName { get; set; }
         public string DisplayDate { get; set; }
