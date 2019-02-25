@@ -241,8 +241,6 @@ namespace VoidDays.Services
                         {
                             return null;
                         }
-
-
                         return nextDay;
                     }
                 }
@@ -271,7 +269,6 @@ namespace VoidDays.Services
                 goalitem.DateTime = DateTime.UtcNow;
                 goalItemRepo.Insert(goalitem);
             }
-
         }
         public List<Day> GetDaysByDayNumber(int start, int end)
         {

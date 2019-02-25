@@ -37,11 +37,10 @@ namespace VoidDays.ViewModels
         }
 
         public List<Day> Days { get; set; }
-        public ObservableCollection<object> SmallHistoryDayViewModels { get; set; }
+        public ObservableCollection<ViewModelBase> SmallHistoryDayViewModels { get; set; }
 
         private void GetPreviousDays()
         {
-            //todo: fix day numbers
             _firstDay = _currentStoredDay.DayNumber - _previousDayCount;
             _endDay = _currentStoredDay.DayNumber - 1;
             Days = _adminService.GetDaysByDayNumber(_firstDay, _endDay);
@@ -60,7 +59,7 @@ namespace VoidDays.ViewModels
         }
         private void SetSmallHistoryDayViewModels()
         {
-            SmallHistoryDayViewModels = new ObservableCollection<object>();
+            SmallHistoryDayViewModels = new ObservableCollection<ViewModelBase>();
             for (int i = _firstDay; i <= _endDay; ++i)
             {
                 object vm;
