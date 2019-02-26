@@ -22,7 +22,7 @@
         <Label Grid.Row="1">Username:</Label>
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Username,UpdateSourceTrigger=PropertyChanged}"></TextBox>
         <Label Grid.Row="2">Password:</Label>
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Password,UpdateSourceTrigger=PropertyChanged}"></TextBox>
-        <Button Grid.Row="3" Grid.Column="1" Command="{Binding LoginCommand}" IsDefault="True">Login</Button>
+        <PasswordBox Name="txtPassword" Grid.Row="2" Grid.Column="1"></PasswordBox>
+        <Button Grid.Row="3" Grid.Column="1" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=txtPassword}" IsDefault="True">Login</Button>
     </Grid>
 </UserControl>

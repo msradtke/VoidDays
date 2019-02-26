@@ -16,7 +16,7 @@ namespace VoidDays.Models
         public RepositoryBase(IDbContext context)
         {
             this._context = context;
-            
+
             this._dbSet = context.GetDbSet<TEntity>();
         }
 
@@ -28,7 +28,7 @@ namespace VoidDays.Models
         public virtual IEnumerable<TEntity> Get(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string includeProperties = "")
+            string includeProperties = "", bool asNoTracking = false)
         {
             IQueryable<TEntity> query = _dbSet;
 
@@ -43,10 +43,14 @@ namespace VoidDays.Models
             }
             if (orderBy != null)
             {
+                if (asNoTracking)
+                    return orderBy(query).AsNoTracking().ToList();
                 return orderBy(query).ToList();
             }
             else
             {
+                if (asNoTracking)
+                    return query.AsNoTracking().ToList();
                 return query.ToList();
             }
         }

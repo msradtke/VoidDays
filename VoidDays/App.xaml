@@ -8,6 +8,7 @@
              >
 
     <Application.Resources>
+        
         <Style TargetType="ListBoxItem">
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Margin" Value="0"/>
@@ -15,6 +16,9 @@
         <Style TargetType="Button">
             <Setter Property="Margin" Value="2"/>
         </Style>
+        <DataTemplate DataType="{x:Type viewmodels:IncognitoViewModel}">
+            <views:IncognitoView/>
+        </DataTemplate>
         <DataTemplate DataType="{x:Type viewmodels:CreateUserViewModel}">
             <views:CreateUserView/>
         </DataTemplate>

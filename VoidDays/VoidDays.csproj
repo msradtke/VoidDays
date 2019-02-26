@@ -163,6 +163,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Controls\HyperlinkExternal.cs" />
     <Compile Include="Debug\DebugService.cs" />
     <Compile Include="DTO\CreateUserPayload.cs" />
     <Compile Include="DTO\LoginPayload.cs" />
@@ -220,6 +221,7 @@
     <Compile Include="ViewModels\Events\ViewModelEvents.cs" />
     <Compile Include="ViewModels\GoalItemViewModel.cs" />
     <Compile Include="ViewModels\Helpers.cs" />
+    <Compile Include="ViewModels\IncognitoViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\ICurrentDayViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\ICurrentListViewModel.cs" />
     <Compile Include="ViewModels\Interfaces\IDayHistoryViewModel.cs" />
@@ -244,11 +246,13 @@
     <Compile Include="Views\AddNewGoal.xaml.cs">
       <DependentUpon>AddNewGoal.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Behaviors\FormatTextBlock.cs" />
     <Compile Include="Views\CompleteGoalItemView.xaml.cs">
       <DependentUpon>CompleteGoalItemView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Converters\BaseConverter.cs" />
     <Compile Include="Views\Converters\GoalItemBackgroundConverter.cs" />
+    <Compile Include="Views\Converters\TextBlockHyperlinkConverter.cs" />
     <Compile Include="Views\CreateUserView.xaml.cs">
       <DependentUpon>CreateUserView.xaml</DependentUpon>
     </Compile>
@@ -272,6 +276,9 @@
     </Compile>
     <Compile Include="Views\GoalItemView.xaml.cs">
       <DependentUpon>GoalItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\IncognitoView.xaml.cs">
+      <DependentUpon>IncognitoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginSettingsView.xaml.cs">
       <DependentUpon>LoginSettingsView.xaml</DependentUpon>
@@ -361,6 +368,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GoalItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\IncognitoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

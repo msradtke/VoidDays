@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using VoidDays.Models;
@@ -34,12 +35,16 @@ namespace VoidDays.Services
         {
             using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                var day = unitOfWork.DayRepository.Get(x => x.DayNumber == dayNumber).FirstOrDefault();
+                var day = unitOfWork.DayRepository.Get(x => x.DayNumber == dayNumber);
                 if (day == null)
                     return GetGoalItemsForVoidDay(dayNumber,unitOfWork.GoalItemRepository,unitOfWork.GoalRepository,unitOfWork.DayRepository);
-                var goalItems = unitOfWork.GoalItemRepository.Get(x => x.DayNumber == dayNumber);
+                var goalItems = unitOfWork.GoalItemRepository.Get(x => x.DayNumber == dayNumber,null,"Goal");
                 return goalItems.ToList();
             }
+        }
+        public void SaveGoalItem(Goal goal)
+        {
+
         }
         public List<GoalItem> GetGoalItemsForVoidDay(int dayNumber, IRepositoryBase<GoalItem> goalItemRepo, IRepositoryBase<Goal> goalRepo, IRepositoryBase<Day> dayRepo)
         {

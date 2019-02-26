@@ -11,6 +11,7 @@ using VoidDays.Services.Interfaces;
 using VoidDays.ViewModels.Events;
 using VoidDays.ServiceReference2;
 using VoidDays.DTO;
+using System.Windows.Controls;
 
 namespace VoidDays.ViewModels
 {
@@ -27,7 +28,7 @@ namespace VoidDays.ViewModels
             _appSettings = _userService.GetAppSettings();
             Username = _appSettings.LastUser;
             Password = "";
-            LoginCommand = new ActionCommand(Login);
+            LoginCommand = new ActionCommand(Login, ()=> true);
         }
         public ICommand LoginCommand { get; private set; }
 
@@ -35,9 +36,11 @@ namespace VoidDays.ViewModels
         public string Password { get; set; }
         public string LoginMessage { get; set; }
 
-        void Login()
+        void Login(object passwordBox)
         {
-            _eventAggregator.GetEvent<TryLoginEvent>().Publish(new LoginPayload { Username = Username, Password = Password });
+            var pbox = (PasswordBox)passwordBox;
+
+            _eventAggregator.GetEvent<TryLoginEvent>().Publish(new LoginPayload { Username = Username, Password = pbox.Password });
     
         }
 

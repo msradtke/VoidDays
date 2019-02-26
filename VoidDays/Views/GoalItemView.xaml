@@ -4,9 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VoidDays.Views"
+             xmlns:c="clr-namespace:VoidDays.Views.Converters"
+             xmlns:b="clr-namespace:VoidDays.Views.Behaviors"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <UserControl.Resources>
+        <c:TextBlockHyperlinkConverter x:Key="TextBlockHyperlinkConverter"/>
+    </UserControl.Resources>
+        
+            <Grid>
         <Grid.Style>
             <Style TargetType="Grid">
                 <Style.Triggers>
@@ -29,7 +36,11 @@
         </Grid.RowDefinitions>
 
         <TextBlock FontFamily="Consolas" FontSize="20" FontWeight="Bold" Grid.Row="0" Text="{Binding GoalItem.Title}"></TextBlock>
-        <TextBlock Margin="20,0,0,0" FontFamily="Consolas" FontSize="15" Grid.Row="1" Text="{Binding GoalItem.Message}"></TextBlock>
+        <TextBlock Margin="20,0,0,0" FontFamily="Consolas" FontSize="15" Grid.Row="1">
+            <i:Interaction.Behaviors>
+                <b:FormatTextBlock FormattedText="{Binding GoalItem.Message}"/>
+            </i:Interaction.Behaviors>
+        </TextBlock>
         <Grid Grid.RowSpan="3">
             <Grid.Style>
                 <Style TargetType="Grid">

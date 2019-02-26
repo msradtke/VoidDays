@@ -45,6 +45,7 @@ namespace VoidDays.ViewModels
                 _dialogService.OpenErrorDialog("Title cannot be empty.", "Error");
             else
             {
+            
                 GoalItem.Goal.Title = Title;
                 GoalItem.Goal.Message = Message;
                 GoalItem.Title = Title;
