@@ -30,17 +30,29 @@ namespace VoidDays.Services
             var currentDay = _adminService.GetCurrentStoredDay();
             return GetGoalItemsByDayNumber(currentDay.DayNumber);
         }
-        public List<GoalItem> GetGoalItemsByDayNumber(int day)
+        public List<GoalItem> GetGoalItemsByDayNumber(int dayNumber)
         {
             using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                var goalItems = unitOfWork.GoalItemRepository.Get(x => x.DayNumber == day);
+                var day = unitOfWork.DayRepository.Get(x => x.DayNumber == dayNumber).FirstOrDefault();
+                if (day == null)
+                    return GetGoalItemsForVoidDay(dayNumber,unitOfWork.GoalItemRepository,unitOfWork.GoalRepository,unitOfWork.DayRepository);
+                var goalItems = unitOfWork.GoalItemRepository.Get(x => x.DayNumber == dayNumber);
                 return goalItems.ToList();
             }
         }
-        public List<GoalItem> GetGoalItemsForVoidDay(int day)
+        public List<GoalItem> GetGoalItemsForVoidDay(int dayNumber, IRepositoryBase<GoalItem> goalItemRepo, IRepositoryBase<Goal> goalRepo, IRepositoryBase<Day> dayRepo)
         {
-            throw new NotImplementedException();
+            var voidGoalItems = new List<GoalItem>();
+            var previousDay = dayRepo.Get(x => x.DayNumber < dayNumber).Max();
+            var preivousDayGoals = goalRepo.Get(x => x.IsActive && x.Created >= x.Created);
+            foreach(var goal in preivousDayGoals)
+            {
+                var goalItem = CreateGoalItem(goal, dayNumber, goalItemRepo);
+                goalItem.IsVoid = true;
+                voidGoalItems.Add(goalItem);
+            }
+            return voidGoalItems;
         }
         public List<GoalItem> SyncGoalItems(int dayNumber)
         {

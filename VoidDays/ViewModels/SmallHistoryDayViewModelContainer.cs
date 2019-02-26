@@ -42,8 +42,13 @@ namespace VoidDays.ViewModels
         private void GetPreviousDays()
         {
             _firstDay = _currentStoredDay.DayNumber - _previousDayCount;
+            if (_firstDay < 0)
+                _firstDay = 0;
             _endDay = _currentStoredDay.DayNumber - 1;
-            Days = _adminService.GetDaysByDayNumber(_firstDay, _endDay);
+            if (_endDay < 0)
+                _endDay = 0;
+
+            Days = _adminService.GetVoidDayRange(_firstDay, _endDay);
         }
         private void NextDayEventHandler(Day NextDay)
         {
@@ -62,7 +67,7 @@ namespace VoidDays.ViewModels
             SmallHistoryDayViewModels = new ObservableCollection<ViewModelBase>();
             for (int i = _firstDay; i <= _endDay; ++i)
             {
-                object vm;
+                ViewModelBase vm;
                 var day = Days.FirstOrDefault(x => x.DayNumber == i);
                 if (day == null)
                 {

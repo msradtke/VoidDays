@@ -146,6 +146,31 @@ namespace VoidDays.Services
             }
             return allVoidDays;
         }
+        public List<Day> GetVoidDayRange(int dayStart, int dayEnd)
+        {
+            if (dayStart > dayEnd)
+                throw new InvalidOperationException();
+
+            var allDays = GetAllDays();
+            //var highestDayNumber = allDays.Max(x => x.DayNumber);
+
+            List<Day> allVoidDays = new List<Day>();
+            Day previousDay = null;
+            for (int i = dayStart; i <= dayEnd; ++i)
+            {
+                var day = allDays.FirstOrDefault(x => x.DayNumber == i);
+                if (day == null)
+                {
+                    if (previousDay == null)
+                        throw new InvalidOperationException();
+                    day = GetVoidDayAfter(previousDay);
+                }
+
+                allVoidDays.Add(day);
+                previousDay = day;
+            }
+            return allVoidDays;
+        }
         public Day CreateFirstDay()
         {
             var firstDay = new Day();
@@ -272,11 +297,13 @@ namespace VoidDays.Services
         }
         public List<Day> GetDaysByDayNumber(int start, int end)
         {
-            var days = _dayRepository.Get(x => x.DayNumber >= start && x.DayNumber <= end).ToList();
-            foreach (var day in days)
-                _unitOfWork.Reload(day);
-            return days;
+            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            {
+                var days = unitOfWork.DayRepository.Get(x => x.DayNumber >= start && x.DayNumber <= end).ToList();
+                return days;
+            }
         }
+
         public Day GetCurrentStoredDay()
         {
             Day currentStoredDay;

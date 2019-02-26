@@ -24,5 +24,6 @@ namespace VoidDays.Services.Interfaces
         void SetIsLoading(LoadingLock loadLock);
         Day GetVoidDayAfter(Day previousDay);
         List<Day> GetAllVoidDays();
+        List<Day> GetVoidDayRange(int dayStart, int dayEnd);
     }
 }
