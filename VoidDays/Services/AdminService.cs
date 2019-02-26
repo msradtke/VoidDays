@@ -174,22 +174,25 @@ namespace VoidDays.Services
         public Day CreateFirstDay()
         {
             var firstDay = new Day();
-            var settings = GetSettings();
-            if (settings == null)
-            {
-                settings = GetDefaultSettings();
-                InsertSettings(settings);
+            using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
+            {                
+                var settings = GetSettings();
+                if (settings == null)
+                {
+                    settings = GetDefaultSettings();
+                    unitOfWork.SettingsRepository.Insert(settings);
+                }
+                firstDay.DayNumber = 0;
+
+                firstDay.Start = DateTime.UtcNow.Date + settings.StartTime.TimeOfDay;
+                firstDay.End = firstDay.Start.Add(new TimeSpan(23, 59, 59));
+                firstDay.IsActive = true;
+
+                unitOfWork.DayRepository.Insert(firstDay);
+                unitOfWork.Save();
+
+                //SyncToCurrentDay(currentDay);
             }
-            firstDay.DayNumber = 0;
-
-            firstDay.Start = DateTime.UtcNow.Date + settings.StartTime.TimeOfDay;
-            firstDay.End = firstDay.Start.Add(new TimeSpan(23, 59, 59));
-            firstDay.IsActive = true;
-
-            _dayRepository.Insert(firstDay);
-            _unitOfWork.Save();
-
-            //SyncToCurrentDay(currentDay);
             return firstDay;
         }
         public void InsertSettings(Settings settings)
@@ -198,12 +201,10 @@ namespace VoidDays.Services
         }
         public Settings GetDefaultSettings()
         {
-            var settings = new Settings();
-
+            var settings = new Settings();            
+            settings.StartTime = new DateTime(2000, 1, 1, 8, 0, 0).ToUniversalTime();
+            settings.EndTime = new DateTime(2000, 1, 1, 7, 59, 59).ToUniversalTime();
             settings.StartDay = DateTime.Today.ToUniversalTime();
-            settings.StartTime = new DateTime(2000, 1, 1, 8, 0, 0);
-            settings.EndTime = new DateTime(2000, 1, 1, 7, 59, 59);
-            settings.IsUpdating = false;
             return settings;
         }
 
