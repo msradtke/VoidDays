@@ -82,29 +82,32 @@ namespace VoidDays.ViewModels
         #endregion
         public void SetDay(Day day)
         {
-                IsLoading = true;
-                Task.Factory.StartNew(() =>
+            IsLoading = true;
+            IsForwardEnabled = false;
+            IsBackEnabled = false;
+            IsToday = false;
+            Task.Factory.StartNew(() =>
+                {
+                    _allDays = _adminService.GetAllVoidDays();
+                    CurrentDay = day;
+                    GetCurrentGoalItems();
+                    App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
                     {
-                        _allDays = _adminService.GetAllVoidDays();
-                        CurrentDay = day;
-                        GetCurrentGoalItems();
-                        App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
-                        {
-                            SetCurrentGoalItemViewModels();
-                        });
+                        SetCurrentGoalItemViewModels();
+                    });
 
-                        UpdateCurrentDayStatus();
-                        SetPreviousDayStatus();
+                    UpdateCurrentDayStatus();
+                    SetPreviousDayStatus();
 
-                        NextDay = _allDays.FirstOrDefault(x=>x.DayNumber == CurrentDay.DayNumber + 1);
-                        IsForwardEnabled = NextDay == null ? false : true;
-                        PreviousDay = _allDays.FirstOrDefault(x => x.DayNumber == CurrentDay.DayNumber - 1);
-                        IsBackEnabled = PreviousDay == null ? false : true;
-
-                        IsToday = CurrentDay == Today ? true : false;
-                    }
-                )
-                .ContinueWith(x => IsLoading = false);            
+                    NextDay = _allDays.FirstOrDefault(x => x.DayNumber == CurrentDay.DayNumber + 1);
+                    IsForwardEnabled = NextDay == null ? false : true;
+                    PreviousDay = _allDays.FirstOrDefault(x => x.DayNumber == CurrentDay.DayNumber - 1);
+                    IsBackEnabled = PreviousDay == null ? false : true;
+                    Today = _adminService.GetCurrentStoredDay();
+                    IsToday = CurrentDay.DayNumber == Today.DayNumber ? true : false;
+                }
+            )
+            .ContinueWith(x => IsLoading = false);
 
         }
         private void SetCurrentStoredDayGoalItems(Day csd)

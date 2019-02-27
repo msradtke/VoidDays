@@ -33,7 +33,7 @@ namespace VoidDays
                 ((dynamic)DataContext).MoveSwitch = false;
                 return;
             }
-            Console.WriteLine("Mouse moved " + _count++);
+            //Console.WriteLine("Mouse moved " + _count++);
             if (DataContext != null)
                 ((dynamic)DataContext).MouseMoved();
         }
@@ -46,11 +46,6 @@ namespace VoidDays
                 ((dynamic)DataContext).SecretCodeEntered();
             }
             
-            else
-            {
-                Console.WriteLine();
-                Console.WriteLine();
-            }
         }
     }
 }
