@@ -136,8 +136,8 @@ namespace VoidDays.ViewModels
         }
         private void SetDayToTodayHandler()
         {
-            if (CurrentDay != Today)
-                SetDay(Today);
+            var currentStoredDay = _adminService.GetCurrentStoredDay();
+            SetDay(currentStoredDay);
 
         }
         private void NextDayEventHandler(Day day)//from timer, means completely new day
