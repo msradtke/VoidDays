@@ -12,7 +12,7 @@ using Prism.Events;
 using VoidDays.ViewModels.Events;
 namespace VoidDays.ViewModels
 {
-    public class MainContainerViewModel : ViewModelBase, IMainContainerViewModel
+    public class MainContainerViewModel : ViewModelBase, IMainContainerViewModel 
     {
         IAdminService _adminService;
         Timer _timer;
@@ -42,7 +42,7 @@ namespace VoidDays.ViewModels
         public ICommand HistoryCommand { get; set; }
         public ICommand CurrentDayCommand { get; set; }
         public ICommand LogoutCommand { get; set; }
-        public void Initialize()
+        public override void Initialize()
         {
             _eventAggregator.GetEvent<LoadingEvent>().Subscribe(LoadingEventListener);
             _loadingLocks = new List<LoadingLock>();
@@ -62,8 +62,8 @@ namespace VoidDays.ViewModels
                     MainViewContainerViewModel = _lazyMainViewContainerViewModel.Value;
 
                     _adminService.Initialize();
-                    SmallHistoryDayViewModelContainer = _lazySmallHistoryDayViewModelContainer.Value;
-                    DayHistoryViewModel = _lazyDayHistoryViewModel.Value;
+                    SmallHistoryDayViewModelContainer = (ViewModelBase)_lazySmallHistoryDayViewModelContainer.Value;
+                    DayHistoryViewModel = (ViewModelBase)_lazyDayHistoryViewModel.Value;
                     SetupTimer();
                     CurrentView = MainViewContainerViewModel;
                     RemoveLoadLock(loadLock);
@@ -110,6 +110,11 @@ namespace VoidDays.ViewModels
             _settings = _adminService.GetSettings();
             _timer = _adminService.SetUpTimer(_settings.EndTime.TimeOfDay);
         }   
+        public void StopTimer()
+        {
+            _timer = null;
+            _adminService.DisableTimer();
+        }
         private void ShowHistory()
         {
             DayHistoryViewModel.Initialize();
@@ -120,11 +125,20 @@ namespace VoidDays.ViewModels
             _eventAggregator.GetEvent<SetListToTodayEvent>().Publish();
             CurrentView = MainViewContainerViewModel;
         }
-
+        public override void Cleanup()
+        {
+            StopTimer();
+            _eventAggregator.GetEvent<SetDayEvent>().Unsubscribe(SetDay);
+            _eventAggregator.GetEvent<LoadingEvent>().Unsubscribe(LoadingEventListener);
+            DayHistoryViewModel.Cleanup();
+            SmallHistoryDayViewModelContainer.Cleanup();
+            MainViewContainerViewModel.Cleanup();
+            base.Cleanup();
+        }
         public object CurrentView { get; private set; }
         public IMainViewContainerViewModel MainViewContainerViewModel { get; private set; }
-        public object SmallHistoryDayViewModelContainer { get; private set; }
-        public IDayHistoryViewModel DayHistoryViewModel { get; set; }
+        public ViewModelBase SmallHistoryDayViewModelContainer { get; private set; }
+        public ViewModelBase DayHistoryViewModel { get; set; }
         public bool IsLoading { get; set; }
         public LoadingViewModel LoadingViewModel {get;set;}
         public User User { get; set; }

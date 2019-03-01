@@ -16,6 +16,12 @@ namespace VoidDays.ViewModels
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<CurrentDayStatusEvent>().Subscribe(UpdateCurrentDayStatus);
         }
+        public override void Cleanup()
+        {
+            _eventAggregator.GetEvent<CurrentDayStatusEvent>().Unsubscribe(UpdateCurrentDayStatus);
+
+            base.Cleanup();
+        }
         public bool IsCurrentDayComplete { get; set; }
         private void UpdateCurrentDayStatus(bool isComplete)
         {

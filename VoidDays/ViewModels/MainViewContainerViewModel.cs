@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using VoidDays.ViewModels.Interfaces;
 namespace VoidDays.ViewModels
 {
-    public class MainViewContainerViewModel : IMainViewContainerViewModel
+    public class MainViewContainerViewModel : ViewModelBase, IMainViewContainerViewModel
     {
         public MainViewContainerViewModel(IPreviousDayViewModel previousDayViewModel,ICurrentDayViewModel currentDayViewModel, ICurrentListViewModel currentListViewModel)
         {
@@ -16,8 +16,15 @@ namespace VoidDays.ViewModels
 
 
         }
-        public object CurrentListViewModel { get; private set; }
-        public object CurrentDayViewModel { get; private set; }
-        public object PreviousDayViewModel { get; private set; }
+        public override void Cleanup()
+        {
+            PreviousDayViewModel.Cleanup();
+            CurrentListViewModel.Cleanup();
+            CurrentDayViewModel.Cleanup();
+            base.Cleanup();
+        }
+        public ICurrentListViewModel CurrentListViewModel { get; private set; }
+        public ICurrentDayViewModel CurrentDayViewModel { get; private set; }
+        public IPreviousDayViewModel PreviousDayViewModel { get; private set; }
     }
 }

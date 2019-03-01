@@ -13,7 +13,7 @@ using VoidDays.ViewModels.Events;
 namespace VoidDays.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
-    public class DayHistoryViewModel : IDayHistoryViewModel
+    public class DayHistoryViewModel : ViewModelBase, IDayHistoryViewModel
     {
         IAdminService _adminService;
         IViewModelFactory _viewModelFactory;
@@ -37,7 +37,7 @@ namespace VoidDays.ViewModels
         public ObservableCollection<WeekViewModelAggregate> WeekViewModelAggregates { get; set; }
         public bool IsLoading { get; set; }
         public LoadingViewModel LoadingViewModel { get; set; }
-        public void Initialize()
+        public override void Initialize()
         {
             if (IsLoading == false)
             {
@@ -60,6 +60,11 @@ namespace VoidDays.ViewModels
             }
             //GetWeeks();
             //CreateWeekViewModels();
+        }
+        public override void Cleanup()
+        {
+            _eventAggregator.GetEvent<NextDayEvent>().Unsubscribe(NextDayEventHandler);
+            base.Cleanup();
         }
         private void NextDayEventHandler(Day nextDay)
         {

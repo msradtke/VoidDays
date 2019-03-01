@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VoidDays.ViewModels
 {
-    public class IncognitoViewModel
+    public class IncognitoViewModel : ViewModelBase
     {
     }
 }

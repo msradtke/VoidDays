@@ -25,12 +25,21 @@ namespace VoidDays.ViewModels
 
         public ObservableCollection<IViewModelBase> TabItems { get; set; }
         public IViewModelBase SelectedTabItem { get; set; }
-
+        
         public string TabHeader { get; set; }
 
         public void AddTabItem(IViewModelBase viewModel)
         {
             TabItems.Add(viewModel);
+        }
+
+        public virtual void Cleanup()
+        {
+            PropertyChanged = null;
+        }
+        public virtual void Initialize()
+        {
+
         }
     }
 
@@ -39,5 +48,6 @@ namespace VoidDays.ViewModels
         string TabHeader { get; set; }
         void AddTabItem(IViewModelBase viewModel);
         ObservableCollection<IViewModelBase> TabItems { get; set; }
+        void Cleanup();
     }
 }

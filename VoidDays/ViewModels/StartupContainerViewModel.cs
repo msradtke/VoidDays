@@ -50,14 +50,23 @@ namespace VoidDays.ViewModels
             _userService = _userServiceFactory.CreateUserService();
 
 
-
+            UniqueId = Guid.NewGuid();
             _eventAggregator.GetEvent<TryLoginEvent>().Subscribe(TryLogin);
             _eventAggregator.GetEvent<TryCreateUserEvent>().Subscribe(CreateUser);
             AddTabItem(LoginViewModel);
             AddTabItem(CreateUserViewModel);
             AddTabItem(LoginSettingsViewModel);
         }
-
+        public override void Cleanup()
+        {
+            LoginViewModel.Cleanup();
+            CreateUserViewModel.Cleanup();
+            LoginSettingsViewModel.Cleanup();
+            _eventAggregator.GetEvent<TryLoginEvent>().Unsubscribe(TryLogin);
+            _eventAggregator.GetEvent<TryCreateUserEvent>().Unsubscribe(CreateUser);
+            base.Cleanup();
+        }
+        public Guid UniqueId { get; set; }
         private void TryLogin(LoginPayload payload)
         {
             IsLoading = true;
@@ -124,7 +133,7 @@ namespace VoidDays.ViewModels
         public bool IsLoading { get; set; }
         public LoadingViewModel LoadingViewModel { get; set; }
     }
-    public interface IStartupContainerViewModel { }
+    public interface IStartupContainerViewModel :IViewModelBase{ }
     public interface IStartupContainerViewModelFactory
     {
         IStartupContainerViewModel CreateStartupContainerViewModel();

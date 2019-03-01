@@ -22,5 +22,10 @@ namespace VoidDays.ViewModels
         {
             PreviousDayIsComplete = previousDayIsComplete;
         }
+        public override void Cleanup()
+        {
+            _eventAggregator.GetEvent<PreviousDayStatusEvent>().Unsubscribe(SetStatus);
+            base.Cleanup();
+        }
     }
 }

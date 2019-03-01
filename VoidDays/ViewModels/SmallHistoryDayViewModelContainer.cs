@@ -13,7 +13,7 @@ using VoidDays.ViewModels.Events;
 namespace VoidDays.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
-    public class SmallHistoryDayViewModelContainer : ISmallHistoryDayViewModelContainer
+    public class SmallHistoryDayViewModelContainer : ViewModelBase, ISmallHistoryDayViewModelContainer
     {
         IAdminService _adminService;
         IViewModelFactory _viewModelFactory;

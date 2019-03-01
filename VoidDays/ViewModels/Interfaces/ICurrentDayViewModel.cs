@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VoidDays.ViewModels.Interfaces
 {
-    public interface ICurrentDayViewModel
+    public interface ICurrentDayViewModel : IViewModelBase
     {
     }
 }

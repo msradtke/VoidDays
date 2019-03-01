@@ -25,5 +25,6 @@ namespace VoidDays.Services.Interfaces
         Day GetVoidDayAfter(Day previousDay);
         List<Day> GetAllVoidDays();
         List<Day> GetVoidDayRange(int dayStart, int dayEnd);
+        void DisableTimer();
     }
 }

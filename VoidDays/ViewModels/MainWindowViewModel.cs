@@ -45,7 +45,7 @@ namespace VoidDays.ViewModels
         }
         private void NewTimer()
         {
-            _timer = new Timer();
+            //_timer = new Timer();
             //this.timer = new Timer(timeToGo.Milliseconds);
             _timer = new Timer(30000);
             _timer.AutoReset = true;
@@ -71,12 +71,15 @@ namespace VoidDays.ViewModels
         }
         private void Logout(bool obj)
         {
+            _mainContainerViewModel.StopTimer();
+            _mainContainerViewModel = null;
+            _timer.Enabled = false;
             _loggedIn = false;
             CurrentView = _startupContainerViewModelFactory.CreateStartupContainerViewModel();
         }
 
         public bool IsLoading { get; set; }
-        public object CurrentView { get; set; }
+        public IViewModelBase CurrentView { get; set; }
         public object LoadingViewModel { get; set; }
 
         void LoginSuccess()
@@ -84,7 +87,7 @@ namespace VoidDays.ViewModels
             NewTimer();
             _loggedIn = true;
             _mainContainerViewModel = _mainContainerViewModelFactory.CreateMainContainerViewModel();
-
+            CurrentView.Cleanup();
             CurrentView = _mainContainerViewModel;
             var startup = _startupServiceFactory.CreateStartupService();
             startup.Initialize();

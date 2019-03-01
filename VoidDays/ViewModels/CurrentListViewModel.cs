@@ -110,6 +110,15 @@ namespace VoidDays.ViewModels
             .ContinueWith(x => IsLoading = false);
 
         }
+        public override void Cleanup()
+        {
+            _eventAggregator.GetEvent<SetListToTodayEvent>().Unsubscribe(SetDayToTodayHandler);
+            _eventAggregator.GetEvent<NextDayEvent>().Unsubscribe(NextDayEventHandler);
+            _eventAggregator.GetEvent<CheckNextDayEvent>().Unsubscribe(NextDayEventHandler);
+            _eventAggregator.GetEvent<DeleteGoalItemEvent>().Unsubscribe(GoalItemDeletedHandler);
+            _eventAggregator.GetEvent<SetDayEvent>().Unsubscribe(SetDay);
+            base.Cleanup();
+        }
         private void SetCurrentStoredDayGoalItems(Day csd)
         {
             CurrentStoredDayGoalItems = _goalService.GetGoalItemsByDayNumber(csd.DayNumber).ToObservableCollection();
@@ -133,7 +142,7 @@ namespace VoidDays.ViewModels
         }
         private void NextDayEventHandler(Day day)//from timer, means completely new day
         {
-            if (day.DayNumber != Today.DayNumber)
+            if (Today == null || day.DayNumber != Today.DayNumber)
             {
                 Today = day;
                 SetDay(Today);
