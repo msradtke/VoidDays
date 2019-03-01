@@ -38,7 +38,8 @@ namespace VoidDays.Views.Behaviors
             System.Windows.Controls.TextBlock currentTxtBlock = (textBlock as FormatTextBlock).AssociatedObject;
 
             string text = eventArgs.NewValue as string;
-
+            if (text == null)
+                text = "";
             if (currentTxtBlock != null)
             {
                 currentTxtBlock.Inlines.Clear();
