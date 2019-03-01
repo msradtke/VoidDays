@@ -142,7 +142,7 @@ namespace VoidDays.ViewModels
         }
         private void NextDayEventHandler(Day day)//from timer, means completely new day
         {
-            if (Today == null || day.DayNumber != Today.DayNumber)
+            if (Today == null || day.DayId != Today.DayId)
             {
                 Today = day;
                 SetDay(Today);
@@ -235,7 +235,7 @@ namespace VoidDays.ViewModels
         }
     }
 
-    public class GoalItemViewModelAggregate
+    public class GoalItemViewModelAggregate : ViewModelBase, IViewModelBase
     {
         public IGoalItemViewModel GoalItemViewModel { get; set; }
         public GoalItem GoalItem { get; set; }

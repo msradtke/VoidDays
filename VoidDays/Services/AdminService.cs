@@ -386,6 +386,7 @@ namespace VoidDays.Services
         }
         private void NextDayHandler(object o, ElapsedEventArgs e)
         {
+            Log.DebugLog("NextDayHandler");
             var timer = (Timer)o;
             timer.Enabled = false;
             DateTime current = DateTime.UtcNow;
@@ -399,7 +400,7 @@ namespace VoidDays.Services
 
                     var loadLock = new LoadingLock { Id = Guid.NewGuid(), IsLoading = true };
                     SetIsLoading(loadLock);
-                    Log.GeneralLog("NextDayHandler");
+                    Log.GeneralLog("Creating Next Day");
                     //check if other client already next dayed
                     //day in db
 

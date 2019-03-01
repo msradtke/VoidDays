@@ -37,6 +37,17 @@ namespace VoidDays.Logging
                 _streamWriter = null;
             }
         }
+        public static void DebugLog(string message)
+        {
+
+            using (var sw = OpenCreateLogFile("GeneralLog.txt"))
+            {
+                var msg = DateTime.Now.ToString() + ": " + message;
+                sw.WriteLine(msg);
+                _streamWriter.Dispose();
+                _streamWriter = null;
+            }
+        }
         static StreamWriter OpenCreateLogFile(string name)
         {
             if (_streamWriter != null)
