@@ -422,8 +422,8 @@ namespace VoidDays.Services
                         Log.GeneralLog("Published next day event");
                     }
                     //timer = SetupTimer(_currentDay, _settings.EndTime);
-                    Log.GeneralLog(String.Format("setup timer, current day = {0}", _currentDay.DayNumber));
-                    Log.GeneralLog(String.Format("setup timer, EndTime = {0}", _settings.EndTime.ToString()));
+                    //Log.GeneralLog(String.Format("setup timer, current day = {0}", _currentDay.DayNumber));
+                    //Log.GeneralLog(String.Format("setup timer, EndTime = {0}", _settings.EndTime.ToString()));
 
                     //timer.Enabled = true;
                     loadLock.IsLoading = false;
