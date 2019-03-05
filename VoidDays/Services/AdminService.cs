@@ -366,7 +366,7 @@ namespace VoidDays.Services
             //var t = new System.Timers.Timer();
             //this.timer = new Timer(timeToGo.Milliseconds);
             _timer = new Timer(10000);
-            _timer.AutoReset = false;
+            _timer.AutoReset = true;
             _timer.Elapsed += NextDayHandler;
             _timer.Enabled = true;
 
@@ -388,13 +388,15 @@ namespace VoidDays.Services
         {
             Log.DebugLog("NextDayHandler");
             var timer = (Timer)o;
-            timer.Enabled = false;
+            _timer.Interval = 10000;
+            //timer.Enabled = false;
             DateTime current = DateTime.UtcNow;
             Day currentStoredDay = GetCurrentStoredDay();
-
+            _settings = GetSettings();
             //if (current.Date > _currentDay.Start.Date && current.TimeOfDay > _settings.EndTime)
             if (current.Date > currentStoredDay.Start.Date && current.TimeOfDay > _settings.EndTime.TimeOfDay)
             {
+                _timer.Interval = 60000;
                 using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
                 {
 
@@ -407,7 +409,7 @@ namespace VoidDays.Services
                     Day updatedDay = SyncToCurrentDay(currentStoredDay); //day is the new updated day
                     if (updatedDay == null)
                     {
-                        timer.Enabled = true;
+                        //timer.Enabled = true;
                         loadLock.IsLoading = false;
                         SetIsLoading(loadLock);
                         return;
@@ -423,7 +425,7 @@ namespace VoidDays.Services
                     Log.GeneralLog(String.Format("setup timer, current day = {0}", _currentDay.DayNumber));
                     Log.GeneralLog(String.Format("setup timer, EndTime = {0}", _settings.EndTime.ToString()));
 
-                    timer.Enabled = true;
+                    //timer.Enabled = true;
                     loadLock.IsLoading = false;
                     SetIsLoading(loadLock);
                 }
@@ -431,7 +433,7 @@ namespace VoidDays.Services
             else
             {
                 _eventAggregator.GetEvent<CheckNextDayEvent>().Publish(currentStoredDay);
-                timer.Enabled = true;
+                //timer.Enabled = true;
             }
         }
         void TestNextDayHandler(object o, ElapsedEventArgs e)
