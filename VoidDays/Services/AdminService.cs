@@ -124,6 +124,21 @@ namespace VoidDays.Services
             nextDay.IsVoid = true;
             return nextDay;
         }
+        public Day GetVoidDayFromDayNumber(Day previousDay, int dayNumber)
+        {
+            var voidDay = new Day();
+            var settings = GetSettings();
+            voidDay.DayNumber = dayNumber;
+            var startDateTime = new DateTime();
+            startDateTime = previousDay.Start.Date;
+            voidDay.Start = startDateTime.AddDays(dayNumber - previousDay.DayNumber) + settings.StartTime.TimeOfDay;
+            var addDay = voidDay.Start.AddDays(1);
+            var subtractSecond = addDay.AddSeconds(-1);
+            voidDay.End = subtractSecond;
+            voidDay.IsActive = false;
+            voidDay.IsVoid = true;
+            return voidDay;
+        }
         public List<Day> GetAllVoidDays()
         {
             var allDays = GetAllDays();
@@ -162,8 +177,11 @@ namespace VoidDays.Services
                 if (day == null)
                 {
                     if (previousDay == null)
-                        throw new InvalidOperationException();
-                    day = GetVoidDayAfter(previousDay);
+                    {
+                        day = GetVoidDayFromDayNumber(allDays.First(), i);
+                    }
+                    else
+                        day = GetVoidDayAfter(previousDay);
                 }
 
                 allVoidDays.Add(day);
@@ -175,7 +193,7 @@ namespace VoidDays.Services
         {
             var firstDay = new Day();
             using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
-            {                
+            {
                 var settings = GetSettings();
                 if (settings == null)
                 {
@@ -201,7 +219,7 @@ namespace VoidDays.Services
         }
         public Settings GetDefaultSettings()
         {
-            var settings = new Settings();            
+            var settings = new Settings();
             settings.StartTime = new DateTime(2000, 1, 1, 8, 0, 0).ToUniversalTime();
             settings.EndTime = new DateTime(2000, 1, 1, 7, 59, 59).ToUniversalTime();
             settings.StartDay = DateTime.Today.ToUniversalTime();
@@ -239,7 +257,7 @@ namespace VoidDays.Services
                     var goalRepo = unitOfWork.GoalRepository;
                     if (!CheckForCurrentDay(currentStoredDay, out current)) //if latest day in db is not today
                     {
-                        currentStoredDay = unitOfWork.DayRepository.Get(x => x.DayId == currentStoredDay.DayId).FirstOrDefault();
+                        currentStoredDay = unitOfWork.DayRepository.Get(x => x.DayId == current.DayId).FirstOrDefault();
                         //complete this day, foreach goalitem on this day not completed, void
                         var goalItems = GetGoalItemsByDayNumber(currentStoredDay.DayNumber, goalItemRepo).ToList();
                         bool noGoalItems = true;

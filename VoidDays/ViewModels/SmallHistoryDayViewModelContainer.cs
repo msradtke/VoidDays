@@ -21,7 +21,6 @@ namespace VoidDays.ViewModels
         const int _previousDayCount = 7;
         int _firstDay;
         int _endDay;
-        IEventAggregator _eventAggregator;
         public SmallHistoryDayViewModelContainer(IAdminService adminService, IViewModelFactory viewModelFactory, IEventAggregator eventAggregator)
         {
             _adminService = adminService;
@@ -30,16 +29,16 @@ namespace VoidDays.ViewModels
 
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<NextDayEvent>().Subscribe(NextDayEventHandler);
-            //_eventAggregator.GetEvent<CheckNextDayEvent>().Subscribe(NextDayEventHandler);
-            Days = new List<Day>();
-            GetPreviousDays();
+            _eventAggregator.GetEvent<CheckNextDayEvent>().Subscribe(NextDayEventHandler);
+            //Days = new List<Day>();
+            Days = GetPreviousDays();
             SetSmallHistoryDayViewModels();
         }
 
         public List<Day> Days { get; set; }
         public ObservableCollection<ViewModelBase> SmallHistoryDayViewModels { get; set; }
 
-        private void GetPreviousDays()
+        private List<Day> GetPreviousDays()
         {
             _firstDay = _currentStoredDay.DayNumber - _previousDayCount;
             if (_firstDay < 0)
@@ -48,17 +47,20 @@ namespace VoidDays.ViewModels
             if (_endDay < 0)
                 _endDay = 0;
 
-            Days = _adminService.GetVoidDayRange(_firstDay, _endDay);
+            return _adminService.GetVoidDayRange(_firstDay, _endDay);
         }
-        private void NextDayEventHandler(Day NextDay)
+        private void NextDayEventHandler(Day nextDay)
         {
-
-            App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+            if (_currentStoredDay == null || _currentStoredDay.DayNumber < nextDay.DayNumber)
             {
-                _currentStoredDay = NextDay;
-                GetPreviousDays();
-                SetSmallHistoryDayViewModels();
-            });
+                _currentStoredDay = nextDay;
+                var prevDays = GetPreviousDays();
+                App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                {
+                    Days = prevDays;
+                    SetSmallHistoryDayViewModels();
+                });
+            }
 
 
         }

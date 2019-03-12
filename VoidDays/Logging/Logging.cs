@@ -8,53 +8,49 @@ namespace VoidDays.Logging
 {
     public static class Log
     {
-        static string directory;
+        static string _directory;
         static StreamWriter _streamWriter = null;
         static Log()
         {
-            directory = Directory.GetCurrentDirectory();
+            _directory = Directory.GetCurrentDirectory();
         }
         public static void DBLog(string message)
         {
-
-            using (var sw = OpenCreateLogFile("DBLog.txt"))
+            string path = _directory + "\\Logs\\" + "DBLog.txt";
+            using (var sw = new StreamWriter(path, true))
             {
                 var msg = DateTime.Now.ToString() + ": " + message;
                 sw.WriteLine(msg);
-                _streamWriter.Dispose();
-                _streamWriter = null;
             }
         }
 
         public static void GeneralLog(string message)
         {
-
-            using (var sw = OpenCreateLogFile("GeneralLog.txt"))
+            string path = _directory + "\\Logs\\" + "GeneralLog.txt";
+            using (var sw = new StreamWriter(path, true))
             {
                 var msg = DateTime.Now.ToString() + ": " + message;
                 sw.WriteLine(msg);
-                _streamWriter.Dispose();
-                _streamWriter = null;
             }
         }
         public static void DebugLog(string message)
         {
-
-            using (var sw = OpenCreateLogFile("GeneralLog.txt"))
+            string path = _directory + "\\Logs\\" + "GeneralLog.txt";
+            using (var sw = new StreamWriter(path, true))
             {
                 var msg = DateTime.Now.ToString() + ": " + message;
                 sw.WriteLine(msg);
-                _streamWriter.Dispose();
-                _streamWriter = null;
             }
         }
+
+        //do not use
         static StreamWriter OpenCreateLogFile(string name)
         {
             if (_streamWriter != null)
                 return _streamWriter;
-            string path = directory + "\\Logs\\" + name;
+            string path = _directory + "\\Logs\\" + name;
             _streamWriter = new StreamWriter(path, true);
-                return _streamWriter;
+            return _streamWriter;
 
 
         }
