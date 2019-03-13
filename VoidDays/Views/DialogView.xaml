@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VoidDays.Views"
         mc:Ignorable="d"
-        Title="DialogView" Height="300" Width="300">
+        Title="DialogView" MinHeight="200" MinWidth="200" SizeToContent="WidthAndHeight">
     <Grid>
         <ContentControl Content="{Binding}"/>
     </Grid>

@@ -42,7 +42,7 @@ namespace VoidDays
             //Current.MainWindow.Show();
 
             //DebugService.Initialize(container);
-            _mainWindowViewModel.IsLoading = true;
+            //_mainWindowViewModel.IsLoading = true;
             Current.MainWindow.Show();
 
             /*Task.Factory.StartNew(() =>
@@ -53,7 +53,7 @@ namespace VoidDays
               //MainContainerViewModel.Initialize();
               // 
           }*/
-            _mainWindowViewModel.IsLoading = false;
+            //_mainWindowViewModel.IsLoading = false;
             
 
 

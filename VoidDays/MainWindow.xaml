@@ -3,13 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Behaviors="clr-namespace:VoidDays.Views.Behaviors"
         xmlns:local="clr-namespace:VoidDays"
         mc:Ignorable="d"
-        Height="350" Width="525"
+        Height="450" 
+        Width="800"
         Mouse.MouseMove="Window_MouseMove"
         Keyboard.KeyDown="Window_KeyDown"
+        Loaded="Window_Loaded"
+        GotFocus="Window_GotFocus"  
+
         >
-    <Grid>
+    <Grid >
         <Grid>
             <Grid.Style>
                 <Style TargetType="Grid">
@@ -23,7 +28,7 @@
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
-            <ContentControl  Content="{Binding LoadingViewModel}"/>
+            <ContentControl Content="{Binding LoadingViewModel}"/>
         </Grid>
         <Grid>
             <Grid.Style>
@@ -38,7 +43,7 @@
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
-            <ContentControl Content="{Binding CurrentView,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+            <ContentPresenter x:Name="cView"  Content="{Binding CurrentView,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
         </Grid>
     </Grid>
 </Window>

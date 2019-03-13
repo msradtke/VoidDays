@@ -47,5 +47,21 @@ namespace VoidDays
             }
             
         }
+
+        private void Window_FocusableChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            //MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+
+        }
+
+        private void Window_GotFocus(object sender, RoutedEventArgs e)
+        {
+           // MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+        }
     }
 }

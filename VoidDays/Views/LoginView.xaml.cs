@@ -23,6 +23,15 @@ namespace VoidDays.Views
         public LoginView()
         {
             InitializeComponent();
+
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+
+
+            Username.Focus();
+            var focused = Keyboard.Focus(Username);
         }
     }
 }

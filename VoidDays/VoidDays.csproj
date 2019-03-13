@@ -246,6 +246,7 @@
     <Compile Include="Views\AddNewGoal.xaml.cs">
       <DependentUpon>AddNewGoal.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Behaviors\FocusBehavior.cs" />
     <Compile Include="Views\Behaviors\FormatTextBlock.cs" />
     <Compile Include="Views\CompleteGoalItemView.xaml.cs">
       <DependentUpon>CompleteGoalItemView.xaml</DependentUpon>

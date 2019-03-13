@@ -5,8 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VoidDays.Views"
              mc:Ignorable="d"              
-             d:DesignHeight="300" d:DesignWidth="300">
-    
+             Height="450" 
+             Width="800"
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded">
+    <UserControl.InputBindings>
+        <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveCommand}" />
+    </UserControl.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -25,15 +29,21 @@
             <Label>Goal Title:</Label>
             <Label Grid.Row="2">Note:</Label>
             <Border Grid.Column="1" BorderBrush="Black" Grid.ColumnSpan="2">
-                <TextBox Grid.Row="0" Background="White" Text="{Binding Title,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBox>
+                <TextBox Grid.Row="0" Background="White" Text="{Binding Title,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" x:Name="Title"></TextBox>
             </Border>
             <Border Grid.Column="1" Grid.Row="2" BorderBrush="Black" Grid.ColumnSpan="2">
-                <TextBox Grid.Row="2" Background="White" Text="{Binding Message,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBox>
+                <TextBox Grid.Row="2" Background="White" Text="{Binding Message,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AcceptsReturn="True" AcceptsTab="True" TextWrapping="Wrap"></TextBox>
             </Border>
         </Grid>
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="2">
             <Button Margin="2" Command="{Binding CancelCommand}">Cancel</Button>
-            <Button Margin="2" Command="{Binding SaveCommand}">Save</Button>
+            <Button Margin="2" Command="{Binding SaveCommand}">
+                <Button.Content>
+                    <TextBlock>
+             <Underline>S</Underline>ave
+                    </TextBlock>
+                </Button.Content>
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>
