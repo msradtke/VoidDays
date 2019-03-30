@@ -71,11 +71,11 @@ namespace VoidDays.Services
             day = day2;
             return isCurrentDay;
         }
-        public Day CreateToday()
+        public Day CreateToday(IRepositoryBase<Day> dayRepo)
         {//todo: remove _repo
             var day = new Day();
             var settings = GetSettings();
-            var firstDay = _dayRepository.Get(x => x.DayNumber == 0).FirstOrDefault();
+            var firstDay = dayRepo.Get(x => x.DayNumber == 0).FirstOrDefault();
             var daySpan = DateTime.Today - firstDay.Start;
             var dayNum = daySpan.Days;
             day.DayNumber = dayNum + 1;
@@ -85,7 +85,7 @@ namespace VoidDays.Services
             day.End = subtractSecond;
             day.IsActive = true;
             _dayRepository.Insert(day);
-            _unitOfWork.Save();
+            //_unitOfWork.Save();
             //SyncToCurrentDay(currentDay);
             return day;
         }
@@ -257,7 +257,8 @@ namespace VoidDays.Services
                     var goalRepo = unitOfWork.GoalRepository;
                     if (!CheckForCurrentDay(currentStoredDay, out current)) //if latest day in db is not today
                     {
-                        currentStoredDay = unitOfWork.DayRepository.Get(x => x.DayId == current.DayId).FirstOrDefault();
+                        var dayRepository = unitOfWork.DayRepository;
+                        currentStoredDay = dayRepository.Get(x => x.DayId == current.DayId).FirstOrDefault();
                         //complete this day, foreach goalitem on this day not completed, void
                         var goalItems = GetGoalItemsByDayNumber(currentStoredDay.DayNumber, goalItemRepo).ToList();
                         bool noGoalItems = true;
@@ -274,7 +275,7 @@ namespace VoidDays.Services
                         if (noGoalItems)
                             currentStoredDay.IsVoid = true;
                         currentStoredDay.IsActive = false;
-                        var nextDay = CreateToday();
+                        var nextDay = CreateToday(dayRepository);
                         CreateAllGoalItems(nextDay.DayNumber, unitOfWork.GoalRepository, unitOfWork.GoalItemRepository);
                         try
                         {
@@ -283,6 +284,7 @@ namespace VoidDays.Services
                         }
                         catch
                         {
+                            Log.DebugLog("Day already created");
                             return null;
                         }
                         return nextDay;
@@ -404,7 +406,7 @@ namespace VoidDays.Services
         }
         private void NextDayHandler(object o, ElapsedEventArgs e)
         {
-            Log.DebugLog("NextDayHandler");
+            
             var timer = (Timer)o;
             _timer.Interval = 10000;
             //timer.Enabled = false;
