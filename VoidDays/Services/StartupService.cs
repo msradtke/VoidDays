@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidDays.Services.Interfaces;
 using VoidDays.Models;
+using VoidDays.Logging;
+
 namespace VoidDays.Services
 {
     public class StartupService : IStartupService

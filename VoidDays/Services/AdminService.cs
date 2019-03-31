@@ -16,33 +16,24 @@ namespace VoidDays.Services
 {
     public class AdminService : IAdminService
     {
-        IRepositoryBase<Day> _dayRepository;
-        IRepositoryBase<GoalItemsCreated> _goalItemsCreatedRepository;
         IRepositoryBase<Settings> _settingsRepository;
-        IRepositoryBase<GoalItem> _goalItemRepository;
-        IRepositoryBase<Goal> _goalRepository;
         IUnitOfWork _unitOfWork;
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         IEventAggregator _eventAggregator;
         private readonly IDialogService _dialogService;
         private static Settings _settings;
         private Day _currentDay;
-        private bool _checkForDbUpdate; //for checking if other client updated db
+
         public AdminService(IUnitOfWorkFactory unitOfWorkFactory, IEventAggregator eventAggregator, IDialogService dialogService)
         {
-            _checkForDbUpdate = false;
             _unitOfWorkFactory = unitOfWorkFactory;
             _eventAggregator = eventAggregator;
             _dialogService = dialogService;
             _unitOfWork = _unitOfWorkFactory.CreateUnitOfWork();
-            _dayRepository = _unitOfWork.DayRepository;
         }
         public void Initialize()
         {
-            _goalItemsCreatedRepository = _unitOfWork.GoalItemsCreatedRepository;
-            _goalItemRepository = _unitOfWork.GoalItemRepository;
             _settingsRepository = _unitOfWork.SettingsRepository;
-            _goalRepository = _unitOfWork.GoalRepository;
             _settings = GetSettings();
 
             //debug
@@ -89,7 +80,7 @@ namespace VoidDays.Services
             //SyncToCurrentDay(currentDay);
             return day;
         }
-        public Day CreateNextDay(Day currentDay)
+        public Day CreateNextDay(Day currentDay, IRepositoryBase<Day> dayRepository)
         {
             currentDay.IsActive = false;
             var nextDay = new Day();
@@ -102,9 +93,9 @@ namespace VoidDays.Services
             var subtractSecond = addDay.AddSeconds(-1);
             nextDay.End = subtractSecond;
             nextDay.IsActive = true;
-            _dayRepository.Insert(nextDay);
-            _dayRepository.Update(currentDay);
-            _unitOfWork.Save();
+            dayRepository.Insert(nextDay);
+            dayRepository.Update(currentDay);
+            //_unitOfWork.Save();
             //SyncToCurrentDay(currentDay);
             return nextDay;
         }
@@ -337,14 +328,6 @@ namespace VoidDays.Services
             return currentStoredDay;
 
         }
-        public Day GetPreviousDay(Day day)
-        {
-            return _dayRepository.Get(x => x.DayNumber == day.DayNumber - 1).LastOrDefault();
-        }
-        public GoalItemsCreated GetLatestGoalItemsCreated()
-        {
-            return _goalItemsCreatedRepository.Get().LastOrDefault();
-        }
         public List<Day> GetAllDays()
         {
             using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
@@ -360,10 +343,6 @@ namespace VoidDays.Services
                     _settings = unitOfWork.SettingsRepository.Get().FirstOrDefault();
                 }
             return _settings;
-        }
-        public Day GetNextDay(Day day)
-        {
-            return _dayRepository.Get(x => x.DayNumber == day.DayNumber + 1).LastOrDefault();
         }
         private Timer _timer;
 
