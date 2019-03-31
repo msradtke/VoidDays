@@ -84,7 +84,7 @@ namespace VoidDays.Services
             var subtractSecond = addDay.AddSeconds(-1);
             day.End = subtractSecond;
             day.IsActive = true;
-            _dayRepository.Insert(day);
+            dayRepo.Insert(day);
             //_unitOfWork.Save();
             //SyncToCurrentDay(currentDay);
             return day;

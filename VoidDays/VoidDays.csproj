@@ -308,14 +308,6 @@
     <Compile Include="Views\StartupContainerView.xaml.cs">
       <DependentUpon>StartupContainerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VoidDaysDataSet.cs">
-      <DependentUpon>VoidDaysDataSet.xsd</DependentUpon>
-    </Compile>
-    <Compile Include="VoidDaysDataSet.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>VoidDaysDataSet.xsd</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -460,17 +452,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="VoidDaysDataSet.xsc">
-      <DependentUpon>VoidDaysDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="VoidDaysDataSet.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>VoidDaysDataSet.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="VoidDaysDataSet.xss">
-      <DependentUpon>VoidDaysDataSet.xsd</DependentUpon>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
