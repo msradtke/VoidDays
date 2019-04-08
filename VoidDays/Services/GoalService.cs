@@ -35,7 +35,7 @@ namespace VoidDays.Services
         {
             using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                var day = unitOfWork.DayRepository.Get(x => x.DayNumber == dayNumber);
+                var day = unitOfWork.DayRepository.Get(x => x.DayNumber == dayNumber).FirstOrDefault();
                 if (day == null)
                     return GetGoalItemsForVoidDay(dayNumber,unitOfWork.GoalItemRepository,unitOfWork.GoalRepository,unitOfWork.DayRepository);
                 var goalItems = unitOfWork.GoalItemRepository.Get(x => x.DayNumber == dayNumber,null,"Goal");
@@ -49,7 +49,7 @@ namespace VoidDays.Services
         public List<GoalItem> GetGoalItemsForVoidDay(int dayNumber, IRepositoryBase<GoalItem> goalItemRepo, IRepositoryBase<Goal> goalRepo, IRepositoryBase<Day> dayRepo)
         {
             var voidGoalItems = new List<GoalItem>();
-            var previousDay = dayRepo.Get(x => x.DayNumber < dayNumber).Max();
+            var previousDay = dayRepo.Get(x => x.DayNumber < dayNumber).Max(x=>x.DayNumber);
             var preivousDayGoals = goalRepo.Get(x => x.IsActive && x.Created >= x.Created);
             foreach(var goal in preivousDayGoals)
             {

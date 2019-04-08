@@ -21,7 +21,7 @@ namespace VoidDays.Services
         IDatabaseService _databaseService;
         public UserService(IDatabaseService databaseService)
         {
-            _loginClient = new VoidDaysLoginServiceClient();
+            
             _databaseService = databaseService;
         }
         public static string ConnectionString { get; private set; }
@@ -75,23 +75,28 @@ namespace VoidDays.Services
         {
             try
             {
+                _loginClient = new VoidDaysLoginServiceClient();
                 _loginClient.CreateUser(username, password);
+                _loginClient.Close();
             }
             catch
             {
                 return false;
             }
+            
             return true;
         }
 
         public bool Login(string userName, string password, string server, out string message) //should be a security token or something from server
         {
+            _loginClient = new VoidDaysLoginServiceClient();
             message = "Login successful.";
             var schema = _loginClient.LoginUser(userName, password);
             var connectionString = SetConnectionString(userName, password, schema, server);
             if (CheckIfDatabaseExists("server = " + server + "; Port = 3306; user id = " + userName + "; password = " + password + "; persistsecurityinfo = True;"))
                 return true;
             message = "Cannot connect to server";
+            _loginClient.Close();
             return false;
 
         }

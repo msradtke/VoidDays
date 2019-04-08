@@ -68,9 +68,17 @@ namespace VoidDays.Services
             var settings = GetSettings();
             var firstDay = dayRepo.Get(x => x.DayNumber == 0).FirstOrDefault();
             var daySpan = DateTime.Today - firstDay.Start;
+            DateTime Today = DateTime.Today;
+            if (DateTime.UtcNow.TimeOfDay < settings.EndTime.TimeOfDay)
+            {
+                daySpan -= TimeSpan.FromDays(1);
+                Today -= TimeSpan.FromDays(1);
+            }
             var dayNum = daySpan.Days;
+
             day.DayNumber = dayNum + 1;
             day.Start = DateTime.Today + settings.StartTime.TimeOfDay;
+
             var addDay = day.Start.AddDays(1);
             var subtractSecond = addDay.AddSeconds(-1);
             day.End = subtractSecond;
