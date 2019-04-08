@@ -181,7 +181,6 @@ namespace VoidDays.Services
         }
         public string GetUserDirectoryPath()
         {
-            //todo: make this a directory path
             var directory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             directory += "VoidDays";
             return directory;

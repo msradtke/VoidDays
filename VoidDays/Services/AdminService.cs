@@ -63,7 +63,8 @@ namespace VoidDays.Services
             return isCurrentDay;
         }
         public Day CreateToday(IRepositoryBase<Day> dayRepo)
-        {//todo: remove _repo
+        {
+            //todo: test subtracting a day if the current day (yesterday) is not over
             var day = new Day();
             var settings = GetSettings();
             var firstDay = dayRepo.Get(x => x.DayNumber == 0).FirstOrDefault();

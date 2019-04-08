@@ -136,7 +136,9 @@ namespace VoidDays.ViewModels
         }
         private void SetDayToTodayHandler()
         {
+            //todo: test syncToCurrentDay            
             var currentStoredDay = _adminService.GetCurrentStoredDay();
+            currentStoredDay = _adminService.SyncToCurrentDay(currentStoredDay);
             SetDay(currentStoredDay);
 
         }
