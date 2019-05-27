@@ -18,6 +18,8 @@ using VoidDays.Services;
 using Prism.Events;
 using VoidDays.Resources;
 using VoidDays.Debug;
+using VoidDays.Providers;
+using VoidDays.ClientProxies;
 
 namespace VoidDays
 {
@@ -96,6 +98,8 @@ namespace VoidDays
             container.Bind<IAdminService>().To<AdminService>().InTransientScope();
             container.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
             container.Bind(typeof(IRepositoryBase<>)).To(typeof(RepositoryBase<>)).InTransientScope();
+            container.Bind<IVoidProvider>().To<VoidProvider>().InTransientScope();
+            container.Bind<IVoidClient>().To<VoidClient>().InTransientScope();
         }
 
         private void ComposeObjects()

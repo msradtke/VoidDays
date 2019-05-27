@@ -35,6 +35,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,6 +50,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VoidDays.Contracts\VoidDays.Contracts.csproj">
+      <Project>{85450958-4CDF-4F05-9AE6-F0204EECD2BC}</Project>
+      <Name>VoidDays.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VoidDays.Services\VoidDays.Services.csproj">
+      <Project>{3F6C0008-DE2A-48D2-820C-8F4ADED15B5A}</Project>
+      <Name>VoidDays.Services</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VoidDays.DTO;
 using VoidDays.Models;
+using VoidDays.Providers;
 using VoidDays.Services;
 using VoidDays.Services.Interfaces;
 using VoidDays.ViewModels.Events;
@@ -21,6 +22,7 @@ namespace VoidDays.ViewModels
         private readonly IUserServiceFactory _userServiceFactory;
         private readonly IDialogService _dialogService;
         private readonly IDatabaseService _databaseService;
+        private readonly IVoidProvider _voidProvider;
         private IUserService _userService;
         public StartupContainerViewModel(IEventAggregator eventAggregator,
             ILoginViewModelFactory loginViewModelFactory,
@@ -28,7 +30,8 @@ namespace VoidDays.ViewModels
             ILoginSettingsViewModelFactory loginSettingsViewModelFactory,
             IUserServiceFactory userServiceFactory,
             IDialogService dialogService,
-            IDatabaseService databaseService
+            IDatabaseService databaseService,
+            IVoidProvider voidProvider
             )
         {
             _eventAggregator = eventAggregator;
@@ -38,6 +41,7 @@ namespace VoidDays.ViewModels
             _userServiceFactory = userServiceFactory;
             _dialogService = dialogService;
             _databaseService = databaseService;
+            _voidProvider = voidProvider;
             TabItems = new ObservableCollection<IViewModelBase>();
             LoadingViewModel = new LoadingViewModel();
 
@@ -104,7 +108,8 @@ namespace VoidDays.ViewModels
             bool success = false;
             try
             {
-                success = _userService.CreateUser(payload.Username, payload.Password);
+                //success = _userService.CreateUser(payload.Username, payload.Password);
+                success = _voidProvider.CreateUser(payload.Username, payload.Password);
             }
             catch
             {

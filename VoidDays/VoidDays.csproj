@@ -153,16 +153,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Connected Services\ServiceReference2\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
-    <Compile Include="Connected Services\VoidDaysLoginService\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
     <Compile Include="Controls\HyperlinkExternal.cs" />
     <Compile Include="Debug\DebugService.cs" />
     <Compile Include="DTO\CreateUserPayload.cs" />
@@ -196,6 +186,7 @@
     <Compile Include="Models\UnitOfWork.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserProfile.cs" />
+    <Compile Include="Providers\VoidProvider.cs" />
     <Compile Include="Resources\Loading.xaml.cs">
       <DependentUpon>Loading.xaml</DependentUpon>
     </Compile>
@@ -429,23 +420,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Connected Services\ServiceReference1\item.wsdl" />
+    <None Include="Connected Services\ServiceReference1\item.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ServiceReference1\item1.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Connected Services\ServiceReference1\VoidDaysLoginService.wsdl" />
-    <None Include="Connected Services\ServiceReference2\item.wsdl" />
-    <None Include="Connected Services\ServiceReference2\item.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\ServiceReference2\item1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\ServiceReference2\VoidDaysLoginService.wsdl" />
-    <None Include="Connected Services\VoidDaysLoginService\item.wsdl" />
-    <None Include="Connected Services\VoidDaysLoginService\item.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\VoidDaysLoginService\item1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\VoidDaysLoginService\VoidDaysLoginService.wsdl" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -471,24 +453,20 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\VoidDays.ClientProxies\VoidDays.ClientProxies.csproj">
+      <Project>{4e2a10d2-1e46-4d5d-9858-1d3aeb6afe74}</Project>
+      <Name>VoidDays.ClientProxies</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VoidDays.Contracts\VoidDays.Contracts.csproj">
+      <Project>{85450958-4CDF-4F05-9AE6-F0204EECD2BC}</Project>
+      <Name>VoidDays.Contracts</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <WCFMetadataStorage Include="Connected Services\ServiceReference1\" />
-    <WCFMetadataStorage Include="Connected Services\ServiceReference2\" />
-    <WCFMetadataStorage Include="Connected Services\VoidDaysLoginService\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\VoidDaysLoginService\item.disco" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\VoidDaysLoginService\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\VoidDaysLoginService\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\VoidDaysLoginService\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
+    <None Include="Connected Services\ServiceReference1\item.disco" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Connected Services\ServiceReference1\configuration91.svcinfo" />
@@ -502,22 +480,6 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\ServiceReference2\item.disco" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\ServiceReference2\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\ServiceReference2\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Connected Services\ServiceReference2\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

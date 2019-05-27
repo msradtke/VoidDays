@@ -8,7 +8,7 @@ using VoidDays.Models.Interfaces;
 using VoidDays.Models;
 using Sodium;
 using VoidDays.Services;
-using VoidDays.ServiceReference2;
+using VoidDays.ServiceReference1;
 using System.Data.SqlClient;
 using System.IO;
 using System.Xml.Serialization;

@@ -9,7 +9,7 @@ using VoidDays.Models;
 using VoidDays.Services;
 using VoidDays.Services.Interfaces;
 using VoidDays.ViewModels.Events;
-using VoidDays.ServiceReference2;
+using VoidDays.ServiceReference1;
 using VoidDays.DTO;
 using System.Windows.Controls;
 
