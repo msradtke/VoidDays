@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using VoidDays.Contracts.Data;
 
 namespace VoidDays.Contracts.Services
 {
@@ -17,6 +18,9 @@ namespace VoidDays.Contracts.Services
         bool Login(string username, string password);
         [OperationContract]
         bool ChangePassword(string username, string password, string newPassword);
-
+        [OperationContract]
+        DayDTO GetCurrentDay();
+        [OperationContract]
+        List<GoalItemDTO> GetCurrentGoalItems();
     }
 }

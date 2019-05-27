@@ -1,4 +1,7 @@
-﻿using System;
+﻿using AutoMapper;
+using AutoMapper.Extensions.ExpressionMapping;
+using Ninject;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +10,7 @@ using System.ServiceModel.Description;
 using System.Text;
 using System.Threading.Tasks;
 using VoidDays.Contracts.Services;
+using VoidDays.Core;
 using VoidDays.Services;
 
 namespace VoidDays.Host
@@ -15,6 +19,16 @@ namespace VoidDays.Host
     {
         static void Main(string[] args)
         {
+            var _container = new StandardKernel(new NinjectSettings() { LoadExtensions = false });
+            _container.Load("*.dll");
+            var services = _container.GetAll<IService>().Select(x => x.GetType().Assembly).ToList();
+            //services[0].
+            Mapper.Initialize(cfg =>
+            {
+                cfg.AddExpressionMapping();
+                cfg.AddMaps(services);
+            });
+
             string path = Environment.GetEnvironmentVariable("PATH");
             string binDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
             Console.WriteLine(binDir);

@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoidDays.Core
+namespace VoidDays.DAL.Models
 {
-    public class Class1
+    public class Password
     {
+            
     }
 }

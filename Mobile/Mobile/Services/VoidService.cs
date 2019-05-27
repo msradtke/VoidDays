@@ -8,6 +8,293 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+namespace VoidDays.Core
+{
+    using System.Runtime.Serialization;
+    
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="BaseDTO", Namespace="http://schemas.datacontract.org/2004/07/VoidDays.Core", IsReference=true)]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(VoidDays.Contracts.Data.GoalItemDTO))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(VoidDays.Contracts.Data.DayDTO))]
+    public partial class BaseDTO : object, System.Runtime.Serialization.IExtensibleDataObject
+    {
+        
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData
+        {
+            get
+            {
+                return this.extensionDataField;
+            }
+            set
+            {
+                this.extensionDataField = value;
+            }
+        }
+    }
+}
+namespace VoidDays.Contracts.Data
+{
+    using System.Runtime.Serialization;
+    
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="GoalItemDTO", Namespace="http://schemas.datacontract.org/2004/07/VoidDays.Contracts.Data", IsReference=true)]
+    public partial class GoalItemDTO : VoidDays.Core.BaseDTO
+    {
+        
+        private string CompleteMessageField;
+        
+        private System.DateTime DateTimeField;
+        
+        private int DayNumberField;
+        
+        private int GoalIdField;
+        
+        private int GoalItemIdField;
+        
+        private bool IsCompleteField;
+        
+        private bool IsVoidField;
+        
+        private string MessageField;
+        
+        private int SatisfyScaleField;
+        
+        private string TitleField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CompleteMessage
+        {
+            get
+            {
+                return this.CompleteMessageField;
+            }
+            set
+            {
+                this.CompleteMessageField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.DateTime DateTime
+        {
+            get
+            {
+                return this.DateTimeField;
+            }
+            set
+            {
+                this.DateTimeField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int DayNumber
+        {
+            get
+            {
+                return this.DayNumberField;
+            }
+            set
+            {
+                this.DayNumberField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int GoalId
+        {
+            get
+            {
+                return this.GoalIdField;
+            }
+            set
+            {
+                this.GoalIdField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int GoalItemId
+        {
+            get
+            {
+                return this.GoalItemIdField;
+            }
+            set
+            {
+                this.GoalItemIdField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsComplete
+        {
+            get
+            {
+                return this.IsCompleteField;
+            }
+            set
+            {
+                this.IsCompleteField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsVoid
+        {
+            get
+            {
+                return this.IsVoidField;
+            }
+            set
+            {
+                this.IsVoidField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Message
+        {
+            get
+            {
+                return this.MessageField;
+            }
+            set
+            {
+                this.MessageField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int SatisfyScale
+        {
+            get
+            {
+                return this.SatisfyScaleField;
+            }
+            set
+            {
+                this.SatisfyScaleField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Title
+        {
+            get
+            {
+                return this.TitleField;
+            }
+            set
+            {
+                this.TitleField = value;
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="DayDTO", Namespace="http://schemas.datacontract.org/2004/07/VoidDays.Contracts.Data", IsReference=true)]
+    public partial class DayDTO : VoidDays.Core.BaseDTO
+    {
+        
+        private int DayIdField;
+        
+        private int DayNumberField;
+        
+        private System.DateTime EndField;
+        
+        private bool IsActiveField;
+        
+        private bool IsVoidField;
+        
+        private System.DateTime StartField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int DayId
+        {
+            get
+            {
+                return this.DayIdField;
+            }
+            set
+            {
+                this.DayIdField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int DayNumber
+        {
+            get
+            {
+                return this.DayNumberField;
+            }
+            set
+            {
+                this.DayNumberField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.DateTime End
+        {
+            get
+            {
+                return this.EndField;
+            }
+            set
+            {
+                this.EndField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsActive
+        {
+            get
+            {
+                return this.IsActiveField;
+            }
+            set
+            {
+                this.IsActiveField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsVoid
+        {
+            get
+            {
+                return this.IsVoidField;
+            }
+            set
+            {
+                this.IsVoidField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.DateTime Start
+        {
+            get
+            {
+                return this.StartField;
+            }
+            set
+            {
+                this.StartField = value;
+            }
+        }
+    }
+}
 
 
 [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -32,6 +319,18 @@ public interface IVoidService
     
     [System.ServiceModel.OperationContractAttribute(Action="http://Microsoft.ServiceModel.Samples/IVoidService/ChangePassword", ReplyAction="http://Microsoft.ServiceModel.Samples/IVoidService/ChangePasswordResponse")]
     System.Threading.Tasks.Task<bool> ChangePasswordAsync(string username, string password, string newPassword);
+    
+    [System.ServiceModel.OperationContractAttribute(Action="http://Microsoft.ServiceModel.Samples/IVoidService/GetCurrentDay", ReplyAction="http://Microsoft.ServiceModel.Samples/IVoidService/GetCurrentDayResponse")]
+    VoidDays.Contracts.Data.DayDTO GetCurrentDay();
+    
+    [System.ServiceModel.OperationContractAttribute(Action="http://Microsoft.ServiceModel.Samples/IVoidService/GetCurrentDay", ReplyAction="http://Microsoft.ServiceModel.Samples/IVoidService/GetCurrentDayResponse")]
+    System.Threading.Tasks.Task<VoidDays.Contracts.Data.DayDTO> GetCurrentDayAsync();
+    
+    [System.ServiceModel.OperationContractAttribute(Action="http://Microsoft.ServiceModel.Samples/IVoidService/GetCurrentGoalItems", ReplyAction="http://Microsoft.ServiceModel.Samples/IVoidService/GetCurrentGoalItemsResponse")]
+    System.Collections.Generic.List<VoidDays.Contracts.Data.GoalItemDTO> GetCurrentGoalItems();
+    
+    [System.ServiceModel.OperationContractAttribute(Action="http://Microsoft.ServiceModel.Samples/IVoidService/GetCurrentGoalItems", ReplyAction="http://Microsoft.ServiceModel.Samples/IVoidService/GetCurrentGoalItemsResponse")]
+    System.Threading.Tasks.Task<System.Collections.Generic.List<VoidDays.Contracts.Data.GoalItemDTO>> GetCurrentGoalItemsAsync();
 }
 
 [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -96,5 +395,25 @@ public partial class VoidServiceClient : System.ServiceModel.ClientBase<IVoidSer
     public System.Threading.Tasks.Task<bool> ChangePasswordAsync(string username, string password, string newPassword)
     {
         return base.Channel.ChangePasswordAsync(username, password, newPassword);
+    }
+    
+    public VoidDays.Contracts.Data.DayDTO GetCurrentDay()
+    {
+        return base.Channel.GetCurrentDay();
+    }
+    
+    public System.Threading.Tasks.Task<VoidDays.Contracts.Data.DayDTO> GetCurrentDayAsync()
+    {
+        return base.Channel.GetCurrentDayAsync();
+    }
+    
+    public System.Collections.Generic.List<VoidDays.Contracts.Data.GoalItemDTO> GetCurrentGoalItems()
+    {
+        return base.Channel.GetCurrentGoalItems();
+    }
+    
+    public System.Threading.Tasks.Task<System.Collections.Generic.List<VoidDays.Contracts.Data.GoalItemDTO>> GetCurrentGoalItemsAsync()
+    {
+        return base.Channel.GetCurrentGoalItemsAsync();
     }
 }

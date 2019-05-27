@@ -35,6 +35,9 @@ namespace Mobile.Views
                     case (int)MenuItemType.About:
                         MenuPages.Add(id, new NavigationPage(new AboutPage()));
                         break;
+                    case (int)MenuItemType.CurrentDay:
+                        MenuPages.Add(id, new NavigationPage(new CurrentGoalsPage(new ViewModels.CurrentGoalsViewModel())));
+                        break;
                 }
             }
 

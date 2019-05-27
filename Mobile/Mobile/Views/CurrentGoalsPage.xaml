@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Mobile.Views.CurrentGoalsPage">
+    <ContentPage.Content>
+        <ListView ItemsSource="{Binding GoalItems}" HasUnevenRows="True" VerticalOptions="CenterAndExpand">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                    <StackLayout VerticalOptions="CenterAndExpand">
+                        <Label Text="{Binding Title}"/>
+                        <Label LineBreakMode="WordWrap" VerticalOptions="FillAndExpand"  Text="{Binding Message}"/>
+                    </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </ContentPage.Content>
+</ContentPage>

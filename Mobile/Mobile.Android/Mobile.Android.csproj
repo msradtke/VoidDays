@@ -42,6 +42,9 @@
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileHost|AnyCPU'">
+    <OutputPath>bin\MobileHost\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
     <Reference Include="System" />
@@ -98,6 +101,10 @@
     <Folder Include="Resources\drawable-xxxhdpi\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\VoidDays.Contracts\VoidDays.Contracts.csproj">
+      <Project>{85450958-4cdf-4f05-9ae6-f0204eecd2bc}</Project>
+      <Name>VoidDays.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mobile\Mobile.csproj">
       <Project>{06E8FD11-1F05-4631-AB4F-95FC4128E891}</Project>
       <Name>Mobile</Name>
