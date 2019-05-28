@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Ninject.Extensions.Factory" Version="3.3.2" />
     <PackageReference Include="System.ServiceModel.Duplex" Version="4.4.*" />
     <PackageReference Include="System.ServiceModel.Http" Version="4.4.*" />
     <PackageReference Include="System.ServiceModel.NetTcp" Version="4.4.*" />
@@ -35,11 +36,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\VoidDays.ClientProxies\VoidDays.ClientProxies.csproj" />
     <ProjectReference Include="..\..\VoidDays.Core\VoidDays.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Views\CurrentGoalsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\HistoryPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\WeekHistoryView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

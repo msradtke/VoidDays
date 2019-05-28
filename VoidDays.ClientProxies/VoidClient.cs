@@ -11,6 +11,11 @@ namespace VoidDays.ClientProxies
 {
     public class VoidClient : ClientBase<IVoidService>, IVoidService, IVoidClient
     {
+        public VoidClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) :
+            base(binding, remoteAddress)
+        {
+
+        }
         public bool ChangePassword(string username, string password, string newPassword)
         {
             return Channel.ChangePassword(username, password, newPassword);
@@ -31,6 +36,11 @@ namespace VoidDays.ClientProxies
             return Channel.GetCurrentGoalItems();
         }
 
+        public List<DayDTO> GetDays()
+        {
+            return Channel.GetDays();
+        }
+
         public bool Login(string username, string password)
         {
             return Channel.Login(username, password);
@@ -43,5 +53,6 @@ namespace VoidDays.ClientProxies
         bool Login(string username, string password);
         bool ChangePassword(string username, string password, string newPassword);
         List<GoalItemDTO> GetCurrentGoalItems();
+        List<DayDTO> GetDays();
     }
 }

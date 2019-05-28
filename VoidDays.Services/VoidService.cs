@@ -42,6 +42,14 @@ namespace VoidDays.Services
                 return Mapper.Map<List<GoalItemDTO>>(day);
             }
         }
+        public List<DayDTO> GetDays()
+        {
+            using (_dbContext = new EFDbContext())
+            {
+                var days = _dbContext.Days.ToList();
+                return Mapper.Map<List<DayDTO>>(days);
+            }
+        }
         public bool Login(string username, string password)
         {
             throw new NotImplementedException();

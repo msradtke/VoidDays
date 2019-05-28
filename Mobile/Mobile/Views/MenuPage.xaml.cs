@@ -23,7 +23,8 @@ namespace Mobile.Views
             {
                 new HomeMenuItem {Id = MenuItemType.Browse, Title="Browse" },
                 new HomeMenuItem {Id = MenuItemType.About, Title="About" },
-                new HomeMenuItem {Id = MenuItemType.CurrentDay, Title="Current Day" }
+                new HomeMenuItem {Id = MenuItemType.CurrentDay, Title="Current Day" },
+                new HomeMenuItem {Id = MenuItemType.History, Title="History" }
             };
 
             ListViewMenu.ItemsSource = menuItems;

@@ -22,5 +22,7 @@ namespace VoidDays.Contracts.Services
         DayDTO GetCurrentDay();
         [OperationContract]
         List<GoalItemDTO> GetCurrentGoalItems();
+        [OperationContract]
+        List<DayDTO> GetDays();
     }
 }

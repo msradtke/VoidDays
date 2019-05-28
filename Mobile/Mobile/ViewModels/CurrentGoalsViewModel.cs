@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ServiceModel;
 using System.Text;
+using VoidDays.ClientProxies;
 using VoidDays.Contracts.Data;
 using VoidDays.Core;
 namespace Mobile.ViewModels
@@ -14,7 +16,6 @@ namespace Mobile.ViewModels
         {
             _provider = new VoidProvider();
             GoalItems = _provider.GetCurrentGoalItems().ToObservableCollection();
-
         }
 
         public DayDTO CurrentDay { get; set; }

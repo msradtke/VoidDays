@@ -8,7 +8,8 @@ namespace Mobile.Models
     {
         Browse,
         About,
-        CurrentDay
+        CurrentDay,
+        History
     }
     public class HomeMenuItem
     {
