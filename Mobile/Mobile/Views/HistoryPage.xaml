@@ -11,13 +11,13 @@
                         <ViewCell>
                             <StackLayout>
                                 <Label Text="{Binding WeekName}"></Label>
-                                <views:WeekHistoryView/>
                                 <ContentPresenter Content="{Binding WeekViewModel}"/>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <ContentPresenter Content="{Binding SmallHistoryDayViewModel}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -5,7 +5,7 @@ using VoidDays.Contracts.Data;
 
 namespace Mobile.ViewModels
 {
-    public class SmallHistoryDayViewModel
+    public class SmallHistoryDayViewModel : BaseViewModel
     {
         public SmallHistoryDayViewModel(DayDTO day)
         {

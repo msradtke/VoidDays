@@ -17,6 +17,7 @@ namespace Mobile.ViewModels
         {
             _voidProvider = new VoidProvider();
             Days = _voidProvider.GetDays();
+            SmallHistoryDayViewModel = new SmallHistoryDayViewModel(Days[0]);
             GetWeeks();
         }
         void GetWeeks()
@@ -43,7 +44,8 @@ namespace Mobile.ViewModels
             for(int i =startOfSectionDayNumber;i<_numWeeksShown*7+ startOfSectionDayNumber; i++)
             {
                 var day = Days.FirstOrDefault(x => x.DayNumber == i);
-                sectionDays.Add(day);
+                if(day!=null)
+                    sectionDays.Add(day);
             }
 
             return sectionDays;
@@ -71,6 +73,7 @@ namespace Mobile.ViewModels
         }
         public List<DayDTO> Days { get; set; }
         public ObservableCollection<WeekViewModelAggregate> WeekVms { get; set; }
+        public SmallHistoryDayViewModel SmallHistoryDayViewModel { get; set; }
     }
     public class WeekViewModelAggregate : BaseViewModel
     {

@@ -60,7 +60,8 @@ namespace VoidDays.Host
 
                 voidServiceHost.Open();
                 Console.WriteLine("Service opened.");
-                Console.ReadLine();
+                while (true)
+                    Console.ReadLine();
             }
             catch (CommunicationException ce)
             {
