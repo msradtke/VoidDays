@@ -25,7 +25,7 @@ namespace Mobile.ViewModels
             WeekVms = new ObservableCollection<WeekViewModelAggregate>();
 
             var sectionDays = GetDaysForSection(_currentWeekSection);
-            for(int i =1;i<=_numWeeksShown;i++)
+            for (int i = 1; i <= _numWeeksShown; i++)
             {
                 var oneWeek = sectionDays.Take(7).ToList();
                 var vm = new DayHistoryWeekViewModel(oneWeek);
@@ -33,18 +33,19 @@ namespace Mobile.ViewModels
                 vmAggregate.WeekViewModel = vm;
                 vmAggregate.WeekName = GetWeekName(oneWeek.FirstOrDefault());
                 WeekVms.Add(vmAggregate);
-                sectionDays.RemoveRange(0, 7);
+                if (sectionDays.Count >= 7)
+                    sectionDays.RemoveRange(0, 7);
             }
         }
         List<DayDTO> GetDaysForSection(int section)
         {
             var sectionDays = new List<DayDTO>();
             var currentDayNumber = Days.Max(x => x.DayNumber);
-            var startOfSectionDayNumber = currentDayNumber - (_numWeeksShown * section *7);
-            for(int i =startOfSectionDayNumber;i<_numWeeksShown*7+ startOfSectionDayNumber; i++)
+            var startOfSectionDayNumber = currentDayNumber - (_numWeeksShown * section * 7);
+            for (int i = startOfSectionDayNumber; i < _numWeeksShown * 7 + startOfSectionDayNumber; i++)
             {
                 var day = Days.FirstOrDefault(x => x.DayNumber == i);
-                if(day!=null)
+                if (day != null)
                     sectionDays.Add(day);
             }
 

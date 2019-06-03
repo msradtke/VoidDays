@@ -9,7 +9,7 @@
         
         <ResourceDictionary>
             <DataTemplate x:Key="About" x:DataType="{x:Type vms:SmallHistoryDayViewModel}">
-                <views:AboutPage/>
+                <views:WeekHistoryView/>
             </DataTemplate>
             <!--Global Styles-->
             <Color x:Key="NavigationPrimary">#2196F3</Color>

@@ -10,8 +10,7 @@
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout>
-                                <Label Text="{Binding WeekName}"></Label>
-                                <ContentPresenter Content="{Binding WeekViewModel}"/>
+                                <Label Text="{Binding WeekName}"></Label>                                
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
@@ -19,5 +18,6 @@
             </ListView>
             <ContentPresenter Content="{Binding SmallHistoryDayViewModel}"/>
         </StackLayout>
+        
     </ContentPage.Content>
 </ContentPage>
